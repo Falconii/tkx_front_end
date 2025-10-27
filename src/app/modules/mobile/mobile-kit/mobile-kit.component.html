@@ -1,0 +1,51 @@
+ <app-filtro-entrega-kit [HIDE]="false" (changeParametro)="onChangeParametro($event)" ></app-filtro-entrega-kit>
+ <p>Entrega De Kits</p>
+<table class="Browse_Lanc" >
+  <tr class="coluna-cabec">
+    <th>Participante</th>
+    <th>AÇÕES</th>
+  </tr>
+  <tr *ngFor="let dado of lsDados let i = index" >
+    <td>
+      <div>
+        <mat-label class="Browse_Lanc_td">Evento:{{dado.evento_descricao}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td">{{dado.nome}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td">CPF: {{dado.cpf | cnpjcpf}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td">Nº Peito: {{dado.nro_peito}}</mat-label>
+      </div>
+       <div>
+        <mat-label class="Browse_Lanc_td">Incrição: {{dado.inscricao}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td">Sexo: {{dado.sexo}} Categoria: {{dado.categoria_descricao}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td">Categoria: {{dado.categoria_descricao}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td">Nasc:27/12/1980</mat-label>
+      </div>
+      <div *ngIf="dado.tam_camiseta != '' ">
+        <mat-label class="Browse_Lanc_td corvermelho">Tamanho Camiseta: {{dado.tam_camiseta}}</mat-label>
+      </div>
+      <div *ngIf="dado.tam_camiseta != '' ">
+        <mat-label class="Browse_Lanc_td corvermelho">Recebido Por: {{dado.nome_retirada}}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+       <td class="acoes">
+      <barra-acoes
+        (changeOpcao)="escolha($event, dado)">
+      </barra-acoes>
+    </td>
+      </div>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,67 @@
+.padrao {
+  font-size: 14px;
+  padding: 5px;
+}
+
+.mat-form-field {
+  font-size: 12px;
+}
+
+.container {
+  display: flex;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  justify-content: flex-start; /* Alinha os elementos no centro horizontalmente */
+  align-items: center; /* Alinha os elementos no centro verticalmente */
+  gap: 10px; /* Espaçamento entre os elementos */
+}
+
+.lancamento{
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.dialog-content {
+  max-height: 400px; /* Defina a altura máxima */
+  overflow-y: auto;  /* Adicione o scroll vertical */
+}
+
+.mat-dialog-container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+}
+.padrao {
+  font-size: 14px;
+  padding: 5px;
+}
+
+.mat-form-field {
+  font-size: 12px;
+}
+
+.container {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  justify-content: flex-start; /* Alinha os elementos no centro horizontalmente */
+  align-items: center; /* Alinha os elementos no centro verticalmente */
+  gap: 10px; /* Espaçamento entre os elementos */
+}
+
+.lancamento{
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.dialog-content {
+  max-height: 400px; /* Defina a altura máxima */
+  overflow-y: auto;  /* Adicione o scroll vertical */
+}
+
+.mat-dialog-container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+}
+
+.label-objetivo{
+  font-size: small;
+  color: blue;
+}

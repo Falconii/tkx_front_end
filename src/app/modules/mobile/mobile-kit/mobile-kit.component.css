@@ -1,0 +1,50 @@
+.content {
+    height: 95%;
+    overflow: auto;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2aa;
+}
+
+tr:hover {
+    background-color: rgb(202, 169, 157);
+}
+
+
+
+.highlight {
+  background-color: rgb(229, 139, 139);
+}
+
+.corvermelho {
+  color: red;
+}
+
+/* Estilo padrão para telas maiores que 600px */
+body {
+  font-size: 18px;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+p {
+  font-size: 16px;
+}
+
+/* Ajuste para telas até 600px (celulares) */
+@media (max-width: 600px) {
+  body {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}

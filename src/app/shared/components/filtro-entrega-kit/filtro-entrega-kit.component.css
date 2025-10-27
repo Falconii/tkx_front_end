@@ -1,0 +1,10 @@
+.ckeck {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.check-margem {
+  margin: 0 10px;
+}

@@ -1,0 +1,22 @@
+<div class="div-barra">
+    <span class="example-spacer">Filtro Da Pesquisa</span>
+
+</div>
+<form [formGroup]="parametros" autocomplete="off" *ngIf="!hide">
+   <div class="col-med-1">
+ <div class="check">
+    <mat-checkbox class="check-margem" formControlName="cpf"    (change)="setCpf($event)">Pesquisar Por CPF</mat-checkbox>
+    <mat-checkbox class="check-margem" formControlName="nome"   (change)="setNome($event)">Pesquisar Por Nome</mat-checkbox>
+    <mat-checkbox class="check-margem" formControlName="peito"  (change)="setPeito($event)">Pesquisar Por Nº Peito</mat-checkbox>
+  </div>
+  </div>
+  <div class="col-med-1">
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Pesquisa</mat-label>
+      <input class="uppercase" matInput  formControlName="pesquisa">
+      <button *ngIf="hasValue('pesquisa')" matSuffix mat-icon-button aria-label="Clear" (click)="clearValue('pesquisa')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  </form>

@@ -1,0 +1,317 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+.div-barra {
+    width: auto;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: small;
+}
+
+.labelTitleFirst {
+    font-size: small;
+    color: #0000cc;
+}
+
+.labelTitle {
+    font-size: small;
+    color: #0000cc;
+    margin-left: 5px;
+}
+
+.labelData {
+    font-size: small;
+    color: black;
+    margin-left: 5px;
+}
+
+.container {
+    font-size: small;
+    width: 80%;
+    height: 90%;
+    margin: auto;
+}
+
+
+/* CSS FORMULÁRIO */
+
+.linha-login {
+    display: flex;
+    width: 100%;
+    align-items: start;
+    justify-items: left;
+}
+
+
+/* Browse do crud  */
+
+.Browse {
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: scroll;
+    width: 100%;
+    height: 500px;
+}
+
+.form-manu {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    width: 100%;
+    height: 120px;
+}
+
+.linha {
+    background-color: white;
+}
+
+.linha :hover {
+    background-color: #cccc99;
+}
+
+.col-med-1 {
+    display: grid;
+    grid-template-columns: repeat(1, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-2 {
+    display: grid;
+    grid-template-columns: repeat(2, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-3 {
+    display: grid;
+    grid-template-columns: repeat(3, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-4 {
+    display: grid;
+    grid-template-columns: repeat(4, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-5 {
+    display: grid;
+    grid-template-columns: repeat(5, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-6 {
+    display: grid;
+    grid-template-columns: repeat(6, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-7 {
+    display: grid;
+    grid-template-columns: repeat(7, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-med-8 {
+    display: grid;
+    grid-template-columns: repeat(8, [col-start] 1fr);
+    gap: 10px;
+}
+
+.col-max {
+    width: 100%;
+}
+
+.col-70 {
+    width: 70%;
+}
+
+.col-40 {
+    width: 40%;
+}
+
+.col-50 {
+    width: 50%;
+}
+
+.col-30 {
+    width: 30%;
+}
+
+.col-20 {
+    width: 20%;
+}
+
+.column-span-2 {
+    grid-column: span 2;
+}
+
+.column-span-3 {
+    grid-column: span 3;
+}
+
+.column-span-4 {
+    grid-column: span 4;
+}
+
+.column-span-5 {
+    grid-column: span 5;
+}
+
+.column-span-6 {
+    grid-column: span 5;
+}
+
+.column-span-7 {
+    grid-column: span 5;
+}
+
+.column-span-8 {
+    grid-column: span 5;
+}
+
+.parametros {
+    font-size: medium;
+    color: aqua;
+}
+
+.button-container-right {
+    display: flex;
+    justify-content: right;
+    height: min-content;
+    width: 100%;
+}
+
+.button-container-right button {
+    margin-left: 10px;
+}
+
+.button-container-left {
+    display: flex;
+    justify-content: left;
+    height: min-content;
+    width: 100%;
+}
+
+.button-container-left mat-label {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.margem-right {
+    margin-right: 10px;
+}
+
+.green-icon {
+    color: green;
+}
+
+.red-icon {
+    color: red;
+}
+
+.yellow-icon {
+    color: #e3bd11;
+}
+
+.blue-icon {
+    color: #0000cc;
+}
+
+.Browse_Lanc {
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: auto;
+    width: 100%;
+    height: auto;
+    padding: 4px;
+}
+
+.Browse_fotos {
+  margin-left: auto;
+  margin-right: auto;
+  overflow-y: auto;
+  width: auto;
+  height: auto;
+  padding: 4px;
+}
+
+.column_fotos {
+  width: 400px;
+  height: auto;
+  padding: 4px;
+}
+
+.coluna-cabec {
+    height: 30px;
+    font-size: medium;
+    color: black;
+    background-color: cadetblue;
+}
+
+.Browse_Lanc_td {
+    font-size: small;
+    color: #0000cc;
+}
+
+.Browse_Lanc_td_red {
+  font-size: small;
+  color: red;
+}
+
+.Browse_Lanc_td_large {
+    font-size: large;
+    color: #0000cc;
+}
+
+.Browse_Lanc_td_medium {
+    font-size: medium;
+    color: #0000cc;
+}
+
+.acoes {
+    color: darkred;
+    width: 100px;
+}
+
+.alinha_direita {
+    text-align: right;
+    padding-right: 3px;
+}
+
+.alinha_centro {
+    text-align: center;
+}
+
+.alinha_esquerda {
+    text-align: left;
+}
+
+.mat-tooltip {
+    font-family: "Times New Roman", Times, serif;
+    font-size: large;
+    color: #0000cc;
+    background-color: coral;
+}
+
+.box {
+    margin-bottom: 20px;
+    border: 2px solid black;
+    box-shadow: 10px 10px 5px 6px gray;
+}
+
+.div-spin{
+  height: 2px;
+}
+
+.uppercase {
+   text-transform: uppercase;
+}
+
