@@ -1,0 +1,47 @@
+.quadro {
+    width: 50%;
+    margin: 50px auto;
+    border: 2px solid black;
+    box-shadow: 10px 10px 5px 6px gray;
+}
+
+.formulario {
+    margin: 10px 10px 10px 30px;
+    align-items: center;
+}
+
+h2 {
+    text-align: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: blue;
+}
+
+h3 {
+    text-align: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: red;
+}
+
+.controle {
+    width: inherit;
+}
+
+.botao {
+    min-width: 100px;
+    max-width: 160px;
+}
+
+.button-container-right {
+    display: flex;
+    justify-content: right;
+    height: min-content;
+    width: 100%;
+}
+
+.button-container-right button {
+    margin-left: 10px;
+}

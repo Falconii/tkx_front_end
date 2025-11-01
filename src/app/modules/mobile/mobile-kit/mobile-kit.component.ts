@@ -6,6 +6,19 @@ import { GlobalService } from './../../../services/global.service';
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { EntregaDialogComponent } from '../entrega-dialog/entrega-dialog.component';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { ParametroParticipante01 } from '../../../parametros/parametro-participante01';
+import { ControlePaginas } from '../../../shared/classes/controle-paginas';
+import { ParticipanteService } from '../../../services/participante.service';
+import { ParticipanteModel } from '../../../models/participante-model';
+import { AppSnackbar } from '../../../shared/classes/app-snackbar';
+import {
+  GetValueJsonBoolean,
+  MensagensBotoes,
+  messageError,
+} from '../../../shared/classes/util';
+import { finalize } from 'rxjs';
+
 
 @Component({
   selector: 'app-mobile-kit',
@@ -14,16 +27,67 @@ import { EntregaDialogComponent } from '../entrega-dialog/entrega-dialog.compone
 })
 export class MobileKitComponent {
 
+  inscricaoParticipantes!: Subscription;
+
+
+  tamPagina = 50;
+
+  controlePaginas: ControlePaginas = new ControlePaginas(
+    this.tamPagina,
+    this.tamPagina
+  );
+
+  participantes: ParticipanteModel[] = [];
+
   lsDados:DadosModel[] = [];
   constructor(
+    private appSnackBar: AppSnackbar,
     private globalService:GlobalService,
+    private participanteSrv:ParticipanteService,
     private dadosService:DadosService,
     private kitEntrega:MatDialog,)
     { }
 
   ngOnInit(): void {
     this.globalService.setMobile(true);
-    this.lsDados = this.dadosService.getDados()
+    this.lsDados = this.dadosService.getDados();
+    this.getParticipantes();
+  }
+
+
+  ngOnDestroy(): void {
+    this.inscricaoParticipantes?.unsubscribe();
+  }
+
+
+  getParticipantes() {
+    let par = new ParametroParticipante01()
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+
+    par.id_evento = 1;
+
+    //par = AtualizaParametroImobilizadoInventario01(par,this.parametro.getParametro());
+
+    par.pagina = this.controlePaginas.getPaginalAtual();
+
+   this.globalService.setSpin(true); // liga spinner
+
+this.inscricaoParticipantes = this.participanteSrv.getParticipantesParametro_01(par)
+  .pipe(finalize(() => this.globalService.setSpin(false)))
+  .subscribe({
+    next: (data: ParticipanteModel[]) => {
+      this.participantes = data;
+    },
+    error: (error: any) => {
+      console.log(error);
+      this.participantes = [];
+      this.appSnackBar.openFailureSnackBar(
+        `Pesquisa Nos Participantes ${messageError(error)}`,
+        'OK'
+      );
+    }
+  });
   }
 
   onChangeParametro(filtro:FiltroEntregaKitModel) {

@@ -1,0 +1,38 @@
+<div class="quadro">
+  <form [formGroup]="formulario" autocomplete="off" class="formulario">
+    <h2>Bem Vindo Ao Inventário WEB - Versão API</h2>
+    <h3>Identifique-se Por Favor</h3>
+    <div class="linha-login">
+      <mat-form-field field appearance="outline" class="controle">
+        <mat-label>Empresa</mat-label>
+        <mat-select formControlName="empresa">
+          <mat-option *ngFor="let empresa of empresas" [value]="empresa.id" autofocus>
+            {{empresa.razao}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="linha-login">
+      <mat-form-field appearance="outline" class="controle">
+        <mat-label>USUÁRIO</mat-label>
+        <input matInput formControlName="id">
+      </mat-form-field>
+    </div>
+    <div class="linha-login">
+      <mat-form-field appearance="outline" class="controle">
+        <mat-label>Senha</mat-label>
+        <input matInput formControlName="senha" type="password">
+
+      </mat-form-field>
+    </div>
+    <div class="button-container-right">
+      <button mat-raised-button color="primary" class="botao" (click)="onValidar()">Login</button>
+      <button mat-raised-button color="accent" class="botao" (click)="onCancelar()">Cancelar</button>
+    </div>
+    <br /><br />
+    <div class="button-container-right">
+      <button mat-button class="green-icon" (click)="onSair()">Sair</button>
+      <button mat-button class="green-icon" (click)="onEsqueceu()">Esqueceu A Senha</button>
+    </div>
+  </form>
+</div>
