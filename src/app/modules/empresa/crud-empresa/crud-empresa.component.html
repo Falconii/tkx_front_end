@@ -1,0 +1,51 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Empresas: </span>
+    <app-navegator [controle]="controlePaginas" (changePage)="onChangePage()"></app-navegator>
+    <button mat-icon-button aria-label="Example icon-button with share icon " matTooltip="Retorno"
+      matTooltipPosition="above" (click)="onHome()">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon"
+      (click)="getEmpresas()" matTooltip="Atualizar" matTooltipPosition="above">
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()[ 'Inclusao'],-1) " [matTooltip]="getTexto().incluir" matTooltipPosition="above">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-empresa  PARAMNAME = "empresas" [HIDE]="hide" [EMAIL]="true" [DOWNLOAD]="true" [CONTROLE_PAGINAS]="controlePaginas" (changeParametro)="onChangeParametros($event)" (changeHide)="onChangeHide($event)"/>
+<table class="Browse_Lanc">
+  <tr class="coluna-cabec">
+    <th>Código</th>
+    <th>Razao</th>
+    <th>CNPJ</th>
+    <th>AÇÕES</th>
+  </tr>
+  <tr *ngFor="let empresa of empresas let i = index" >
+    <td>
+      <div class="alinha_centro">
+        <mat-label class="Browse_Lanc_td ">{{empresa.id | zeroFill}}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="Browse_Lanc_td"   [matTooltip]="empresa.razao"  matTooltipPosition="above" >{{empresa.razao | truncate:50}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td" >{{empresa.email}}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="Browse_Lanc_td">{{empresa.cnpj_cpf | cnpjcpf}}</mat-label>
+      </div>
+    </td>
+    <td class="acoes">
+      <barra-acoes   (changeOpcao)="escolha($event,i,empresa)">
+      </barra-acoes>
+    </td>
+  </tr>
+</table>

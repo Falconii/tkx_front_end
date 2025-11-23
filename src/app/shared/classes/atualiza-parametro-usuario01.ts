@@ -23,13 +23,17 @@ export function AtualizaParametroUsuario01(par : ParametroUsuario01, config : JS
           par.cnpj_cpf = Object(config).cnpj_cpf;
         }
 
-
         key = parseInt(Object(config).grupo, 10);
 
       if (isNaN(key)) {
           par.grupo = 0;
         } else {
           par.grupo = key;
+        }
+
+
+         if (Object(config).orderby?.trim() !== '') {
+          par.orderby = Object(config).orderby;
         }
 
     return par;

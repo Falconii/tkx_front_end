@@ -1,0 +1,42 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Grupos De Usuários </span>
+    <app-navegator [controle]="controlePaginas" (changePage)="onChangePage()"></app-navegator>
+    <button mat-icon-button aria-label="Example icon-button with share icon " matTooltip="Retorno"
+      matTooltipPosition="above" (click)="onHome()">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon"
+      (click)="getGruposUsuarios()" matTooltip="Atualizar" matTooltipPosition="above">
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()[ 'Inclusao'],-1) " [matTooltip]="getTexto().incluir" matTooltipPosition="above">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-grupousuario  PARAMNAME = "grupousuario" [HIDE]="hide" [EMAIL]="true" [DOWNLOAD]="true" [CONTROLE_PAGINAS]="controlePaginas" (changeParametro)="onChangeParametros($event)" (changeHide)="onChangeHide($event)"/>
+<table class="Browse_Lanc">
+  <tr class="coluna-cabec">
+    <th>Código</th>
+    <th>Descrição</th>
+    <th>AÇÕES</th>
+  </tr>
+  <tr *ngFor="let grupo of gruposusuarios let i = index" >
+    <td>
+      <div class="alinha_centro">
+        <mat-label class="Browse_Lanc_td ">{{grupo.codigo| zeroFill}}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="Browse_Lanc_td"   [matTooltip]="grupo.descricao"  matTooltipPosition="above" >{{grupo.descricao | truncate:50}}</mat-label>
+      </div>
+    </td>
+    <td class="acoes">
+      <barra-acoes   (changeOpcao)="escolha($event,i,grupo)">
+      </barra-acoes>
+    </td>
+  </tr>
+</table>

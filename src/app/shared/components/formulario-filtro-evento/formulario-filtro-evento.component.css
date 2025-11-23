@@ -1,0 +1,9 @@
+.grupo-select .clear-button {
+  margin-top: 4px;
+  padding: 0;
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+  vertical-align: middle;
+  transform: translateY(1px);
+}

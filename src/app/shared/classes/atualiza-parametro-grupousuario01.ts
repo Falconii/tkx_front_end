@@ -7,7 +7,7 @@ export function AtualizaParametroGrupousuario01(par : ParametroGrupousuario01 , 
 
         let key:number = 0;
 
-        key = parseInt(Object(config).id, 10);
+        key = parseInt(Object(config).codigo, 10);
 
         if (isNaN(key)) {
           par.codigo = 0;
@@ -17,6 +17,10 @@ export function AtualizaParametroGrupousuario01(par : ParametroGrupousuario01 , 
 
         if (Object(config).razao?.trim() !== '') {
           par.descricao = Object(config).descricao;
+        }
+
+         if (Object(config).orderby?.trim() !== '') {
+          par.orderby = Object(config).orderby;
         }
 
 

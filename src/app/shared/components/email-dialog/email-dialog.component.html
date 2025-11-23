@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>{{data.titulo}}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="formulario" autocomplete="off">
+      <div class="col-med-1">
+        <mat-form-field appearance="outline" class="col-max">
+          <mat-label>Destinatários</mat-label>
+          <textarea matInput formControlName="destinatario"></textarea>
+          <mat-error *ngIf="NoValidtouchedOrDirty('destinatario')">{{getMensafield('destinatario')}}</mat-error>
+        </mat-form-field>
+        </div>
+        <div class="col-med-1">
+          <mat-form-field field appearance="outline" class="col-max">
+          <mat-label>Situação</mat-label>
+          <mat-select formControlName="escopo">
+            <mat-option *ngFor="let escopo of escopos" [value]="escopo.sigla">
+              {{escopo.descricao}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="spin">
+        <mat-label   *ngIf="showSpin">{{processando}}</mat-label>
+         <mat-progress-bar mode="indeterminate"   *ngIf="showSpin"></mat-progress-bar>
+      </div>
+  </form>
+<div class="button-container-right">
+    <button mat-raised-button color="accent" cdkFocusInitial (click)="closeModal()">
+     <mat-icon>cancel</mat-icon>
+     {{data.labelBottomNao}}
+   </button>
+    <button mat-raised-button color="primary"  (click)="onProcessar()">
+     <mat-icon>check</mat-icon>
+     {{data.labelBottonSim}}
+   </button>
+</div>

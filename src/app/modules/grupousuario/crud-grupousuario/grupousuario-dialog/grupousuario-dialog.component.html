@@ -1,0 +1,46 @@
+<div class="toolbar-alinhada dialog-header">
+  <mat-toolbar color="primary">
+    <span class="example-spacer">
+      <mat-label>{{ labelCadastro }}</mat-label>
+    </span>
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="#FFFFFF"
+        (click)="actionFunction()"
+        *ngIf="idAcao != 3"
+      >
+        <mat-icon>check</mat-icon>
+        {{ acao }}
+      </button>
+      <button mat-raised-button color="accent" (click)="closeModal()">
+        <mat-icon>cancel</mat-icon>
+        {{ getLabelCancel() }}
+      </button>
+    </div>
+  </mat-toolbar>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="formulario" autocomplete="off">
+    <div class="col-med-2">
+      <mat-form-field appearance="outline" class="col-70">
+        <mat-label>Codigo</mat-label>
+        <input matInput formControlName="codigo" [readonly]="readOnlyChave()" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="col-max column-span-2">
+        <mat-label>Descrição</mat-label>
+        <input
+          matInput
+          formControlName="descricao"
+          autofocus
+          oninput="this.value = this.value.toUpperCase()"
+          [readonly]="readOnly"
+        />
+        <mat-error *ngIf="NoValidtouchedOrDirty('descricao')"
+          >{{ getMensafield("descricao") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>

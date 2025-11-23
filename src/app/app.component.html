@@ -1,44 +1,69 @@
-<div>
-  <mat-toolbar color="primary" class="div-barra">
-    <button routerLink="" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar color="primary" class="div-barra">
+  <!-- Menu e título -->
+  <div class="toolbar-left">
+    <button mat-icon-button aria-label="Menu" routerLink="">
       <mat-icon>menu</mat-icon>
     </button>
-    <span>TKX - Experience</span>
-    <span *ngIf="!isMobile">
+    <img src="/logo-tkx.png" alt="TKX-Experience" class="logo-img" />
+    <ng-container *ngIf="showMenu">
       <button mat-button [matMenuTriggerFor]="cadastros">Cadastros</button>
-      <button mat-button [matMenuTriggerFor]="locais">Eventos</button>
-      <button mat-button [matMenuTriggerFor]="entrega_kits">Entrega De Kits</button>
+      <button mat-button [matMenuTriggerFor]="eventos">Eventos</button>
+      <button mat-button [matMenuTriggerFor]="entrega_kits">
+        Entrega De Kits
+      </button>
       <button mat-button [matMenuTriggerFor]="gerencial">Gerencial</button>
       <button mat-button [matMenuTriggerFor]="sobre">Sobre</button>
-    </span>
-    <span>
-      <!-- #docregion sub-menu -->
-      <mat-menu #cadastros="matMenu">
-        <button mat-menu-item routerLink="empresas">Empresas</button>
-        <button mat-menu-item routerLink="usuarios">Usuários</button>
-        <button mat-menu-item routerLink="users">Grupos De Usuários</button>
-        <button mat-menu-item routerLink="cadastro_padrao">Categorias</button>
-        <button mat-menu-item routerLink="cadastro_padrao">Intervalo Número</button>
-        <button mat-menu-item routerLink="cadastro_padrao">Kits</button>
-      </mat-menu>
-      <mat-menu #locais="matMenu">
-        <button mat-menu-item routerLink="locais">Eventos</button>
-        <button mat-menu-item routerLink="upload-excel">Importação De Participantes</button>
-        <button mat-menu-item routerLink="upload-excel">Associação Numero Do Peito</button>
-      </mat-menu>
-      <mat-menu #entrega_kits="matMenu">
-        <button mat-menu-item routerLink="mobile">Entregar Kits</button>
-      </mat-menu>
-      <mat-menu #gerencial="matMenu">
-      </mat-menu>
-      <mat-menu #sobre="matMenu">
-        <button mat-menu-item routerLink="param">Parâmentos Do Sistema</button>
-      </mat-menu>
-    </span>
-    <span class="example-spacer"></span>
-    <label>Marcos</label>
-  </mat-toolbar>
-</div>
+      <span>
+        <!-- #docregion sub-menu -->
+        <mat-menu #cadastros="matMenu">
+          <button mat-menu-item routerLink="empresas">Empresas</button>
+          <button mat-menu-item routerLink="usuarios">Usuários</button>
+          <button mat-menu-item routerLink="grupos">Grupos De Usuários</button>
+          <button mat-menu-item routerLink="cadastro_padrao">Categorias</button>
+          <button mat-menu-item routerLink="cadastro_padrao">
+            Intervalo Número
+          </button>
+          <button mat-menu-item routerLink="cadastro_padrao">Kits</button>
+        </mat-menu>
+        <mat-menu #eventos="matMenu">
+          <button mat-menu-item routerLink="eventos">Eventos</button>
+          <button mat-menu-item routerLink="upload-excel">
+            Importação De Participantes
+          </button>
+          <button mat-menu-item routerLink="upload-excel">
+            Associação Numero Do Peito
+          </button>
+        </mat-menu>
+        <mat-menu #entrega_kits="matMenu">
+          <button mat-menu-item routerLink="mobile">Entregar Kits</button>
+        </mat-menu>
+        <mat-menu #gerencial="matMenu"> </mat-menu>
+        <mat-menu #sobre="matMenu">
+          <button mat-menu-item routerLink="param">
+            Parâmentos Do Sistema
+          </button>
+        </mat-menu>
+      </span>
+    </ng-container>
+  </div>
+  <!-- Usuário e login -->
+  <div class="toolbar-right">
+    <div class="nav-item">
+      <button
+        mat-icon-button
+        class="example-icon"
+        aria-label="Example icon-button with share icon"
+        matTooltip="LOGIN"
+        matTooltipPosition="above"
+        (click)="onLogin()"
+      >
+        <mat-icon>person</mat-icon>
+      </button>
+      <span>{{ getUsuarioNome().razao | firstName }}</span>
+    </div>
+  </div>
+</mat-toolbar>
+
 <div class="container">
   <router-outlet></router-outlet>
 </div>

@@ -1,0 +1,51 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Usuários: </span>
+    <app-navegator [controle]="controlePaginas" (changePage)="onChangePage()"></app-navegator>
+    <button mat-icon-button aria-label="Example icon-button with share icon " matTooltip="Retorno"
+      matTooltipPosition="above" (click)="onHome()">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon"
+      (click)="getUsuarios()" matTooltip="Atualizar" matTooltipPosition="above">
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()[ 'Inclusao'],-1) " [matTooltip]="getTexto().incluir" matTooltipPosition="above">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-usuario  PARAMNAME = "usuarios" [HIDE]="hide" [EMAIL]="true" [DOWNLOAD]="true" [CONTROLE_PAGINAS]="controlePaginas" (changeParametro)="onChangeParametros($event)" (changeHide)="onChangeHide($event)"/>
+<table class="Browse_Lanc">
+  <tr class="coluna-cabec">
+    <th>Cód Usuário</th>
+    <th>Nome</th>
+    <th>Grupo</th>
+    <th>AÇÕES</th>
+  </tr>
+  <tr *ngFor="let usuario of usuarios let i = index" >
+    <td>
+      <div class="alinha_centro">
+        <mat-label class="Browse_Lanc_td ">{{usuario.id | zeroFill}}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="Browse_Lanc_td"   [matTooltip]="usuario.razao"  matTooltipPosition="above" >{{usuario.razao | truncate:30}}</mat-label>
+      </div>
+      <div>
+        <mat-label class="Browse_Lanc_td" >{{usuario.email}}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="Browse_Lanc_td">Grupo:{{usuario.grupo}}-{{usuario.grupo_descricao}}</mat-label>
+      </div>
+    </td>
+    <td class="acoes">
+      <barra-acoes   (changeOpcao)="escolha($event,i,usuario)">
+      </barra-acoes>
+    </td>
+  </tr>
+</table>

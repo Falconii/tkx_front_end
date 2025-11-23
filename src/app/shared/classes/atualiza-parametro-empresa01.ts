@@ -23,6 +23,10 @@ export function AtualizaParametroEmpresa01(par : ParametroEmpresa01 , config : J
         }
 
 
+        if (Object(config).orderby?.trim() !== '') {
+        par.orderby = Object(config).orderby;
+        }
+
     return par;
 
   } catch(error){

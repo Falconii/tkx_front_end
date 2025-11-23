@@ -54,6 +54,24 @@ export class ControlePaginas {
     this.paginaAtual = value;
   }
 
+  getTamPagina(): number {
+    return this.tamPagina;
+  }
+
+  setTotalRegistro(value:number){
+    this.totalRegistros = value;
+    let resto = this.totalRegistros % this.tamPagina;
+    if (resto == 0) {
+      this.totalPaginas = Math.trunc(this.totalRegistros / this.tamPagina);
+    } else {
+      this.totalPaginas = Math.trunc(this.totalRegistros / this.tamPagina) + 1;
+    }
+    this.paginaFinal = this.totalPaginas;
+  }
+
+  getTotalRegistros(){
+    return this.totalRegistros;
+  }
   start():void{
     this.paginaInicial = 1;
     this.paginaFinal   = 1;

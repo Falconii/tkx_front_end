@@ -1,0 +1,127 @@
+<div color="white" class="toolbar-filtro">
+  <span class="filtro-com-icones">
+    <span class="titulo">Filtro da Pesquisa</span>
+    <mat-icon
+      matTooltipPosition="above"
+      (click)="onlimparParametros()"
+      matTooltip="Limpar Parâmetros"
+      matTooltipPosition="above"
+      >clear</mat-icon
+    >
+    <mat-icon
+      matTooltipPosition="above"
+      (click)="onSaveConfig()"
+      matTooltip="Salvar Parâmetros"
+      matTooltipPosition="above"
+      >save</mat-icon
+    >
+    <mat-icon
+      matTooltipPosition="above"
+      (click)="onGetExcelToEmailOrDownLoad('e-mail')"
+      matTooltip="Enviar Consulta Por E-Mail"
+      matTooltipPosition="above"
+      *ngIf="email"
+      >mail</mat-icon
+    >
+    <mat-icon
+      matTooltipPosition="above"
+      (click)="onGetExcelToEmailOrDownLoad('download')"
+      matTooltip="Baixar A Consulta"
+      matTooltipPosition="above"
+      *ngIf="download"
+      >cloud_download</mat-icon
+    >
+    <mat-icon
+      matTooltipPosition="above"
+      (click)="onHide()"
+      matTooltip="Mostrar/Esconder"
+      matTooltipPosition="above"
+      >visibility</mat-icon
+    >
+  </span>
+</div>
+<form [formGroup]="formulario" autocomplete="off" *ngIf="!hide">
+  <div class="col-med-3">
+    <mat-form-field field appearance="outline" class="col-max">
+      <mat-label>Ordernado Por</mat-label>
+      <mat-select
+        formControlName="orderby"
+        (selectionChange)="onChangeParametros()"
+      >
+        <mat-option *ngFor="let ordem of orderby" [value]="ordem.sigla">
+          {{ ordem.descricao }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="id" />
+      <button
+        *ngIf="hasValue('codigo')"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="clearValue('codigo')"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao" />
+      <button
+        *ngIf="hasValue('descricao')"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="clearValue('descricao')"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="col-med-2">
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Responsável:</mat-label>
+      <mat-select
+        formControlName="id_responsavel"
+        (selectionChange)="onChangeParametros()"
+      >
+        <mat-option *ngFor="let resp of responsaveis" [value]="resp.id">
+          {{ resp.razao }}
+        </mat-option>
+      </mat-select>
+
+      <button
+        mat-icon-button
+        matSuffix
+        matTooltip="Limpar seleção"
+        (click)="clearValue('id_responsavel'); $event.stopPropagation()"
+        class="clear-button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Situação:</mat-label>
+      <mat-select
+        formControlName="status"
+        (selectionChange)="onChangeParametros()"
+      >
+        <mat-option *ngFor="let situacao of situacoes" [value]="situacao.sigla">
+          {{ situacao.descricao }}
+        </mat-option>
+      </mat-select>
+
+      <button
+        mat-icon-button
+        matSuffix
+        matTooltip="Limpar seleção"
+        (click)="clearValue('status'); $event.stopPropagation()"
+        class="clear-button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</form>

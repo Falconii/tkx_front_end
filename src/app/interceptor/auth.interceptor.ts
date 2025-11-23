@@ -3,29 +3,60 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Observable, throwError } from 'rxjs';
 import { GlobalService } from '../services/global.service';
+import { LocalStorageService } from '../services/localStorage.service';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload {
+  exp: number;
+  [key: string]: any;
+}
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  constructor(
+    private localStorageSrv: LocalStorageService,
+    private router: Router
+  ) {}
 
-  constructor(private globalService: GlobalService) {}
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('Interceptando requisição para adicionar token de autenticação.');
-    //const token = localStorage.getItem('jwtToken'); // ou de um serviço de autenticação
-    const token = this.globalService.getToken();
-
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    if (request.url.includes('/api/login')) {
+      return next.handle(request); // não modifica
+    }
+    const token = this.localStorageSrv.getString('Token');
     if (token) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
     }
-console.log('Requisição interceptada:', request);
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      const now = Math.floor(Date.now() / 1000);
+      return decoded.exp < now;
+    } catch (e) {
+      return true;
+    }
   }
 }

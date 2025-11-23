@@ -1,0 +1,22 @@
+
+<div class = "alinhamento">
+    <div class="pagination-container">
+      <button mat-icon-button (click)="firstPage()" [disabled]="controlePaginas.getPaginalAtual() === 1" *ngIf="controlePaginas.getTotalRegistros() > 0">
+        <mat-icon>first_page</mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="forwardPage()" [disabled]="controlePaginas.getPaginalAtual() === 1" *ngIf="controlePaginas.getTotalRegistros() > 0" >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <span class="page-indicator">{{ pageDisplay }}</span>
+
+      <button mat-icon-button (click)="nextPage()" [disabled]="controlePaginas.getPaginalAtual() === controlePaginas.getTotalPaginas()" *ngIf="controlePaginas.getTotalRegistros() > 0">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="lastPage()" [disabled]="controlePaginas.getPaginalAtual() === controlePaginas.getTotalPaginas()" *ngIf="controlePaginas.getTotalRegistros() > 0">
+        <mat-icon>last_page</mat-icon>
+      </button>
+    </div>
+</div>

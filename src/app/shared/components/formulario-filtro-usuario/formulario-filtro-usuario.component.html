@@ -1,0 +1,69 @@
+<div color="white" class="toolbar-filtro">
+  <span class="filtro-com-icones">
+    <span class="titulo">Filtro da Pesquisa</span>
+    <mat-icon  matTooltipPosition="above"
+      (click)="onlimparParametros()" matTooltip="Limpar Parâmetros" matTooltipPosition="above">clear</mat-icon>
+    <mat-icon  matTooltipPosition="above"
+      (click)="onSaveConfig()" matTooltip="Salvar Parâmetros" matTooltipPosition="above">save</mat-icon>
+    <mat-icon  matTooltipPosition="above"
+      (click)="onGetExcelToEmailOrDownLoad('e-mail')" matTooltip="Enviar Consulta Por E-Mail" matTooltipPosition="above" *ngIf="email">mail</mat-icon>
+    <mat-icon matTooltipPosition="above"
+      (click)="onGetExcelToEmailOrDownLoad('download')" matTooltip="Baixar A Consulta" matTooltipPosition="above" *ngIf="download">cloud_download</mat-icon>
+    <mat-icon  matTooltipPosition="above"
+      (click)="onHide()" matTooltip="Mostrar/Esconder" matTooltipPosition="above">visibility</mat-icon>
+  </span>
+</div>
+<form [formGroup]="formulario" autocomplete="off" *ngIf="!hide">
+  <div class="col-med-4">
+   <mat-form-field field appearance="outline" class="col-max">
+    <mat-label>Ordernado Por</mat-label>
+    <mat-select formControlName="orderby" (selectionChange)="onChangeParametros()">
+      <mat-option *ngFor="let ordem of orderby" [value]="ordem.sigla">
+        {{ordem.descricao}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+     <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="id">
+      <button *ngIf="hasValue('id')" matSuffix mat-icon-button aria-label="Clear" (click)="clearValue('id')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+      <mat-form-field appearance="outline" class="uppercase-input column-span-2">
+      <mat-label>Razão</mat-label>
+      <input  matInput  formControlName="razao">
+      <button *ngIf="hasValue('razao')" matSuffix mat-icon-button aria-label="Clear" (click)="clearValue('razao')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+   </div>
+  <div class="col-med-2">
+      <mat-form-field appearance="outline" class="col-max">
+      <mat-label>CNPJ/CPF</mat-label>
+      <input class="uppercase" matInput  formControlName="cnpj_cpf">
+      <button *ngIf="hasValue('cnpj_cpf')" matSuffix mat-icon-button aria-label="Clear" (click)="clearValue('cnpj_cpf')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-max grupo-select">
+  <mat-label>Grupos</mat-label>
+  <mat-select formControlName="grupos" (selectionChange)="onChangeParametros()">
+    <mat-option *ngFor="let grupo of grupos" [value]="grupo.codigo">
+      {{grupo.descricao}}
+    </mat-option>
+  </mat-select>
+
+  <button
+    mat-icon-button
+    matSuffix
+    matTooltip="Limpar seleção"
+    (click)="clearValue('grupos'); $event.stopPropagation()"
+    class="clear-button"
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-form-field>
+
+    </div>
+</form>
