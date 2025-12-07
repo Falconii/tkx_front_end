@@ -1,0 +1,28 @@
+<div fxLayout="column" fxLayoutAlign="center stretch" class="upload-container">
+  <h2>Upload de Planilha</h2>
+
+  <form (submit)="onUpload($event)" fxLayout="column" fxLayoutGap="20px">
+    <mat-form-field appearance="outline">
+      <mat-label>Selecione o arquivo</mat-label>
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        accept=".xlsx,.xls,.csv"
+        matInput
+      />
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!selectedFile"
+    >
+      Enviar
+    </button>
+  </form>
+
+  <!-- Barra de progresso -->
+  <mat-progress-bar *ngIf="progress > 0" mode="determinate" [value]="progress">
+  </mat-progress-bar>
+</div>

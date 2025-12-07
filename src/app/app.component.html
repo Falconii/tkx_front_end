@@ -1,11 +1,11 @@
-<mat-toolbar color="primary" class="div-barra">
+<mat-toolbar color="primary" class="div-barra" *ngIf="!isMobile">
   <!-- Menu e título -->
   <div class="toolbar-left">
     <button mat-icon-button aria-label="Menu" routerLink="">
       <mat-icon>menu</mat-icon>
     </button>
     <img src="/logo-tkx.png" alt="TKX-Experience" class="logo-img" />
-    <ng-container *ngIf="showMenu">
+    <ng-container *ngIf="showMenu && !isMobile">
       <button mat-button [matMenuTriggerFor]="cadastros">Cadastros</button>
       <button mat-button [matMenuTriggerFor]="eventos">Eventos</button>
       <button mat-button [matMenuTriggerFor]="entrega_kits">
@@ -27,12 +27,16 @@
         </mat-menu>
         <mat-menu #eventos="matMenu">
           <button mat-menu-item routerLink="eventos">Eventos</button>
+          <button mat-menu-item routerLink="participantes">
+            Associação Numero Do Peito
+          </button>
           <button mat-menu-item routerLink="upload-excel">
             Importação De Participantes
           </button>
           <button mat-menu-item routerLink="upload-excel">
             Associação Numero Do Peito
           </button>
+          <button mat-menu-item routerLink="tela01">tela 01</button>
         </mat-menu>
         <mat-menu #entrega_kits="matMenu">
           <button mat-menu-item routerLink="mobile">Entregar Kits</button>

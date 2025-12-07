@@ -40,6 +40,13 @@ const routes: Routes = [
       import('./modules/evento/evento.module').then((m) => m.EventoModule),
   },
   {
+    path: 'tela01',
+    loadChildren: () =>
+      import('./modules/mobile-v02/mobile-v02.module').then(
+        (m) => m.MobileV02Module
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'home',
   },

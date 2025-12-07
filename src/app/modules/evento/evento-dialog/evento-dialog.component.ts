@@ -1,3 +1,4 @@
+import { EventoService } from './../../../services/evento.service';
 import { EventoDialogData } from './EventoDialogData';
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -21,7 +22,8 @@ import { ParametroGrupousuario01 } from '../../../parametros/parametro-grupousua
 import { AtualizaParametroGrupousuario01 } from '../../../shared/classes/atualiza-parametro-grupousuario01';
 import { messageError } from '../../../shared/classes/util';
 import { EstadoModel } from '../../../shared/classes/EstadoModel';
-import { GrupousuarioService } from '../../../services/grupousuario.service';
+import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
+import { EventoModel } from '../../../models/evento-model';
 import { ParametroUsuario01 } from '../../../parametros/parametro-usuario01';
 
 @Component({
@@ -54,7 +56,8 @@ export class EventoDialogComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private responsavelService: UsuarioService,
+    private respSrv: UsuarioService,
+    private eventoSrv: EventoService,
     private globalService: GlobalService,
     private appSnackBar: AppSnackbar,
     private simNaoPipe: SimNaoPipe,
@@ -109,6 +112,49 @@ export class EventoDialogComponent {
     this.dialogRef.close(this.data);
   }
 
+  getEvento(evento: EventoModel) {
+    let par = new ParametroEvento01();
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+
+    this.inscricaoUsuario = this.eventoSrv
+      .getEvento(evento.id_empresa, evento.id)
+      .subscribe({
+        next: (data: EventoModel) => {
+          this.data.evento = data;
+          this.closeModal;
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Problemas na Atualização Dos Eventos`,
+            'OK'
+          );
+          this.closeModal;
+        },
+      });
+  }
+
+  getResponsaveis() {
+    let par = new ParametroUsuario01();
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+
+    this.inscricaoUsuario = this.respSrv
+      .getUsuariosParametro_01(par)
+      .subscribe({
+        next: (data: any) => {
+          this.responsaveis = data;
+          this.setValue();
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Falha Na Consulta Do Usuário ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+            'OK'
+          );
+        },
+      });
+  }
+
   setValue() {
     this.formulario.setValue({
       id: this.data.evento.id,
@@ -149,27 +195,27 @@ export class EventoDialogComponent {
     switch (+op) {
       case CadastroAcoes.Inclusao:
         this.acao = 'Gravar';
-        this.labelCadastro = 'Usuários - Inclusão.';
+        this.labelCadastro = 'Eventos - Inclusão.';
         this.readOnly = false;
         break;
       case CadastroAcoes.Edicao:
         this.acao = 'Gravar';
-        this.labelCadastro = 'Usuários - Alteração.';
+        this.labelCadastro = 'Eventos - Alteração.';
         this.readOnly = false;
         break;
       case CadastroAcoes.Consulta:
         this.acao = 'Voltar';
-        this.labelCadastro = 'Usuários - Consulta.';
+        this.labelCadastro = 'Eventos - Consulta.';
         this.readOnly = true;
         break;
       case CadastroAcoes.Exclusao:
         this.acao = 'Excluir';
-        this.labelCadastro = 'Usuários - Exclusão.';
+        this.labelCadastro = 'Eventos - Exclusão.';
         this.readOnly = true;
         break;
       case CadastroAcoes.Atualizacao:
         this.acao = 'Gravar';
-        this.labelCadastro = 'Usuários - Atualização';
+        this.labelCadastro = 'Eventos - Atualização';
         this.readOnly = false;
         break;
       default:
@@ -178,79 +224,55 @@ export class EventoDialogComponent {
   }
 
   executaAcao() {
-    this.data.evento.razao = this.formulario.value.razao.toUpperCase();
-    this.data.evento.cnpj_cpf = this.formulario.value.cnpj_cpf;
-    this.data.evento.cadastr = this.formulario.value.cadastr;
+    this.data.evento.descricao = this.formulario.value.razao.toUpperCase();
+    this.data.evento.inicio = this.formulario.value.inicio;
+    this.data.evento.final = this.formulario.value.final;
+    this.data.evento.status = this.formulario.value.status;
+    this.data.evento.id_responsavel = this.formulario.value.id_responsavel;
     this.data.evento.rua = this.formulario.value.rua.toUpperCase();
-    this.data.evento.nro = this.formulario.value.nro.toUpperCase();
+    this.data.evento.nro = this.formulario.value.nro;
     this.data.evento.complemento =
       this.formulario.value.complemento.toUpperCase();
     this.data.evento.bairro = this.formulario.value.bairro.toUpperCase();
     this.data.evento.cidade = this.formulario.value.cidade.toUpperCase();
     this.data.evento.uf = this.formulario.value.uf;
     this.data.evento.cep = this.formulario.value.cep;
-    this.data.evento.tel1 = this.formulario.value.tel1;
-    this.data.evento.tel2 = this.formulario.value.tel2;
-    this.data.evento.email = this.formulario.value.email;
-    this.data.evento.senha = this.formulario.value.senha;
-    this.data.evento.grupo = this.formulario.value.grupo;
-    //this.usuario.ativo = this.formulario.value.ativo
     switch (+this.idAcao) {
       case CadastroAcoes.Inclusao:
         this.data.evento.user_insert = this.globalService.getUsuario().id;
-        console.log('evento =>', this.data.usuario);
-        this.inscricaoAcao = this.responsavelService.usuario.subscribe({
-          next: (data: any) => {
-            this.appSnackBar.openSuccessSnackBar(
-              `Usuário Incluido Com Sucesso !`,
-              'OK'
-            );
-            this.data.usuario = data;
-            this.getUsuario(this.data.usuario);
-          },
-          error: (error: any) => {
-            console.log('error =>', error);
-            this.appSnackBar.openFailureSnackBar(
-              `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-              'OK'
-            );
-          },
-        });
-        break;
-      case CadastroAcoes.Edicao:
-        this.data.evento.user_update = this.globalService.getUsuario().id;
-        this.inscricaoAcao = this.usuarioService
-          .usuarioUpdate(this.data.usuario)
+        this.inscricaoAcao = this.eventoSrv
+          .eventoInsert(this.data.evento)
           .subscribe({
             next: (data: any) => {
               this.appSnackBar.openSuccessSnackBar(
-                `Usuário Alterado Com Sucesso !`,
+                `Usuário Incluido Com Sucesso !`,
                 'OK'
               );
-              this.data.usuario = data;
-
-              this.getUsuario(this.data.usuario);
+              this.data.evento = data;
+              this.getEvento(this.data.evento);
             },
             error: (error: any) => {
+              console.log('error =>', error);
               this.appSnackBar.openFailureSnackBar(
-                `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+                `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
                 'OK'
               );
             },
           });
         break;
-      case CadastroAcoes.Atualizacao:
+      case CadastroAcoes.Edicao:
         this.data.evento.user_update = this.globalService.getUsuario().id;
-        this.inscricaoAcao = this.usuarioService
-          .usuarioUpdate(this.data.usuario)
+        this.inscricaoAcao = this.eventoSrv
+          .eventoUpdate(this.data.evento)
           .subscribe({
             next: (data: any) => {
               this.appSnackBar.openSuccessSnackBar(
                 `Usuário Alterado Com Sucesso !`,
                 'OK'
               );
-              this.data.usuario = data;
-              this.getUsuario(this.data.usuario);
+              this.data.evento = data;
+
+              this.getEvento(this.data.evento);
             },
             error: (error: any) => {
               this.appSnackBar.openFailureSnackBar(
@@ -261,15 +283,15 @@ export class EventoDialogComponent {
           });
         break;
       case CadastroAcoes.Exclusao:
-        this.inscricaoAcao = this.usuarioService
-          .usuarioDelete(this.data.evento.id_empresa, this.data.evento.id)
+        this.inscricaoAcao = this.eventoSrv
+          .eventoDelete(this.data.evento.id_empresa, this.data.evento.id)
           .subscribe({
             next: (data: any) => {
               this.appSnackBar.openSuccessSnackBar(
                 `Usuário Excluido Com Sucesso !`,
                 'OK'
               );
-              this.data.usuario = data;
+              this.data.evento = data;
               this.closeModal();
             },
             error: (error: any) => {
@@ -308,23 +330,5 @@ export class EventoDialogComponent {
       return true;
     }
     return this.readOnly;
-  }
-
-  getUsuario(usuario: UsuarioModel) {
-    this.inscricaoGetUsuario = this.usuarioSrv
-      .getUsuario(usuario.id_empresa!, usuario.id!)
-      .subscribe({
-        next: (data: UsuarioModel) => {
-          this.data.usuario = data;
-          this.closeModal();
-        },
-        error: (error: any) => {
-          this.appSnackBar.openFailureSnackBar(
-            `Problemas na Atualização Do Usuário`,
-            'OK'
-          );
-          this.closeModal;
-        },
-      });
   }
 }
