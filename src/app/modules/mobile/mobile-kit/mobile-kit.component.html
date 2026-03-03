@@ -1,51 +1,62 @@
- <app-filtro-entrega-kit [HIDE]="false" (changeParametro)="onChangeParametro($event)" ></app-filtro-entrega-kit>
- <p>Entrega De Kits</p>
-<table class="Browse_Lanc" >
-  <tr class="coluna-cabec">
-    <th>Participante</th>
-    <th>AÇÕES</th>
-  </tr>
-  <tr *ngFor="let dado of lsDados let i = index" >
-    <td>
-      <div>
-        <mat-label class="Browse_Lanc_td">Evento:{{dado.evento_descricao}}</mat-label>
+<app-filtro-entrega-kit
+  [HIDE]="false"
+  (changeParametro)="onChangeParametro($event)"
+></app-filtro-entrega-kit>
+<p>Entrega De Kits</p>
+<div class="lista-participantes">
+  <mat-card
+    class="card-participante"
+    *ngFor="let dado of participantes; let i = index"
+  >
+    <mat-card-header>
+      <mat-card-title>{{ dado.inscrito_nome }}</mat-card-title>
+      <mat-card-subtitle>{{ dado.evento_descricao }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="linha">
+        <span class="label">CPF:</span>
+        <span>{{ dado.inscrito_cpf | cnpjcpf }}</span>
       </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">{{dado.nome}}</mat-label>
+
+      <div class="linha">
+        <span class="label">Nº Peito:</span>
+        <span>{{ dado.nro_peito }}</span>
       </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">CPF: {{dado.cpf | cnpjcpf}}</mat-label>
+
+      <div class="linha">
+        <span class="label">Inscrição:</span>
+        <span>{{ dado.inscricao }}</span>
       </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">Nº Peito: {{dado.nro_peito}}</mat-label>
+
+      <div class="linha">
+        <span class="label">Sexo:</span>
+        <span>{{ dado.inscrito_sexo }}</span>
       </div>
-       <div>
-        <mat-label class="Browse_Lanc_td">Incrição: {{dado.inscricao}}</mat-label>
+
+      <div class="linha">
+        <span class="label">Categoria:</span>
+        <span>{{ dado.categoria_descricao }}</span>
       </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">Sexo: {{dado.sexo}} Categoria: {{dado.categoria_descricao}}</mat-label>
+
+      <div class="linha">
+        <span class="label">Nascimento:</span>
+        <span>{{ dado.inscrito_dt_nascimento | date: "dd/MM/yyyy" }}</span>
       </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">Categoria: {{dado.categoria_descricao}}</mat-label>
+
+      <div class="linha destaque" *ngIf="dado.entre_tam_camisa">
+        <span class="label">Tamanho Camiseta:</span>
+        <span>{{ dado.entre_tam_camisa }}</span>
       </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">Nasc:27/12/1980</mat-label>
+
+      <div class="linha destaque" *ngIf="dado.entre_nome">
+        <span class="label">Recebido Por:</span>
+        <span>{{ dado.entre_nome }} — RG: {{ dado.entre_rg }}</span>
       </div>
-      <div *ngIf="dado.tam_camiseta != '' ">
-        <mat-label class="Browse_Lanc_td corvermelho">Tamanho Camiseta: {{dado.tam_camiseta}}</mat-label>
-      </div>
-      <div *ngIf="dado.tam_camiseta != '' ">
-        <mat-label class="Browse_Lanc_td corvermelho">Recebido Por: {{dado.nome_retirada}}</mat-label>
-      </div>
-    </td>
-    <td>
-      <div>
-       <td class="acoes">
-      <barra-acoes
-        (changeOpcao)="escolha($event, dado)">
-      </barra-acoes>
-    </td>
-      </div>
-    </td>
-  </tr>
-</table>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <barra-acoes (changeOpcao)="escolha($event, dado)"></barra-acoes>
+    </mat-card-actions>
+  </mat-card>
+</div>

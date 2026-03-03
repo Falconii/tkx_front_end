@@ -1,6 +1,8 @@
-import { DadosModel } from "../../../models/dado-model";
+import { EntregaModel } from '../../../models/entrega-model';
+import { ParticipanteModel } from './../../../models/participante-model';
 
 export class EntregaDialogData {
   public processar: boolean = false;
-  public dado   : DadosModel = new DadosModel("", "", "", 0, 0, "", "", "", "", "", "");
+  public dado: ParticipanteModel = new ParticipanteModel();
+  public entrega: EntregaModel = new EntregaModel();
 }

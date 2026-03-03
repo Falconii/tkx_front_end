@@ -1,28 +1,49 @@
-<h1 mat-dialog-title>Retirada Do Kit</h1>
-<div mat-dialog-content>
-  <form [formGroup]="formulario" autocomplete="off">
-    <div class="container">
-      <div class="col-med-1">
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Tam Camiseta:</mat-label>
-          <input matInput formControlName="tam_camiseta"/>
-        </mat-form-field>
-      </div>
-      <div class="col-med-1">
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Retirado Por:</mat-label>
-          <input matInput formControlName="nome_retirada"/>
-        </mat-form-field>
-      </div>
-      </div>
-  </form>
-<div class="button-container-right">
-    <button mat-raised-button color="accent" cdkFocusInitial (click)="closeModal()">
-     <mat-icon>cancel</mat-icon>
-     Cancelar
-   </button>
-    <button mat-raised-button color="primary"  (click)="onProcessar()">
-     <mat-icon>check</mat-icon>
-     Gravar
-   </button>
+<div class="toolbar-alinhada dialog-header">
+  <mat-toolbar color="primary">
+    <span class="example-spacer">
+      <mat-label>Cadastro De Kit</mat-label>
+    </span>
+    <div class="button-container">
+      <button mat-raised-button color="#FFFFFF" (click)="onCancelar()">
+        <mat-icon>check</mat-icon>
+        Cancelar
+      </button>
+      <button mat-raised-button color="accent" (click)="onProcessar()">
+        <mat-icon>cancel</mat-icon>
+        Gravar
+      </button>
+    </div>
+  </mat-toolbar>
 </div>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="formulario" autocomplete="off">
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="uppercase-input col-max">
+        <mat-label>RG Do Responsável:</mat-label>
+        <input matInput formControlName="rg_retirada" />
+        <mat-error *ngIf="NoValidtouchedOrDirty('rg_retirada')"
+          >{{ getMensafield("rg_retirada") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="uppercase-input col-max">
+        <mat-label>Retirado Por:</mat-label>
+        <input matInput formControlName="nome_retirada" />
+        <mat-error *ngIf="NoValidtouchedOrDirty('nome_retirada')"
+          >{{ getMensafield("nome_retirada") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="uppercase-input col-max">
+        <mat-label>Tam Camiseta:</mat-label>
+        <input matInput formControlName="tam_camisa" />
+        <mat-error *ngIf="NoValidtouchedOrDirty('tam_camisa')"
+          >{{ getMensafield("tam_camisa") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>

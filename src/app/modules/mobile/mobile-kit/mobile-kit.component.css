@@ -1,50 +1,65 @@
-.content {
-    height: 95%;
-    overflow: auto;
+.lista-participantes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2aa;
+.card-participante {
+  padding: 12px;
+  border-radius: 10px;
+  /* sombra suave */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+  &:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    transform: translateY(-2px);
+  }
+  mat-card-header {
+    margin-bottom: 10px;
+    mat-card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    mat-card-subtitle {
+      font-size: 0.95rem;
+      color: #666;
+    }
+  }
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .linha {
+    display: flex;
+    gap: 6px;
+    font-size: 0.95rem;
+    .label {
+      font-weight: 600;
+      color: #444;
+    }
+  }
+  .destaque {
+    color: #b71c1c;
+    font-weight: 600;
+  }
+  mat-card-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
-tr:hover {
-    background-color: rgb(202, 169, 157);
-}
+/* Responsivo */
 
-
-
-.highlight {
-  background-color: rgb(229, 139, 139);
-}
-
-.corvermelho {
-  color: red;
-}
-
-/* Estilo padrão para telas maiores que 600px */
-body {
-  font-size: 18px;
-}
-
-h1 {
-  font-size: 32px;
-}
-
-p {
-  font-size: 16px;
-}
-
-/* Ajuste para telas até 600px (celulares) */
 @media (max-width: 600px) {
-  body {
-    font-size: 16px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  p {
-    font-size: 14px;
+  .card-participante {
+    mat-card-header {
+      mat-card-title {
+        font-size: 1.1rem;
+      }
+    }
   }
 }

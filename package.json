@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "build_falconi": "npx -p @angular/cli@18 ng build --base-href https://falconii.github.io/tkx/ && copy docs\\browser\\index.html docs\\browser\\404.html ",
+    "build_falconi": "powershell -File build_falconi.ps1",
     "build_dominio": "npx -p @angular/cli@18 ng build --base-href https://tkx.falconi-iot.com.br && copy docs\\browser\\index.html docs\\browser\\404.html ",
     "deploy": "gh-pages -d docs/browser",
     "start": "npx -p @angular/cli@18 ng serve",

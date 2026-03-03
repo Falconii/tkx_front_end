@@ -19,49 +19,43 @@ import {
 } from '../../../shared/classes/util';
 import { finalize } from 'rxjs';
 
-
 @Component({
   selector: 'app-mobile-kit',
   templateUrl: './mobile-kit.component.html',
-  styleUrl: './mobile-kit.component.css'
+  styleUrl: './mobile-kit.component.css',
 })
 export class MobileKitComponent {
-
   inscricaoParticipantes!: Subscription;
-
 
   tamPagina = 50;
 
   controlePaginas: ControlePaginas = new ControlePaginas(
     this.tamPagina,
-    this.tamPagina
+    this.tamPagina,
   );
 
   participantes: ParticipanteModel[] = [];
 
-  lsDados:DadosModel[] = [];
+  lsDados: DadosModel[] = [];
   constructor(
     private appSnackBar: AppSnackbar,
-    private globalService:GlobalService,
-    private participanteSrv:ParticipanteService,
-    private dadosService:DadosService,
-    private kitEntrega:MatDialog,)
-    { }
+    private globalService: GlobalService,
+    private participanteSrv: ParticipanteService,
+    private dadosService: DadosService,
+    private kitEntrega: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.globalService.setMobile(true);
-    this.lsDados = this.dadosService.getDados();
     this.getParticipantes();
   }
-
 
   ngOnDestroy(): void {
     this.inscricaoParticipantes?.unsubscribe();
   }
 
-
   getParticipantes() {
-    let par = new ParametroParticipante01()
+    let par = new ParametroParticipante01();
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
@@ -71,27 +65,29 @@ export class MobileKitComponent {
 
     par.pagina = this.controlePaginas.getPaginalAtual();
 
-   this.globalService.setSpin(true); // liga spinner
+    this.globalService.setSpin(true); // liga spinner
 
-this.inscricaoParticipantes = this.participanteSrv.getParticipantesParametro_01(par)
-  .pipe(finalize(() => this.globalService.setSpin(false)))
-  .subscribe({
-    next: (data: ParticipanteModel[]) => {
-      this.participantes = data;
-    },
-    error: (error: any) => {
-      console.log(error);
-      this.participantes = [];
-      this.appSnackBar.openFailureSnackBar(
-        `Pesquisa Nos Participantes ${messageError(error)}`,
-        'OK'
-      );
-    }
-  });
+    this.inscricaoParticipantes = this.participanteSrv
+      .getParticipantesParametro_01(par)
+      .pipe(finalize(() => this.globalService.setSpin(false)))
+      .subscribe({
+        next: (data: ParticipanteModel[]) => {
+          this.participantes = data;
+          console.log('Pariticipantes', this.participantes);
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.participantes = [];
+          this.appSnackBar.openFailureSnackBar(
+            `Pesquisa Nos Participantes ${messageError(error)}`,
+            'OK',
+          );
+        },
+      });
   }
 
-  onChangeParametro(filtro:FiltroEntregaKitModel) {
-    this.lsDados = this.dadosService.getDados().filter((dado:DadosModel) => {
+  onChangeParametro(filtro: FiltroEntregaKitModel) {
+    this.lsDados = this.dadosService.getDados().filter((dado: DadosModel) => {
       if (filtro.pesquisarPor == 'CPF') {
         return dado.cpf.includes(filtro.pesquisar);
       }
@@ -101,28 +97,31 @@ this.inscricaoParticipantes = this.participanteSrv.getParticipantesParametro_01(
 
       return dado.nro_peito.toString().includes(filtro.pesquisar);
     });
-
   }
 
-  escolha(op:number, dado:DadosModel) {
-      this.openKitDialog(dado);
+  escolha(op: number, dado: ParticipanteModel) {
+    this.openKitDialog(dado);
   }
 
-
-  openKitDialog(dado: DadosModel): void {
+  openKitDialog(dado: ParticipanteModel): void {
     const data: EntregaDialogData = new EntregaDialogData();
     data.dado = dado;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.id = 'trocar';
-    dialogConfig.width = '600px';
+    dialogConfig.width = '700px';
     dialogConfig.autoFocus = true;
     dialogConfig.data = data;
-    const modalDialog = this.kitEntrega.open(EntregaDialogComponent, dialogConfig)
+    const modalDialog = this.kitEntrega
+      .open(EntregaDialogComponent, dialogConfig)
       .beforeClosed()
       .subscribe((data: EntregaDialogData) => {
-        //this.getImoIven();
+        if (data.processar) {
+          dado.entre_tam_camisa = data.entrega.tam_camisa;
+          dado.entre_nome = data.entrega.nome_retirada;
+          dado.entre_rg = data.entrega.rg_retirada;
+          console.log('dado', dado);
+        }
       });
   }
-
 }
