@@ -152,7 +152,7 @@ export function horahexa(value: number): string {
 export function setHorario(
   value: Date,
   horas: string,
-  minutos: string
+  minutos: string,
 ): string {
   let retorno: string = '';
   let dt = new Date(value);
@@ -273,13 +273,15 @@ export function GetValueJsonBoolean(obj: JSON, tag: string): boolean {
   return retorno;
 }
 
-
-export function ConvertNumberToInt(value:string): number {
+export function ConvertNumberToInt(value: string): number {
   let key = parseInt(value, 10);
-    if (isNaN(key)) {
-       return  0;
-    } else {
-       return  key;
-    }
+  if (isNaN(key)) {
+    return 0;
+  } else {
+    return key;
+  }
 }
 
+export function hasNonNumeric(value: string): boolean {
+  return /\D/.test(value);
+}
