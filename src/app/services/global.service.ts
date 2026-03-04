@@ -23,7 +23,12 @@ export class GlobalService {
   showUsuarioEmitter = new EventEmitter();
   isMobileEmitter = new EventEmitter<boolean>();
 
-  constructor(private usuarioService: UsuarioService, private router: Router) {
+  changePassWordEmitter = new EventEmitter<boolean>();
+
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router,
+  ) {
     this.usuario = new UsuarioModel();
     this.logado = false;
     this.empresa = new EmpresaModel();

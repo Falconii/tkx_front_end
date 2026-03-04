@@ -1,19 +1,19 @@
 <mat-toolbar color="primary" class="div-barra" *ngIf="!isMobile">
-  <!-- Menu e título -->
-  <div class="toolbar-left">
-    <button mat-icon-button aria-label="Menu" routerLink="">
+    <!-- Menu e título -->
+    <div class="toolbar-left">
+        <button mat-icon-button aria-label="Menu" routerLink="">
       <mat-icon>menu</mat-icon>
     </button>
-    <img src="/logo-tkx.png" alt="TKX-Experience" class="logo-img" />
-    <ng-container *ngIf="showMenu && !isMobile">
-      <button mat-button [matMenuTriggerFor]="cadastros">Cadastros</button>
-      <button mat-button [matMenuTriggerFor]="eventos">Eventos</button>
-      <button mat-button [matMenuTriggerFor]="entrega_kits">
+        <img src="/logo-tkx.png" alt="TKX-Experience" class="logo-img" />
+        <ng-container *ngIf="showMenu && !isMobile">
+            <button mat-button [matMenuTriggerFor]="cadastros">Cadastros</button>
+            <button mat-button [matMenuTriggerFor]="eventos">Eventos</button>
+            <button mat-button [matMenuTriggerFor]="entrega_kits">
         Entrega De Kits
       </button>
-      <button mat-button [matMenuTriggerFor]="gerencial">Gerencial</button>
-      <button mat-button [matMenuTriggerFor]="sobre">Sobre</button>
-      <span>
+            <button mat-button [matMenuTriggerFor]="gerencial">Gerencial</button>
+            <button mat-button [matMenuTriggerFor]="sobre">Sobre</button>
+            <span>
         <!-- #docregion sub-menu -->
         <mat-menu #cadastros="matMenu">
           <button mat-menu-item routerLink="empresas">Empresas</button>
@@ -48,26 +48,35 @@
           </button>
         </mat-menu>
       </span>
-    </ng-container>
-  </div>
-  <!-- Usuário e login -->
-  <div class="toolbar-right">
-    <div class="nav-item">
-      <button
-        mat-icon-button
-        class="example-icon"
-        aria-label="Example icon-button with share icon"
-        matTooltip="LOGIN"
-        matTooltipPosition="above"
-        (click)="onLogin()"
-      >
+        </ng-container>
+    </div>
+    <!-- Usuário e login -->
+    <div class="toolbar-right">
+        <div class="nav-item">
+            <button mat-icon-button class="example-icon" matTooltip="Menu do Usuário" matTooltipPosition="above" [matMenuTriggerFor]="menuUsuario">
         <mat-icon>person</mat-icon>
       </button>
-      <span>{{ getUsuarioNome().razao | firstName }}</span>
+            <mat-menu #menuUsuario="matMenu" yPosition="above">
+                <button mat-menu-item (click)="onPerfil()">
+          <mat-icon>account_circle</mat-icon>
+          <span>Perfil</span>
+        </button>
+
+                <button mat-menu-item (click)="onAlterarSenha()">
+          <mat-icon>lock</mat-icon>
+          <span>Alterar Senha</span>
+        </button>
+
+                <button mat-menu-item (click)="onSair()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair</span>
+        </button>
+            </mat-menu>
+            <span>{{ getUsuarioNome().razao | firstName }}</span>
+        </div>
     </div>
-  </div>
 </mat-toolbar>
 
 <div class="container">
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 </div>

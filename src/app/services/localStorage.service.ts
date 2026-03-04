@@ -2,69 +2,67 @@ import { Injectable } from '@angular/core';
 import { ParametroModel } from '../models/parametro-model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocalStorageService {
+  private storage!: Storage;
 
-private storage!: Storage;
-
-constructor() {
-  this.storage = window.localStorage;
- }
-
-setParametroModel(key: string, param: ParametroModel): void {
-  this.storage.setItem(key, JSON.stringify(param));
-}
-
-getParametroModel(key: string): ParametroModel | null {
-  const item = this.storage.getItem(key);
-  try {
-    return item ? JSON.parse(item) : null;
-  } catch {
-    console.warn(`Erro ao parsear o valor de ${key}`);
-    return null;
+  constructor() {
+    this.storage = window.localStorage;
   }
-}
-removeItem(key: string): void {
-  this.storage.removeItem(key);
-}
 
-setNumber(key: string, value: number): void {
-  this.storage.setItem(key, value.toString());
-}
+  setParametroModel(key: string, param: ParametroModel): void {
+    this.storage.setItem(key, JSON.stringify(param));
+  }
 
-getNumber(key: string): number | null {
-  const value = this.storage.getItem(key);
-  return value ? Number(value) : null;
-}
+  getParametroModel(key: string): ParametroModel | null {
+    const item = this.storage.getItem(key);
+    try {
+      return item ? JSON.parse(item) : null;
+    } catch {
+      console.warn(`Erro ao parsear o valor de ${key}`);
+      return null;
+    }
+  }
+  removeItem(key: string): void {
+    this.storage.removeItem(key);
+  }
 
-setString(key: string, value: string): void {
-  this.storage.setItem(key, value);
-}
+  setNumber(key: string, value: number): void {
+    this.storage.setItem(key, value.toString());
+  }
 
-getString(key: string): string | null {
-  return this.storage.getItem(key);
-}
+  getNumber(key: string): number | null {
+    const value = this.storage.getItem(key);
+    return value ? Number(value) : null;
+  }
 
-setBoolean(key: string, value: boolean): void {
-  this.storage.setItem(key, value.toString());
-}
+  setString(key: string, value: string): void {
+    this.storage.setItem(key, value);
+  }
 
-getBoolean(key: string): boolean | null {
-  const value = this.storage.getItem(key);
-  return value !== null ? value === 'true' : null;
-}
+  getString(key: string): string | null {
+    return this.storage.getItem(key);
+  }
 
-hasKey(key: string): boolean {
-  return this.storage.getItem(key) !== null;
-}
+  setBoolean(key: string, value: boolean): void {
+    this.storage.setItem(key, value.toString());
+  }
 
-getAllKeys(): string[] {
-  return Object.keys(this.storage);
-}
+  getBoolean(key: string): boolean | null {
+    const value = this.storage.getItem(key);
+    return value !== null ? value === 'true' : null;
+  }
 
-clear(): void {
-  this.storage.clear();
-}
+  hasKey(key: string): boolean {
+    return this.storage.getItem(key) !== null;
+  }
 
+  getAllKeys(): string[] {
+    return Object.keys(this.storage);
+  }
+
+  clear(): void {
+    this.storage.clear();
+  }
 }

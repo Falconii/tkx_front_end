@@ -7,12 +7,13 @@ import { SharedModule } from '../../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../../../material/material.module';
 import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.component';
-
+import { UsuarioTrocaSenhaDialogComponent } from './usuario-troca-senha-dialog/usuario-troca-senha-dialog.component';
 
 @NgModule({
   declarations: [
     CrudUsuarioComponent,
     UsuarioDialogComponent,
+    UsuarioTrocaSenhaDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -23,7 +24,6 @@ import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.componen
     SharedModule,
     NgxMaskDirective,
     NgxMaskPipe,
-
-  ]
+  ],
 })
-export class UsuarioModule { }
+export class UsuarioModule {}

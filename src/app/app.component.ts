@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { GlobalService } from './services/global.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -13,6 +13,12 @@ import { messageError } from './shared/classes/util';
 import { EmpresaModel } from './models/empresa-model';
 import { PayLoadModel } from './models/payload-model';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CadastroAcoes } from './shared/classes/cadastro-acoes';
+import { Usuariotrocasenhadata } from './modules/usuario/usuario-troca-senha-dialog/usuariotrocasenhadata';
+import { UsuarioTrocaSenhaDialogComponent } from './modules/usuario/usuario-troca-senha-dialog/usuario-troca-senha-dialog.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { UsuarioDialogComponent } from './modules/usuario/usuario-dialog/usuario-dialog.component';
+import { UsuarioDialogData } from './modules/usuario/usuario-dialog/UsuarioDialogData';
 
 @Component({
   selector: 'app-root',
@@ -38,6 +44,8 @@ export class AppComponent {
     private usuarioService: UsuarioService,
     private titleService: Title,
     private breakpoint: BreakpointObserver,
+
+    private usuarioDialog: MatDialog,
   ) {
     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
       this.isMobile = result.matches;
@@ -50,17 +58,27 @@ export class AppComponent {
     this.globalService.shomMenuEmitter.subscribe((show) => {
       this.showMenu = show;
     });
-    this.onLogin();
-    /*  this.localStorageSrv.removeItem('Toekn');
     const token = this.localStorageSrv.getString('Token');
     if (!token) {
       this.onLogin();
     } else {
       this.getValoresIniciais();
-    } */
+    }
   }
 
   onLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  onPerfil() {}
+
+  onAlterarSenha() {}
+
+  onSair() {
+    this.localStorageSrv.clear();
+    this.globalService.setLogado(false);
+    this.globalService.setUsuario(new UsuarioModel());
+    this.globalService.setEmpresa(new EmpresaModel());
     this.router.navigate(['/login']);
   }
 
@@ -133,5 +151,44 @@ export class AppComponent {
       console.error('Erro ao decodificar o token:', error);
       return null;
     }
+  }
+
+  openUsuarioDialog(
+    opcao: CadastroAcoes = CadastroAcoes.Edicao,
+    usuario: UsuarioModel,
+  ): void {
+    const data: UsuarioDialogData = new UsuarioDialogData();
+
+    if (usuario == null) {
+      return;
+    }
+    data.opcao = opcao;
+    data.processar = false;
+    data.usuario = usuario;
+    console.log('Ação:', opcao, data.usuario);
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.id = 'crud-usuario';
+    dialogConfig.width = '90vw';
+    dialogConfig.height = '90vh';
+    dialogConfig.disableClose = true;
+    dialogConfig.panelClass = 'dialog-font-small';
+    dialogConfig.data = data;
+    const modalDialog = this.usuarioDialog
+      .open(UsuarioDialogComponent, dialogConfig)
+      .beforeClosed()
+      .subscribe((data: UsuarioDialogData | null) => {
+        if (data?.processar) {
+          switch (opcao) {
+            case CadastroAcoes.Edicao:
+              this.globalService.setUsuario(data.usuario!);
+              break;
+            default:
+              break;
+          }
+        } else {
+        }
+      });
   }
 }
