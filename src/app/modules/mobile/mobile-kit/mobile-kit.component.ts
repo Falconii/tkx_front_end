@@ -21,6 +21,8 @@ import { finalize } from 'rxjs';
 import { TipoPesquisa } from '../../../shared/classes/tipo-pesquisa';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 import { CdkScrollable } from '@angular/cdk/scrolling';
+import { LocalStorageService } from '../../../services/localStorage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -45,7 +47,8 @@ export class MobileKitComponent {
     private appSnackBar: AppSnackbar,
     private globalService: GlobalService,
     private participanteSrv: ParticipanteService,
-    private dadosService: DadosService,
+    private localStorageSrv: LocalStorageService,
+    private router: Router,
     private kitEntrega: MatDialog,
   ) {}
 
@@ -104,6 +107,11 @@ export class MobileKitComponent {
           this.participantes = data;
         },
         error: (error: any) => {
+          if (error.status && error.status == 401) {
+            this.localStorageSrv.clear();
+            this.appSnackBar.openFailureSnackBar('Ação Não Autoizada', 'OK');
+            return;
+          }
           if (error.status && error.status == 409) {
             this.participantes = [];
           } else {
@@ -127,6 +135,12 @@ export class MobileKitComponent {
       this.openKitDialog(dado);
     }
   }
+
+  novoInscrito() {
+    this.router.navigate(['mobile/novoinscrito/']);
+  }
+
+  onHome() {}
 
   openKitDialog(dado: ParticipanteModel): void {
     const data: EntregaDialogData = new EntregaDialogData();

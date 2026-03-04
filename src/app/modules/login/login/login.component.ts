@@ -50,9 +50,6 @@ export class LoginComponent {
     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
       this.isMobile = result.matches;
     });
-
-    //this.getValoresIniciais();
-    //this.setValueNoParam()
   }
 
   ngOnInit(): void {
@@ -67,7 +64,10 @@ export class LoginComponent {
 
   setValue() {
     this.formulario.setValue({
-      id: this.globalService.getUsuario().id,
+      id:
+        this.globalService.getUsuario().id > 0
+          ? this.globalService.getUsuario().id
+          : '',
       senha: '',
     });
   }
@@ -103,6 +103,7 @@ export class LoginComponent {
           }
         },
         error: (error: any) => {
+          console.log('Login', error);
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com A Empresa ${messageError(error)}`,
             'OK',

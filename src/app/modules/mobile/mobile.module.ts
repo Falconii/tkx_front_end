@@ -7,23 +7,21 @@ import { MaterialModule } from '../../../material/material.module';
 import { SharedModule } from '../../shared/shared.module';
 import { EntregaDialogComponent } from './entrega-dialog/entrega-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { InscritoComponent } from './inscrito/inscrito.component';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 
 @NgModule({
-  declarations: [
-    MobileKitComponent,
-    EntregaDialogComponent
-  ],
+  declarations: [MobileKitComponent, EntregaDialogComponent, InscritoComponent],
   imports: [
     CommonModule,
     MobileRoutingModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
-  exports: [
-    MobileKitComponent
-  ],
+  exports: [MobileKitComponent, InscritoComponent],
 })
-export class MobileModule { }
+export class MobileModule {}

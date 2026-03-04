@@ -12,7 +12,9 @@
         <div class="col-med-1">
             <mat-form-field appearance="outline" class="col-max">
                 <mat-label>Senha</mat-label>
-                <input matInput formControlName="senha" type="password" />
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha" required />
+                <mat-icon matSuffix (click)="hide = !hide">{{ hide ? "visibility_off" : "visibility" }}
+                </mat-icon>
             </mat-form-field>
         </div>
 

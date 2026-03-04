@@ -1,0 +1,66 @@
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="formulario" autocomplete="off" class="form-container">
+        <div cdkScrollable class="scroll-wrapper">
+            <div class="moldura">
+                <div class="col-med-1">
+                    <mat-form-field appearance="outline" class="col-max">
+                        <mat-label>CPF</mat-label>
+                        <input matInput formControlName="cnpj_cpf" />
+                        <mat-error *ngIf="NoValidtouchedOrDirty('cnpj_cpf')">{{ getMensafield("cnpj_cpf") }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-med-1">
+                    <mat-form-field appearance="outline" class="col-max">
+                        <mat-label>Inscrição</mat-label>
+                        <input matInput formControlName="inscricao" />
+                        <mat-error *ngIf="NoValidtouchedOrDirty('inscricao')">{{ getMensafield("inscricao") }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-med-1">
+                    <mat-form-field appearance="outline" class="col-max">
+                        <mat-label>Nº Do Peito</mat-label>
+                        <input matInput formControlName="nro_peito" />
+                        <mat-error *ngIf="NoValidtouchedOrDirty('nro_peito')">{{ getMensafield("nro_peito") }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-med-1">
+                    <mat-form-field appearance="outline" class="uppercase-input col-max">
+                        <mat-label>Nome</mat-label>
+                        <input matInput formControlName="nome" />
+                    </mat-form-field>
+                </div>
+                <div class="col-med-1"></div>
+                <mat-form-field appearance="outline" class="col-max">
+                    <mat-label>Data Nascimento</mat-label>
+                    <input matInput formControlName="data_nasc" mask="00/00/0000" placeholder="DD/MM/AAAA" [dropSpecialCharacters]="false" placeholder="DD/MM/AAAA" />
+                    <mat-error *ngIf="NoValidtouchedOrDirty('data_nasc')">{{ getMensafield("data_nasc") }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-med-1">
+                <mat-form-field field appearance="outline" class="col-max">
+                    <mat-label>Estrangeiro:</mat-label>
+                    <mat-select formControlName="estrangeiro">
+                        <mat-option *ngFor="let estrangeiro of respostas" [value]="estrangeiro.sigla">
+                            {{ estrangeiro.sigla }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-med-1">
+                <mat-form-field field appearance="outline" class="col-max">
+                    <mat-label>Categoria:</mat-label>
+                    <mat-select formControlName="id_categoria">
+                        <mat-option *ngFor="let categoria of categorias" [value]="categoria.sigla">
+                            {{ categoria.sigla }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>

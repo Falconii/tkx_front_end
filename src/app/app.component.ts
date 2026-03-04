@@ -107,10 +107,14 @@ export class AppComponent {
           this.getUsuario(id_empresa, id_usuario);
         },
         error: (error: any) => {
-          this.appSnackBar.openFailureSnackBar(
-            `Problemas Com A Empresa ${messageError(error)}`,
-            'OK',
-          );
+          if (error.status && error.status == 401) {
+            this.localStorageSrv.clear();
+          } else {
+            this.appSnackBar.openFailureSnackBar(
+              `Problemas Com A Empresa ${messageError(error)}`,
+              'OK',
+            );
+          }
         },
       });
   }
@@ -122,13 +126,20 @@ export class AppComponent {
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
+          if (this.isMobile) {
+            this.router.navigate(['/mobile']);
+          }
         },
         error: (error: any) => {
-          this.appSnackBar.openFailureSnackBar(
-            `Problemas Com O Usuário ${messageError(error)}`,
-            'OK',
-          );
-
+          if (error.status && error.status == 401) {
+            this.localStorageSrv.clear();
+            this.appSnackBar.openFailureSnackBar(`Ação Não Autorizada!`, 'OK');
+          } else {
+            this.appSnackBar.openFailureSnackBar(
+              `Problemas Com O Usuário ${messageError(error)}`,
+              'OK',
+            );
+          }
           this.globalService.setUsuario(new UsuarioModel());
           this.globalService.setLogado(false);
         },

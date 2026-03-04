@@ -13,4 +13,6 @@ export class LoginDesktopComponent {
   @Output() cancelar = new EventEmitter();
   @Output() sair = new EventEmitter();
   @Output() esqueceu = new EventEmitter();
+
+  hide: boolean = true;
 }
