@@ -12,6 +12,7 @@ import { finalize } from 'rxjs';
 import { DataYYYYMMDD, messageError } from '../../../shared/classes/util';
 import { ValidatorStringLen } from '../../../shared/Validators/validator-string-len';
 import { CdkScrollable } from '@angular/cdk/scrolling';
+import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 
 @Component({
   selector: 'app-entrega-dialog',
@@ -26,6 +27,8 @@ export class EntregaDialogComponent {
   inscricaoEntrega!: Subscription;
 
   botaoExcluir: boolean = false;
+
+  acao: CadastroAcoes = CadastroAcoes.Consulta;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -63,6 +66,7 @@ export class EntregaDialogComponent {
         next: (data: EntregaModel) => {
           this.botaoExcluir = true;
           this.data.entrega = data;
+          this.acao = CadastroAcoes.Inclusao;
           this.setValue();
         },
         error: (error: any) => {
@@ -75,6 +79,7 @@ export class EntregaDialogComponent {
             this.data.entrega.id_evento = this.data.dado.id_evento;
             this.data.entrega.id_inscrito = this.data.dado.id_inscrito;
             this.data.entrega.data_retirada = DataYYYYMMDD(dataAtual);
+            this.acao = CadastroAcoes.Edicao;
             this.setValue();
           } else {
             this.appSnackBar.openFailureSnackBar(
@@ -212,7 +217,7 @@ export class EntregaDialogComponent {
         this.formulario.value?.nome_retirada.toUpperCase();
       this.data.entrega.tam_camisa =
         this.formulario.value?.tam_camisa.toUpperCase();
-      if (this.data.entrega.user_insert == 0) {
+      if ((this.acao = CadastroAcoes.Inclusao)) {
         this.data.entrega.user_insert = this.globalService.getUsuario().id;
         this.insertEntrega();
       } else {
