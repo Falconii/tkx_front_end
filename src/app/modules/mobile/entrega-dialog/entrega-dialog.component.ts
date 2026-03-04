@@ -1,5 +1,5 @@
 import { GlobalService } from './../../../services/global.service';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { EntregaDialogData } from './entrega-dialog-data';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { ParametroEntrega01 } from '../../../parametros/parametro-entrega01';
 import { finalize } from 'rxjs';
 import { DataYYYYMMDD, messageError } from '../../../shared/classes/util';
 import { ValidatorStringLen } from '../../../shared/Validators/validator-string-len';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-entrega-dialog',
@@ -18,6 +19,8 @@ import { ValidatorStringLen } from '../../../shared/Validators/validator-string-
   styleUrl: './entrega-dialog.component.scss',
 })
 export class EntregaDialogComponent {
+  @ViewChild(CdkScrollable) scrollable!: CdkScrollable;
+
   formulario: FormGroup;
 
   inscricaoEntrega!: Subscription;
@@ -234,5 +237,16 @@ export class EntregaDialogComponent {
 
   onExcluir() {
     this.deleteEntrega();
+  }
+
+  scrollAte(event: FocusEvent) {
+    const el = event.target as HTMLElement;
+
+    setTimeout(() => {
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 250);
   }
 }

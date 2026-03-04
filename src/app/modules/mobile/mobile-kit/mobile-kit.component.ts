@@ -1,6 +1,5 @@
 import { TipoOperacao } from './../../../shared/classes/tipo-operacao';
 import { EntregaDialogData } from './../entrega-dialog/entrega-dialog-data';
-import { DadosModel } from '../../../models/dado-model';
 import { FiltroEntregaKitModel } from '../../../models/filtro-entrega-kit-model';
 import { DadosService } from '../../../services/dados.service';
 import { GlobalService } from './../../../services/global.service';
@@ -21,6 +20,7 @@ import {
 import { finalize } from 'rxjs';
 import { TipoPesquisa } from '../../../shared/classes/tipo-pesquisa';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -135,7 +135,7 @@ export class MobileKitComponent {
     dialogConfig.disableClose = true;
     dialogConfig.id = 'trocar';
     dialogConfig.width = '700px';
-    dialogConfig.autoFocus = true;
+    dialogConfig.autoFocus = false;
     dialogConfig.data = data;
     const modalDialog = this.kitEntrega
       .open(EntregaDialogComponent, dialogConfig)
