@@ -41,7 +41,7 @@ export class EntregaDialogComponent {
     this.formulario = formBuilder.group({
       nome_retirada: [{ value: '' }, [ValidatorStringLen(3, 60, true)]],
       rg_retirada: [{ value: '' }, [ValidatorStringLen(3, 11, true)]],
-      tam_camisa: [{ value: '' }, [ValidatorStringLen(2, 10, true)]],
+      tam_camisa: [{ value: '' }, [ValidatorStringLen(1, 10, true)]],
     });
   }
 
@@ -66,7 +66,8 @@ export class EntregaDialogComponent {
         next: (data: EntregaModel) => {
           this.botaoExcluir = true;
           this.data.entrega = data;
-          this.acao = CadastroAcoes.Inclusao;
+          this.acao = CadastroAcoes.Edicao;
+          console.log('Edicao');
           this.setValue();
         },
         error: (error: any) => {
@@ -79,7 +80,8 @@ export class EntregaDialogComponent {
             this.data.entrega.id_evento = this.data.dado.id_evento;
             this.data.entrega.id_inscrito = this.data.dado.id_inscrito;
             this.data.entrega.data_retirada = DataYYYYMMDD(dataAtual);
-            this.acao = CadastroAcoes.Edicao;
+            this.acao = CadastroAcoes.Inclusao;
+            console.log('Inclusão');
             this.setValue();
           } else {
             this.appSnackBar.openFailureSnackBar(
@@ -93,6 +95,7 @@ export class EntregaDialogComponent {
   }
 
   insertEntrega() {
+    console.log('Fazendo Insert', this.data.entrega);
     this.inscricaoEntrega = this.entregaSrv
       .entregaInsert(this.data.entrega)
       .pipe(finalize(() => this.globalService.setSpin(false)))
@@ -117,6 +120,7 @@ export class EntregaDialogComponent {
   }
 
   updatetEntrega() {
+    console.log('Fazendo Update', this.data.entrega);
     this.inscricaoEntrega = this.entregaSrv
       .entregaUpdate(this.data.entrega)
       .pipe(finalize(() => this.globalService.setSpin(false)))
@@ -211,13 +215,14 @@ export class EntregaDialogComponent {
 
   onProcessar() {
     if (this.formulario.valid) {
+      console.log('acao', this.acao);
       this.data.entrega.rg_retirada =
         this.formulario.value?.rg_retirada.toUpperCase();
       this.data.entrega.nome_retirada =
         this.formulario.value?.nome_retirada.toUpperCase();
       this.data.entrega.tam_camisa =
         this.formulario.value?.tam_camisa.toUpperCase();
-      if ((this.acao = CadastroAcoes.Inclusao)) {
+      if (this.acao == CadastroAcoes.Inclusao) {
         this.data.entrega.user_insert = this.globalService.getUsuario().id;
         this.insertEntrega();
       } else {
