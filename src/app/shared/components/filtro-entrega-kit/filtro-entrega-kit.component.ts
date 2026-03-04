@@ -35,21 +35,19 @@ export class FiltroEntregaKitComponent implements OnInit {
     private globalService: GlobalService,
   ) {
     this.parametros = formBuilder.group({
-      nome: [{ value: '' }],
-      cpf: [{ value: '' }],
-      peito: [{ value: '' }],
+      kit: [{ value: '' }],
       pesquisa: [{ value: '' }],
     });
     this.parametroPesquisa = new FiltroEntregaKitModel();
     this.parametroPesquisa.pesquisar = '';
-    this.parametroPesquisa.pesquisarPor = 'CPF';
+    this.parametroPesquisa.pesquisarPor = TipoPesquisa.None;
   }
 
   ngOnInit(): void {
     this.parametros
       .get('pesquisa')
       ?.valueChanges.pipe(
-        map((value) => value.trim().toUpperCase()),
+        map((value) => value.trim()),
         filter((value) => value.length >= 0),
         debounceTime(350),
         distinctUntilChanged(),
@@ -65,9 +63,7 @@ export class FiltroEntregaKitComponent implements OnInit {
   setValues() {
     this.enable_filter = false;
     this.parametros.setValue({
-      cpf: this.parametroPesquisa.pesquisarPor == 'CPF' ? true : false,
-      nome: this.parametroPesquisa.pesquisarPor == 'NOME' ? true : false,
-      peito: this.parametroPesquisa.pesquisarPor == 'PEITO' ? true : false,
+      kit: this.parametroPesquisa.kit,
       pesquisa: this.parametroPesquisa.pesquisar.toUpperCase() || '',
     });
     this.enable_filter = true;
@@ -76,9 +72,7 @@ export class FiltroEntregaKitComponent implements OnInit {
   setValuesNoParam() {
     this.enable_filter = false;
     this.parametros.setValue({
-      cpf: true,
-      nome: false,
-      peito: false,
+      kit: false,
       pesquisa: '',
     });
     this.enable_filter = true;
@@ -90,25 +84,18 @@ export class FiltroEntregaKitComponent implements OnInit {
     if (start) {
       this.parametroPesquisa.pesquisar =
         this.parametros.get('pesquisa')?.value || '';
-      if (this.parametros.get('cpf')?.value) {
-        this.parametroPesquisa.pesquisarPor = 'CPF';
-      } else if (this.parametros.get('nome')?.value) {
-        this.parametroPesquisa.pesquisarPor = 'NOME';
-      } else if (this.parametros.get('peito')?.value) {
-        this.parametroPesquisa.pesquisarPor = 'PEITO';
-      } else {
-        this.parametroPesquisa.pesquisarPor = 'CPF';
-      }
+      this.parametroPesquisa.pesquisarPor = this.definirPesquisa();
+      this.parametroPesquisa.kit = this.parametros.get('kit')?.value;
     } else {
       this.parametroPesquisa.pesquisar = '';
-      this.parametroPesquisa.pesquisarPor = 'CPF';
+      this.parametroPesquisa.pesquisarPor = TipoPesquisa.Nome;
+      this.parametroPesquisa.kit = false;
     }
     this.setValues();
   }
 
   onChangeParametros(start: boolean = true) {
     this.refreshParametro(start);
-    console.log('Tipo De Pesquisa:', this.definirPesquisa());
     if (this.enable_filter) {
       this.change.emit(this.parametroPesquisa);
     }
@@ -214,7 +201,9 @@ export class FiltroEntregaKitComponent implements OnInit {
     }
     return TipoPesquisa.Cpf;
   }
-  getTextoTipoPesquisa(value: TipoPesquisa): string {
+  getTextoTipoPesquisa(
+    value: TipoPesquisa = this.parametroPesquisa.pesquisarPor,
+  ): string {
     switch (value) {
       case TipoPesquisa.Nome:
         return 'Pelo Nome';
@@ -228,5 +217,14 @@ export class FiltroEntregaKitComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  onKit(event: MatCheckboxChange) {
+    if (event.checked) {
+      this.parametros.patchValue({
+        kit: event.checked,
+      });
+    }
+    this.onChangeParametros();
   }
 }

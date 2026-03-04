@@ -2,7 +2,6 @@
   [HIDE]="false"
   (changeParametro)="onChangeParametro($event)"
 ></app-filtro-entrega-kit>
-<p>Entrega De Kits</p>
 <div class="lista-participantes">
   <mat-card
     class="card-participante"
@@ -56,7 +55,13 @@
     </mat-card-content>
 
     <mat-card-actions align="end">
-      <barra-acoes (changeOpcao)="escolha($event, dado)"></barra-acoes>
+      <barra-acoes
+        [CONSULTAR]="false"
+        [ALTERAR]="false"
+        [EXCLUIR]="false"
+        [KIT]="true"
+        (changeOpcao)="escolha($event, dado)"
+      ></barra-acoes>
     </mat-card-actions>
   </mat-card>
 </div>

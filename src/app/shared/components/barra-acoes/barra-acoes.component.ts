@@ -8,10 +8,10 @@ import { CadastroAcoes } from '../../classes/cadastro-acoes';
   styleUrls: ['./barra-acoes.component.css'],
 })
 export class BarraAcoesComponent implements OnInit {
-
   @Input('CONSULTAR') consulta: boolean = true;
   @Input('ALTERAR') alterar: boolean = true;
   @Input('EXCLUIR') excluir: boolean = true;
+  @Input('KIT') kit: boolean = false;
   @Input('BARRA_VERTICAL') barra: boolean = false;
   @Input('BARRA_EXCLUIR') barra_excluir: boolean = true;
   @Output('changeOpcao') changeOpcao = new EventEmitter<number>();

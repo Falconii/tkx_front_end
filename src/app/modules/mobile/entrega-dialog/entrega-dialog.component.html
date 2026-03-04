@@ -3,16 +3,6 @@
     <span class="example-spacer">
       <mat-label>Cadastro De Kit</mat-label>
     </span>
-    <div class="button-container">
-      <button mat-raised-button color="#FFFFFF" (click)="onCancelar()">
-        <mat-icon>check</mat-icon>
-        Cancelar
-      </button>
-      <button mat-raised-button color="accent" (click)="onProcessar()">
-        <mat-icon>cancel</mat-icon>
-        Gravar
-      </button>
-    </div>
   </mat-toolbar>
 </div>
 
@@ -44,6 +34,36 @@
           >{{ getMensafield("tam_camisa") }}
         </mat-error>
       </mat-form-field>
+    </div>
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="warn"
+        class="botao"
+        (click)="onExcluir()"
+        *ngIf="botaoExcluir"
+      >
+        <mat-icon>delete</mat-icon>
+        Excluir
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="botao"
+        (click)="onCancelar()"
+      >
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+      </button>
+      <button
+        mat-raised-button
+        color="accent"
+        class="botao"
+        (click)="onProcessar()"
+      >
+        <mat-icon>check</mat-icon>
+        Gravar
+      </button>
     </div>
   </form>
 </mat-dialog-content>

@@ -1,43 +1,7 @@
-<div class="quadro">
-  <form [formGroup]="formulario" autocomplete="off" class="formulario">
-    <h2>Bem Vindo Ao Controle De Eventos TKX-Experience</h2>
-    <h3>Identifique-se Por Favor</h3>
-    <div class="linha-login">
-      <mat-form-field appearance="outline" class="controle">
-        <mat-label>USUÁRIO</mat-label>
-        <input matInput formControlName="id" />
-      </mat-form-field>
-    </div>
-    <div class="linha-login">
-      <mat-form-field appearance="outline" class="controle">
-        <mat-label>Senha</mat-label>
-        <input matInput formControlName="senha" type="password" />
-      </mat-form-field>
-    </div>
-    <div class="button-container-right">
-      <button
-        mat-raised-button
-        color="primary"
-        class="botao"
-        (click)="onValidar()"
-      >
-        Login
-      </button>
-      <button
-        mat-raised-button
-        color="accent"
-        class="botao"
-        (click)="onCancelar()"
-      >
-        Cancelar
-      </button>
-    </div>
-    <br /><br />
-    <div class="button-container-right">
-      <button mat-button class="green-icon" (click)="onSair()">Sair</button>
-      <button mat-button class="green-icon" (click)="onEsqueceu()">
-        Esqueceu A Senha
-      </button>
-    </div>
-  </form>
-</div>
+<ng-container *ngIf="isMobile; else desktop">
+    <app-login-mobile [formulario]="formulario" (validar)="onValidar()" (cancelar)="onCancelar()" (sair)="onSair()" (esqueceu)="onEsqueceu()"></app-login-mobile>
+</ng-container>
+
+<ng-template #desktop>
+    <app-login-desktop [formulario]="formulario" (validar)="onValidar()" (cancelar)="onCancelar()" (sair)="onSair()" (esqueceu)="onEsqueceu()"></app-login-desktop>
+</ng-template>

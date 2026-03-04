@@ -1,3 +1,4 @@
+import { TipoOperacao } from './../../../shared/classes/tipo-operacao';
 import { EntregaDialogData } from './../entrega-dialog/entrega-dialog-data';
 import { DadosModel } from '../../../models/dado-model';
 import { FiltroEntregaKitModel } from '../../../models/filtro-entrega-kit-model';
@@ -18,6 +19,8 @@ import {
   messageError,
 } from '../../../shared/classes/util';
 import { finalize } from 'rxjs';
+import { TipoPesquisa } from '../../../shared/classes/tipo-pesquisa';
+import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -29,6 +32,8 @@ export class MobileKitComponent {
 
   tamPagina = 50;
 
+  parametroPesquisa: FiltroEntregaKitModel = new FiltroEntregaKitModel();
+
   controlePaginas: ControlePaginas = new ControlePaginas(
     this.tamPagina,
     this.tamPagina,
@@ -36,7 +41,6 @@ export class MobileKitComponent {
 
   participantes: ParticipanteModel[] = [];
 
-  lsDados: DadosModel[] = [];
   constructor(
     private appSnackBar: AppSnackbar,
     private globalService: GlobalService,
@@ -55,13 +59,38 @@ export class MobileKitComponent {
   }
 
   getParticipantes() {
+    let key: number = 0;
+
+    let inscricao: number = 0;
+
+    key = parseInt(this.parametroPesquisa.pesquisar);
+
+    if (isNaN(key)) {
+      inscricao = 0;
+    } else {
+      inscricao = key;
+    }
     let par = new ParametroParticipante01();
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
     par.id_evento = 1;
 
-    //par = AtualizaParametroImobilizadoInventario01(par,this.parametro.getParametro());
+    par.kit = this.parametroPesquisa.kit;
+
+    switch (this.parametroPesquisa.pesquisarPor) {
+      case TipoPesquisa.Nome:
+        par.inscrito_nome = this.parametroPesquisa.pesquisar;
+        break;
+
+      case TipoPesquisa.Cpf:
+        par.inscrito_cpf = this.parametroPesquisa.pesquisar;
+        break;
+
+      case TipoPesquisa.Inscricao:
+        par.inscricao = inscricao;
+        break;
+    }
 
     par.pagina = this.controlePaginas.getPaginalAtual();
 
@@ -73,34 +102,30 @@ export class MobileKitComponent {
       .subscribe({
         next: (data: ParticipanteModel[]) => {
           this.participantes = data;
-          console.log('Pariticipantes', this.participantes);
         },
         error: (error: any) => {
-          console.log(error);
-          this.participantes = [];
-          this.appSnackBar.openFailureSnackBar(
-            `Pesquisa Nos Participantes ${messageError(error)}`,
-            'OK',
-          );
+          if (error.status && error.status == 409) {
+            this.participantes = [];
+          } else {
+            this.participantes = [];
+            this.appSnackBar.openFailureSnackBar(
+              `Pesquisa Nos Participantes ${messageError(error)}`,
+              'OK',
+            );
+          }
         },
       });
   }
 
   onChangeParametro(filtro: FiltroEntregaKitModel) {
-    this.lsDados = this.dadosService.getDados().filter((dado: DadosModel) => {
-      if (filtro.pesquisarPor == 'CPF') {
-        return dado.cpf.includes(filtro.pesquisar);
-      }
-      if (filtro.pesquisarPor == 'NOME') {
-        return dado.nome.toUpperCase().includes(filtro.pesquisar.toUpperCase());
-      }
-
-      return dado.nro_peito.toString().includes(filtro.pesquisar);
-    });
+    this.parametroPesquisa = filtro;
+    this.getParticipantes();
   }
 
   escolha(op: number, dado: ParticipanteModel) {
-    this.openKitDialog(dado);
+    if (op == CadastroAcoes.Kit) {
+      this.openKitDialog(dado);
+    }
   }
 
   openKitDialog(dado: ParticipanteModel): void {

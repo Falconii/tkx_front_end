@@ -13,13 +13,13 @@ import { UsuarioModel } from '../../../models/usuario-model';
 import { messageError } from '../../../shared/classes/util';
 import { LocalStorageService } from '../../../services/localStorage.service';
 import { PayLoadModel } from '../../../models/payload-model';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
-
 export class LoginComponent {
   formulario: FormGroup;
   empresa: EmpresaModel = new EmpresaModel();
@@ -27,7 +27,7 @@ export class LoginComponent {
   inscricaoUsuario!: Subscription;
   inscricaoEmpresa!: Subscription;
   inscricaoLogin!: Subscription;
-
+  isMobile = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,17 +38,25 @@ export class LoginComponent {
     private loginSrv: loginService,
     private router: Router,
     private matDialog: MatDialog,
-    private appSnackBar: AppSnackbar) {
-     this.formulario = this.formulario = formBuilder.group({
+    private appSnackBar: AppSnackbar,
+    private breakpoint: BreakpointObserver,
+  ) {
+    this.formulario = this.formulario = formBuilder.group({
       id: [{ value: '' }],
       senha: [{ value: '' }],
     });
-   //this.getValoresIniciais();
-   //this.setValueNoParam()
+    // Detecta mobile automaticamente
+
+    this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
+      this.isMobile = result.matches;
+    });
+
+    //this.getValoresIniciais();
+    //this.setValueNoParam()
   }
 
-    ngOnInit(): void {
-   this.setValue();
+  ngOnInit(): void {
+    this.setValue();
   }
 
   ngOnDestroy(): void {
@@ -60,92 +68,87 @@ export class LoginComponent {
   setValue() {
     this.formulario.setValue({
       id: this.globalService.getUsuario().id,
-      senha: ''
+      senha: '',
     });
   }
 
   setValueNoParam() {
     this.formulario.setValue({
       id: '',
-      senha: ''
+      senha: '',
     });
   }
 
-
   getValoresIniciais() {
-
-    const token = this.localStorageSrv.getString('Token') ;
+    const token = this.localStorageSrv.getString('Token');
     if (token) {
       const payload = this.getPayloadData(token);
       if (payload) {
-         if (payload.id_empresa && payload.id_usuario) {
-          this.getEmpresa(payload.id_empresa,payload.id_usuario);
-         }
+        if (payload.id_empresa && payload.id_usuario) {
+          this.getEmpresa(payload.id_empresa, payload.id_usuario);
+        }
       }
     }
   }
 
-
-  getEmpresa(id_empresa: number,id_usuario:number) {
+  getEmpresa(id_empresa: number, id_usuario: number) {
     this.inscricaoEmpresa = this.empresasServices
       .getEmpresa(id_empresa)
       .subscribe({
         next: (data: EmpresaModel) => {
-           this.globalService.setEmpresa(data);
-           this.getUsuario(id_empresa,id_usuario);
+          this.globalService.setEmpresa(data);
+          this.getUsuario(id_empresa, id_usuario);
+          if (this.isMobile) {
+            this.router.navigate(['/mobile']);
+          }
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com A Empresa ${messageError(error)}`,
-            'OK'
+            'OK',
           );
-      }
-  });
+        },
+      });
   }
 
-
-  getUsuario(id_empresa: number, id_usuario:number) {
+  getUsuario(id_empresa: number, id_usuario: number) {
     this.inscricaoUsuario = this.usuariosService
-      .getUsuario(id_empresa,id_usuario)
+      .getUsuario(id_empresa, id_usuario)
       .subscribe({
         next: (data: UsuarioModel) => {
-            this.globalService.setUsuario(data);
-            this.globalService.setLogado(true);
+          this.globalService.setUsuario(data);
+          this.globalService.setLogado(true);
+          if (this.isMobile) {
+          }
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com O Usuário ${messageError(error)}`,
-            'OK'
+            'OK',
           );
 
-        this.globalService.setUsuario(new UsuarioModel);
-        this.globalService.setLogado(false);
-      }
-    });
+          this.globalService.setUsuario(new UsuarioModel());
+          this.globalService.setLogado(false);
+        },
+      });
   }
 
   getLogin(id_empresa: number, id_usuario: number, senha: string) {
     const par = {
       id_empresa: id_empresa,
       codigo: id_usuario,
-      password: senha
-    }
-    this.inscricaoLogin = this.loginSrv
-      .login(par)
-      .subscribe({
-        next: (data: any) => {
-          this.localStorageSrv.setString('Token', data.accessToken);
-          this.getEmpresa(data.id_empresa,data.id);
-        },
-        error: (error: any) => {
-          this.appSnackBar.openFailureSnackBar(
-            `Problemas Com O Login`,
-            'OK'
-          );
-        }
-      })
+      password: senha,
+    };
+    this.inscricaoLogin = this.loginSrv.login(par).subscribe({
+      next: (data: any) => {
+        this.localStorageSrv.setString('Token', data.accessToken);
+        this.getEmpresa(data.id_empresa, data.id);
+      },
+      error: (error: any) => {
+        this.appSnackBar.openFailureSnackBar(`Problemas Com O Login`, 'OK');
+      },
+    });
   }
-
 
   onValidar() {
     const id_usuario = this.formulario.value.id;
@@ -165,29 +168,24 @@ export class LoginComponent {
   }
 
   onEsqueceu(): void {
-   // this.showDialog('Ola....');
+    // this.showDialog('Ola....');
   }
 
-  getPayloadData(token:string) : PayLoadModel | null {
-  try {
+  getPayloadData(token: string): PayLoadModel | null {
+    try {
       const payloadBase64 = token.split('.')[1];
       const payloadJson = atob(payloadBase64);
       const payload = JSON.parse(payloadJson);
 
-      const retorno : PayLoadModel = new PayLoadModel();
+      const retorno: PayLoadModel = new PayLoadModel();
 
-      retorno.id_empresa =  payload.id_empresa;
+      retorno.id_empresa = payload.id_empresa;
       retorno.id_usuario = payload.id_usuario;
 
-      return retorno ;
-  } catch (error) {
+      return retorno;
+    } catch (error) {
       console.error('Erro ao decodificar o token:', error);
-    return null;
+      return null;
+    }
   }
 }
-
-}
-
-
-
-

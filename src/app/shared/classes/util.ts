@@ -81,6 +81,7 @@ export class MensagensBotoes {
   static sub_conta = 'Acesso As SubContas.';
   static financeiro = 'Financeiro';
   static multi_edicao = 'Alteração Em Lote';
+  static kit = 'Kits';
 }
 
 export function adicionaZero(numero: number) {

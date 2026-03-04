@@ -12,6 +12,7 @@ import { loginService } from './services/login.service';
 import { messageError } from './shared/classes/util';
 import { EmpresaModel } from './models/empresa-model';
 import { PayLoadModel } from './models/payload-model';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-root',
@@ -35,14 +36,17 @@ export class AppComponent {
     private appSnackBar: AppSnackbar,
     private empresaService: EmpresaService,
     private usuarioService: UsuarioService,
-    private titleService: Title
-  ) {}
+    private titleService: Title,
+    private breakpoint: BreakpointObserver,
+  ) {
+    this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
+      this.isMobile = result.matches;
+    });
+  }
 
   ngOnInit(): void {
     this.titleService.setTitle('TKX-Experience');
-    this.globalService.isMobileEmitter.subscribe((isMobile) => {
-      this.isMobile = isMobile;
-    });
+
     this.globalService.shomMenuEmitter.subscribe((show) => {
       this.showMenu = show;
     });
@@ -87,7 +91,7 @@ export class AppComponent {
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com A Empresa ${messageError(error)}`,
-            'OK'
+            'OK',
           );
         },
       });
@@ -104,7 +108,7 @@ export class AppComponent {
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com O Usuário ${messageError(error)}`,
-            'OK'
+            'OK',
           );
 
           this.globalService.setUsuario(new UsuarioModel());

@@ -14,5 +14,6 @@ export enum CadastroAcoes {
   Fotos = 22,
   Substituir = 23,
   Trocar = 24,
+  Kit = 25,
   None = 99,
 }

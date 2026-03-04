@@ -22,6 +22,8 @@ export class EntregaDialogComponent {
 
   inscricaoEntrega!: Subscription;
 
+  botaoExcluir: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private appSnackBar: AppSnackbar,
@@ -38,6 +40,7 @@ export class EntregaDialogComponent {
   }
 
   ngOnInit() {
+    this.setValueNoParam();
     this.getEntrega();
   }
 
@@ -55,13 +58,14 @@ export class EntregaDialogComponent {
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
         next: (data: EntregaModel) => {
-          console.log('Data: ', data);
+          this.botaoExcluir = true;
           this.data.entrega = data;
           this.setValue();
         },
         error: (error: any) => {
           console.log('Erro: ', error.status);
           if (error.status && error.status == 409) {
+            this.botaoExcluir = false;
             const dataAtual: Date = new Date();
             this.data.entrega = new EntregaModel();
             this.data.entrega.id_empresa = this.data.dado.id_empresa;
@@ -129,11 +133,46 @@ export class EntregaDialogComponent {
       });
   }
 
+  deleteEntrega() {
+    this.inscricaoEntrega = this.entregaSrv
+      .entregaDelete(
+        this.data.dado.id_empresa,
+        this.data.dado.id_evento,
+        this.data.dado.id_inscrito,
+      )
+      .pipe(finalize(() => this.globalService.setSpin(false)))
+      .subscribe({
+        next: (data: any) => {
+          this.data.entrega = new EntregaModel();
+          this.appSnackBar.openSuccessSnackBar(
+            `Kit Excluido Com Sucesso`,
+            'OK',
+          );
+          this.data.processar = true;
+          this.closeModal();
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.appSnackBar.openFailureSnackBar(
+            `Falha Na Inclusão Da entrega Do Kit ${messageError(error)}`,
+            'OK',
+          );
+        },
+      });
+  }
   setValue() {
     this.formulario.setValue({
       rg_retirada: this.data.entrega.rg_retirada,
       nome_retirada: this.data.entrega.nome_retirada,
       tam_camisa: this.data.entrega.tam_camisa,
+    });
+  }
+
+  setValueNoParam() {
+    this.formulario.setValue({
+      rg_retirada: '',
+      nome_retirada: '',
+      tam_camisa: '',
     });
   }
 
@@ -191,5 +230,9 @@ export class EntregaDialogComponent {
   onCancelar() {
     this.data.processar = false;
     this.closeModal();
+  }
+
+  onExcluir() {
+    this.deleteEntrega();
   }
 }

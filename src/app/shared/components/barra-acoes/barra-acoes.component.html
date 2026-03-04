@@ -35,6 +35,17 @@
 
   <button
     mat-icon-button
+    class="botoes"
+    [matTooltip]="getTexto().kit"
+    *ngIf="kit"
+    (click)="onChangeOpcao(getAcoes().Kit)"
+    matTooltipPosition="above"
+  >
+    <mat-icon class="icon-size">checkroom</mat-icon>
+  </button>
+
+  <button
+    mat-icon-button
     [matMenuTriggerFor]="appMenu"
     aria-label="Example icon-button with share icon "
     *ngIf="barra"
