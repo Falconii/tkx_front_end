@@ -196,8 +196,11 @@ export class FiltroEntregaKitComponent implements OnInit {
     if (isTexto) {
       return TipoPesquisa.Nome;
     }
-    if (texto.trim().length <= 6) {
+    if (texto.trim().length == 6) {
       return TipoPesquisa.Inscricao;
+    }
+    if (texto.trim().length < 6) {
+      return TipoPesquisa.Nro_Peito;
     }
     return TipoPesquisa.Cpf;
   }
@@ -213,6 +216,9 @@ export class FiltroEntregaKitComponent implements OnInit {
 
       case TipoPesquisa.Inscricao:
         return 'Pela Incrição';
+
+      case TipoPesquisa.Nro_Peito:
+        return 'Pelo Nº Do Peito';
 
       default:
         return '';

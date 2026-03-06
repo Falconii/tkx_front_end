@@ -66,6 +66,8 @@ export class MobileKitComponent {
 
     let inscricao: number = 0;
 
+    let nro_peito: number = 0;
+
     key = parseInt(this.parametroPesquisa.pesquisar);
 
     if (isNaN(key)) {
@@ -73,6 +75,13 @@ export class MobileKitComponent {
     } else {
       inscricao = key;
     }
+
+    if (isNaN(key)) {
+      nro_peito = 0;
+    } else {
+      nro_peito = key;
+    }
+
     let par = new ParametroParticipante01();
 
     par.id_empresa = this.globalService.getEmpresa().id;
@@ -93,9 +102,15 @@ export class MobileKitComponent {
       case TipoPesquisa.Inscricao:
         par.inscricao = inscricao;
         break;
+
+      case TipoPesquisa.Nro_Peito:
+        par.nro_peito = nro_peito;
+        break;
     }
 
     par.pagina = this.controlePaginas.getPaginalAtual();
+
+    par.tamPagina = 100;
 
     this.globalService.setSpin(true); // liga spinner
 

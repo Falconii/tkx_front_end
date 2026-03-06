@@ -3,4 +3,5 @@ export enum TipoPesquisa {
   Cpf = 1,
   Nome = 2,
   Inscricao = 3,
+  Nro_Peito = 4,
 }
