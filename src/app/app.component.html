@@ -4,7 +4,7 @@
         <button mat-icon-button aria-label="Menu" routerLink="">
       <mat-icon>menu</mat-icon>
     </button>
-        <img src="/logo-tkx.png" alt="TKX-Experience" class="logo-img" />
+        <img src="/logo-tkx.jpg" alt="TKX-Experience" class="logo-img" />
         <ng-container *ngIf="showMenu && !isMobile">
             <button mat-button [matMenuTriggerFor]="cadastros">Cadastros</button>
             <button mat-button [matMenuTriggerFor]="eventos">Eventos</button>
@@ -28,15 +28,21 @@
         <mat-menu #eventos="matMenu">
           <button mat-menu-item routerLink="eventos">Eventos</button>
           <button mat-menu-item routerLink="participantes">
-            Associação Numero Do Peito
+            Participantes
           </button>
-          <button mat-menu-item routerLink="upload-excel">
-            Importação De Participantes
+          <button mat-menu-item routerLink="inscritos">Inscritos</button>
+
+          <!-- Agora Importações aparece direto no menu Eventos -->
+          <button mat-menu-item [matMenuTriggerFor]="processamednto">
+            Processamento
           </button>
-          <button mat-menu-item routerLink="upload-excel">
-            Associação Numero Do Peito
+        </mat-menu>
+
+        <mat-menu #processamednto="matMenu">
+          <button mat-menu-item routerLink="planilhas">Planilhas</button>
+          <button mat-menu-item routerLink="planilhas_processamento">
+            Processar Planilha
           </button>
-          <button mat-menu-item routerLink="tela01">tela 01</button>
         </mat-menu>
         <mat-menu #entrega_kits="matMenu">
           <button mat-menu-item routerLink="mobile">Entregar Kits</button>

@@ -23,6 +23,7 @@ import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { LocalStorageService } from '../../../services/localStorage.service';
 import { Router } from '@angular/router';
+import { UsuarioModel } from '../../../models/usuario-model';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -155,7 +156,12 @@ export class MobileKitComponent {
     this.router.navigate(['mobile/novoinscrito/']);
   }
 
-  onHome() {}
+  onHome() {
+    this.globalService.setLogado(false);
+    this.globalService.setUsuario(new UsuarioModel());
+    this.localStorageSrv.removeItem('Token');
+    this.router.navigate(['/login']);
+  }
 
   openKitDialog(dado: ParticipanteModel): void {
     const data: EntregaDialogData = new EntregaDialogData();

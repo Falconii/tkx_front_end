@@ -28,11 +28,11 @@ import { EmailDialogData } from '../email-dialog/email-dialog-data';
 import { EmailDialogComponent } from '../email-dialog/email-dialog.component';
 import { DownloadDialogData } from '../download-dialog/download-dialog-data';
 import { DownloadDialogComponent } from '../download-dialog/download-dialog.component';
-import { ParametrosService } from '../../../services/parametro.service';
 import { EmailService } from '../../../services/email.service';
 import { ParametroSendemailv2 } from '../../../parametros/parametro-sendemailv2';
 import { ControlePaginas } from '../../classes/controle-paginas';
 import { ParametroModel } from '../../../models/parametro-model';
+import { ParametroService } from '../../../services/parametro.service';
 
 @Component({
   selector: 'app-formulario-filtro-usuario',
@@ -78,12 +78,12 @@ export class FormularioFiltroUsuarioComponent {
   constructor(
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
-    private parametrosService: ParametrosService,
+    private parametroService: ParametroService,
     private grupousuarioSrv: GrupousuarioService,
     private emailService: EmailService,
     private appSnackBar: AppSnackbar,
     private EmailDialog: MatDialog,
-    private DownLoadDialog: MatDialog
+    private DownLoadDialog: MatDialog,
   ) {
     this.formulario = formBuilder.group({
       orderby: [{ value: '' }],
@@ -115,7 +115,7 @@ export class FormularioFiltroUsuarioComponent {
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
         debounceTime(350),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
@@ -125,7 +125,7 @@ export class FormularioFiltroUsuarioComponent {
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
         debounceTime(350),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
@@ -135,12 +135,12 @@ export class FormularioFiltroUsuarioComponent {
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
         debounceTime(350),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
     this.valueChangeSubs = [idSub, razaoSub, cnpjSub].filter(
-      (sub): sub is Subscription => !!sub
+      (sub): sub is Subscription => !!sub,
     );
   }
 
@@ -168,7 +168,7 @@ export class FormularioFiltroUsuarioComponent {
           this.setValuesNoParam();
           this.appSnackBar.openFailureSnackBar(
             `Pesquisa Nos Grupos De Usuários ${messageError(error)}`,
-            'OK'
+            'OK',
           );
         },
       });
@@ -204,7 +204,7 @@ export class FormularioFiltroUsuarioComponent {
       next: (data: any) => {
         this.appSnackBar.openSuccessSnackBar(
           `E-Mail Enviado Com Sucesso!`,
-          'OK'
+          'OK',
         );
       },
       error: (error: any) => {
@@ -279,8 +279,8 @@ export class FormularioFiltroUsuarioComponent {
     par.assinatura = this.parametro.assinatura;
     par.id_usuario = this.parametro.id_usuario;
 
-    this.inscricaoParametro = this.parametrosService
-      .getParametrosParametro01(par)
+    this.inscricaoParametro = this.parametroService
+      .getParametrosParametro_01(par)
       .subscribe({
         next: (data: ParametroModel[]) => {
           this.parametro = new ParametroModel();
@@ -308,19 +308,19 @@ export class FormularioFiltroUsuarioComponent {
     this.parametro.user_insert = this.globalService.usuario.id;
     this.parametro.user_update = this.globalService.usuario.id;
     this.refreshParametro();
-    this.inscricaoParametro = this.parametrosService
+    this.inscricaoParametro = this.parametroService
       .ParametroAtualiza(this.parametro)
       .subscribe({
         next: (data: ParametroModel) => {
           this.appSnackBar.openSuccessSnackBar(
             `Parâmetros Salvos Com Sucesso!`,
-            'OK'
+            'OK',
           );
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Falha Ao Salvar Os Parâmetros! ${messageError(error)}`,
-            'OK'
+            'OK',
           );
         },
       });
@@ -418,7 +418,7 @@ export class FormularioFiltroUsuarioComponent {
     dialogConfig.data = data;
     const modalDialog = this.EmailDialog.open(
       EmailDialogComponent,
-      dialogConfig
+      dialogConfig,
     )
       .beforeClosed()
       .subscribe((data: EmailDialogData) => {});
@@ -445,7 +445,7 @@ export class FormularioFiltroUsuarioComponent {
     dialogConfig.data = data;
     const modalDialog = this.DownLoadDialog.open(
       DownloadDialogComponent,
-      dialogConfig
+      dialogConfig,
     )
       .beforeClosed()
       .subscribe((data: DownloadDialogData) => {});

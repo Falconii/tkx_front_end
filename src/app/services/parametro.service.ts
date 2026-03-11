@@ -1,77 +1,62 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ParametroParametro01 } from '../parametros/parametro-parametro01';
-import { environment } from '../../environments/environment.development';
 import { ParametroModel } from '../models/parametro-model';
+import { environment } from '../../environments/environment.development';
+import { ParametroParametro01 } from '../parametros/parametro-parametro01';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ParametrosService {
+export class ParametroService {
   apiURL: string = environment.apiURL;
-
   constructor(private http: HttpClient) {}
-
   getParametros(): Observable<ParametroModel[]> {
     const url = new URL('parametro/parametros', this.apiURL).toString();
-    return this.http.get<ParametroModel[]>(url);
+    return this.http.get<ParametroModel[]>(`${this.apiURL}Parametros`);
   }
-
-  getParametrosParametro01(
-    params: ParametroParametro01
+  getParametrosParametro_01(
+    params: ParametroParametro01,
   ): Observable<ParametroModel[]> {
-     const url = new URL('parametro/parametros', this.apiURL).toString();
-     return this.http.post<ParametroModel[]>(url, params);
+    return this.http.post<ParametroModel[]>(`${this.apiURL}parametros`, params);
   }
-
   getParametro(
     id_empresa: number,
     modulo: string,
     assinatura: string,
-    id_usuario: number
-  ) {
+    id_usuario: number,
+  ): Observable<ParametroModel> {
     const url = new URL('parametro', this.apiURL).toString();
     return this.http.get<ParametroModel>(
-      `${url}${id_empresa}/${modulo}/${assinatura}/${id_usuario}`
+      `${url}/${id_empresa}/${modulo}/${assinatura}/${id_usuario}`,
     );
   }
-
-  ParametroInsert(parametro: ParametroModel) {
+  parametroInsert(parametro: ParametroModel): Observable<ParametroModel> {
     const url = new URL('parametro', this.apiURL).toString();
-    return this.http.post<ParametroModel>(url, parametro);
+    return this.http.post<ParametroModel>(`url,parametro`, parametro);
   }
-
-  ParametroUpdate(parametro: ParametroModel) {
+  parametroUpdate(parametro: ParametroModel): Observable<ParametroModel> {
     const url = new URL('parametro', this.apiURL).toString();
-    return this.http.put<ParametroModel>(url, parametro);
+    return this.http.put<ParametroModel>(`url,parametro`, parametro);
   }
 
   ParametroAtualiza(parametro: ParametroModel) {
-
-    const url = new URL('parametro/complementar/atualizarparametro', this.apiURL).toString();
-    return this.http.post<ParametroModel>(url,parametro);
+    const url = new URL(
+      'parametro/complementar/atualizarparametro',
+      this.apiURL,
+    ).toString();
+    return this.http.post<ParametroModel>(url, parametro);
   }
 
-  ParametroDelete(
+  parametroDelete(
     id_empresa: number,
     modulo: string,
     assinatura: string,
-    id_usuario: number
-  ) {
-    const params = {
-            id_empresa: id_empresa,
-            modulo: modulo,
-            assinatura: assinatura,
-            id_usuario: id_usuario
-    };
-
-    const url = new URL('parametro/deleteparametro', this.apiURL).toString();
-    return this.http.post<any>(url, params);
-  }
-
-  ParametroInstallKey(): Observable<any> {
-    const url = new URL('parametro/fotokey', this.apiURL).toString();
-    return this.http.post<any>(url, { chave: 'nada' });
+    id_usuario: number,
+  ): Observable<any> {
+    const url = new URL('parametro', this.apiURL).toString();
+    return this.http.delete<any>(
+      `${url}/${id_empresa}/${modulo}/${assinatura}/${id_usuario}`,
+    );
   }
 }

@@ -1,0 +1,33 @@
+.content {
+  height: 95%;
+  overflow: auto;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2aa;
+}
+
+tr:hover {
+  background-color: rgb(202, 169, 157);
+}
+
+.alinha_icone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* espaço entre o ícone e os textos */
+}
+
+.logo-img {
+  height: 32px;
+  width: 32px;
+  vertical-align: middle;
+}
+
+.info-texto {
+  display: flex;
+  flex-direction: column;
+  font-size: smaller;
+  color: red;
+  line-height: 1.2;
+}

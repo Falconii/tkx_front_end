@@ -1,4 +1,3 @@
-import { UsuarioService } from './../../../services/usuario.service';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ControlePaginas } from '../../classes/controle-paginas';
 import { Subscription, finalize } from 'rxjs';
@@ -8,6 +7,7 @@ import { AppSnackbar } from '../../classes/app-snackbar';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { GlobalService } from '../../../services/global.service';
 import { EmailService } from '../../../services/email.service';
+
 import {
   map,
   filter,
@@ -28,17 +28,17 @@ import { EmailDialogComponent } from '../email-dialog/email-dialog.component';
 import { DownloadDialogData } from '../download-dialog/download-dialog-data';
 import { DownloadDialogComponent } from '../download-dialog/download-dialog.component';
 import { ParametroSendemailv2 } from '../../../parametros/parametro-sendemailv2';
-import { ParametroUsuario01 } from '../../../parametros/parametro-usuario01';
-import { UsuarioModel } from '../../../models/usuario-model';
-import { SimNao } from '../../classes/sim-nao';
 import { ParametroService } from '../../../services/parametro.service';
+import { EventoModel } from '../../../models/evento-model';
+import { EventoService } from '../../../services/evento.service';
+import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 
 @Component({
-  selector: 'app-formulario-filtro-evento',
-  templateUrl: './formulario-filtro-evento.component.html',
-  styleUrl: './formulario-filtro-evento.component.css',
+  selector: 'app-formulario-filtro-cabplanilha',
+  templateUrl: './formulario-filtro-cabplanilha.component.html',
+  styleUrl: './formulario-filtro-cabplanilha.component.css',
 })
-export class FormularioFiltroEventoComponent {
+export class FormularioFiltroCabplanilhaComponent {
   @Input('PARAMNAME') paramName: string = '';
   @Input('RETORNO') retorno: boolean = false;
   @Input('EMAIL') email: boolean = false;
@@ -50,7 +50,7 @@ export class FormularioFiltroEventoComponent {
   @Output('changeHide') changeHide = new EventEmitter<boolean>();
 
   inscricaoParametro!: Subscription;
-  inscricaoUsuario!: Subscription;
+  inscricaoEvento!: Subscription;
   inscricaoEmail!: Subscription;
 
   formulario: FormGroup;
@@ -60,13 +60,9 @@ export class FormularioFiltroEventoComponent {
   hideAcao: string = 'Ocultar';
 
   orderby: Orderby[] = [
-    { sigla: '000000', descricao: 'Número' },
-    { sigla: '000001', descricao: 'Descrição' },
-    { sigla: '000002', descricao: 'Responsável' },
-    { sigla: '000003', descricao: 'Situação' },
+    { sigla: '000000', descricao: 'Código' },
+    { sigla: '000001', descricao: 'Arquivo' },
   ];
-
-  responsaveis: UsuarioModel[] = [];
 
   parametro: ParametroModel = new ParametroModel();
 
@@ -74,13 +70,13 @@ export class FormularioFiltroEventoComponent {
 
   valueChangeSubs: Subscription[] = [];
 
-  situacoes: SimNao[] = [];
+  lsEventos: EventoModel[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
-    private usuarioSrv: UsuarioService,
-    private parametroService: ParametroService,
+    private parametrosService: ParametroService,
+    private eventoSrv: EventoService,
     private emailService: EmailService,
     private appSnackBar: AppSnackbar,
     private EmailDialog: MatDialog,
@@ -88,19 +84,18 @@ export class FormularioFiltroEventoComponent {
   ) {
     this.formulario = formBuilder.group({
       orderby: [{ value: '' }],
+      id_evento: [{ value: '' }],
       id: [{ value: '' }],
-      descricao: [{ value: '' }],
-      id_responsavel: [{ value: '' }],
-      status: [{ value: '' }],
+      arquivo: [{ value: '' }],
     });
-    this.situacoes = this.globalService.getSituacoesEvento();
     this.setHide();
     this.setValuesNoParam();
   }
 
   ngOnInit(): void {
-    this.getUsuarios();
+    this.getEventos();
   }
+
   setEnableFilter(value: boolean): void {
     this.enable_filter = value;
 
@@ -122,8 +117,8 @@ export class FormularioFiltroEventoComponent {
       )
       .subscribe(() => this.onChangeParametros());
 
-    const idDesc = this.formulario
-      .get('descricao')
+    const arquivoSub = this.formulario
+      .get('arquivo')
       ?.valueChanges.pipe(
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
@@ -132,37 +127,15 @@ export class FormularioFiltroEventoComponent {
       )
       .subscribe(() => this.onChangeParametros());
 
-    this.valueChangeSubs = [idSub, idDesc].filter(
+    this.valueChangeSubs = [idSub, arquivoSub].filter(
       (sub): sub is Subscription => !!sub,
     );
   }
 
   ngOnDestroy(): void {
+    this.inscricaoEvento?.unsubscribe();
     this.inscricaoParametro?.unsubscribe();
     this.inscricaoEmail?.unsubscribe();
-    this.inscricaoUsuario?.unsubscribe();
-  }
-
-  getUsuarios() {
-    let par = new ParametroUsuario01();
-
-    par.id_empresa = this.globalService.getEmpresa().id;
-
-    this.inscricaoUsuario = this.usuarioSrv
-      .getUsuariosParametro_01(par)
-      .subscribe({
-        next: (data: any) => {
-          this.responsaveis = data;
-          this.loadParametros();
-        },
-        error: (error: any) => {
-          this.responsaveis = [];
-          this.appSnackBar.openFailureSnackBar(
-            `Problemas Na Tabela De usuários!`,
-            'OK',
-          );
-        },
-      });
   }
 
   onGetExcelToEmailOrDownLoad(destino: string) {
@@ -205,25 +178,21 @@ export class FormularioFiltroEventoComponent {
   }
 
   setValues() {
+    const param = this.parametro.getParametro();
     this.formulario.setValue({
       orderby: GetValueJsonString(this.parametro.getParametro(), 'orderby'),
+      id_evento: GetValueJsonString(this.parametro.getParametro(), 'id_evento'),
       id: GetValueJsonNumber(this.parametro.getParametro(), 'id'),
-      descricao: GetValueJsonString(this.parametro.getParametro(), 'descricao'),
-      id_responsavel: GetValueJsonString(
-        this.parametro.getParametro(),
-        'id_responsavel',
-      ),
-      status: GetValueJsonString(this.parametro.getParametro(), 'status'),
+      arquivo: GetValueJsonString(this.parametro.getParametro(), 'arquivo'),
     });
   }
 
   setValuesNoParam() {
     this.formulario.setValue({
       orderby: '',
+      id_evento: '',
       id: '',
-      descricao: '',
-      id_responsavel: '',
-      status: '',
+      arquivo: '',
     });
   }
 
@@ -248,14 +217,11 @@ export class FormularioFiltroEventoComponent {
     param.id_usuario = this.globalService.getUsuario().id;
     param.parametro = `
          {
+            "id_evento":"",
             "id":"",
-            "descricao":"",
-            "id_responsavel":"",
-            "status":"",
-            "tamPagina":50,
-            "contador":"N",
+            "arquivo":"",
             "orderby":"000001",
-            "page":0,
+            "page":1,
             "sharp":false
         }`;
 
@@ -267,6 +233,31 @@ export class FormularioFiltroEventoComponent {
     this.getParametro();
   }
 
+  getEventos() {
+    let par = new ParametroEvento01();
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+
+    console.log('Parametro:', par);
+
+    this.inscricaoEvento = this.eventoSrv
+      .getEventosParametro_01(par)
+      .subscribe({
+        next: (data: EventoModel[]) => {
+          this.lsEventos = data;
+          this.loadParametros();
+        },
+        error: (error: any) => {
+          this.lsEventos = [];
+          this.appSnackBar.openSuccessSnackBar(
+            `Nenhum Evento Cadastrado!`,
+            'OK',
+          );
+          this.loadParametros();
+        },
+      });
+  }
+
   getParametro() {
     this.globalService.setSpin(true);
     let par = new ParametroParametro01();
@@ -275,7 +266,7 @@ export class FormularioFiltroEventoComponent {
     par.assinatura = this.parametro.assinatura;
     par.id_usuario = this.parametro.id_usuario;
 
-    this.inscricaoParametro = this.parametroService
+    this.inscricaoParametro = this.parametrosService
       .getParametrosParametro_01(par)
       .subscribe({
         next: (data: ParametroModel[]) => {
@@ -304,7 +295,7 @@ export class FormularioFiltroEventoComponent {
     this.parametro.user_insert = this.globalService.usuario.id;
     this.parametro.user_update = this.globalService.usuario.id;
     this.refreshParametro();
-    this.inscricaoParametro = this.parametroService
+    this.inscricaoParametro = this.parametrosService
       .ParametroAtualiza(this.parametro)
       .subscribe({
         next: (data: ParametroModel) => {
@@ -325,10 +316,9 @@ export class FormularioFiltroEventoComponent {
   refreshParametro() {
     let config = this.parametro.getParametro();
     Object(config).orderby = this.formulario.value.orderby;
-    Object(config).id = this.formulario.value.codigo;
-    Object(config).descricao = this.formulario.value.descricao.toUpperCase();
-    Object(config).id_responsavel = this.formulario.value.id_responsavel;
-    Object(config).status = this.formulario.value.status;
+    Object(config).id_evento = this.formulario.value.id_evento;
+    Object(config).id = this.formulario.value.id;
+    Object(config).arquivo = this.formulario.value.arquivo.toUpperCase();
 
     this.parametro.parametro = JSON.stringify(config);
   }
@@ -362,19 +352,14 @@ export class FormularioFiltroEventoComponent {
         id: '',
       });
     }
-    if (campo == 'descricao') {
+    if (campo == 'arquivo') {
       this.formulario.patchValue({
-        descricao: '',
+        arquivo: '',
       });
     }
-    if (campo == 'id_responsavel') {
+    if (campo == 'id_evento') {
       this.formulario.patchValue({
-        id_responsavel: '',
-      });
-    }
-    if (campo == 'status') {
-      this.formulario.patchValue({
-        status: '',
+        id_evento: '',
       });
     }
 
@@ -384,11 +369,11 @@ export class FormularioFiltroEventoComponent {
   ChangeValue(campo: string, value: string) {
     if (campo == 'id')
       this.formulario.patchValue({
-        codigo: value,
+        id: value,
       });
-    if (campo == 'descricao')
+    if (campo == 'arquivo')
       this.formulario.patchValue({
-        descricao: value,
+        arquivo: value,
       });
   }
 

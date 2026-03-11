@@ -23,7 +23,7 @@ import {
   GetValueJsonNumber,
 } from '../../classes/util';
 import { ParametroModel } from '../../../models/parametro-model';
-import { ParametrosService } from '../../../services/parametro.service';
+import { ParametroService } from '../../../services/parametro.service';
 import { EmailDialogData } from '../email-dialog/email-dialog-data';
 import { EmailDialogComponent } from '../email-dialog/email-dialog.component';
 import { DownloadDialogData } from '../download-dialog/download-dialog-data';
@@ -70,11 +70,11 @@ export class FormularioFiltroEmpresaComponent {
   constructor(
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
-    private parametrosService: ParametrosService,
+    private parametroService: ParametroService,
     private emailService: EmailService,
     private appSnackBar: AppSnackbar,
     private EmailDialog: MatDialog,
-    private DownLoadDialog: MatDialog
+    private DownLoadDialog: MatDialog,
   ) {
     this.formulario = formBuilder.group({
       orderby: [{ value: '' }],
@@ -107,7 +107,7 @@ export class FormularioFiltroEmpresaComponent {
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
         debounceTime(350),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
@@ -117,7 +117,7 @@ export class FormularioFiltroEmpresaComponent {
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
         debounceTime(350),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
@@ -127,12 +127,12 @@ export class FormularioFiltroEmpresaComponent {
         map((value) => value?.trim()),
         filter((value) => value?.length > 0),
         debounceTime(350),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
     this.valueChangeSubs = [idSub, razaoSub, cnpjSub].filter(
-      (sub): sub is Subscription => !!sub
+      (sub): sub is Subscription => !!sub,
     );
   }
 
@@ -171,7 +171,7 @@ export class FormularioFiltroEmpresaComponent {
       next: (data: any) => {
         this.appSnackBar.openSuccessSnackBar(
           `E-Mail Enviado Com Sucesso!`,
-          'OK'
+          'OK',
         );
       },
       error: (error: any) => {
@@ -244,8 +244,8 @@ export class FormularioFiltroEmpresaComponent {
     par.assinatura = this.parametro.assinatura;
     par.id_usuario = this.parametro.id_usuario;
 
-    this.inscricaoParametro = this.parametrosService
-      .getParametrosParametro01(par)
+    this.inscricaoParametro = this.parametroService
+      .getParametrosParametro_01(par)
       .subscribe({
         next: (data: ParametroModel[]) => {
           this.parametro = new ParametroModel();
@@ -273,19 +273,19 @@ export class FormularioFiltroEmpresaComponent {
     this.parametro.user_insert = this.globalService.usuario.id;
     this.parametro.user_update = this.globalService.usuario.id;
     this.refreshParametro();
-    this.inscricaoParametro = this.parametrosService
+    this.inscricaoParametro = this.parametroService
       .ParametroAtualiza(this.parametro)
       .subscribe({
         next: (data: ParametroModel) => {
           this.appSnackBar.openSuccessSnackBar(
             `Parâmetros Salvos Com Sucesso!`,
-            'OK'
+            'OK',
           );
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Falha Ao Salvar Os Parâmetros! ${messageError(error)}`,
-            'OK'
+            'OK',
           );
         },
       });
@@ -378,7 +378,7 @@ export class FormularioFiltroEmpresaComponent {
     dialogConfig.data = data;
     const modalDialog = this.EmailDialog.open(
       EmailDialogComponent,
-      dialogConfig
+      dialogConfig,
     )
       .beforeClosed()
       .subscribe((data: EmailDialogData) => {});
@@ -405,7 +405,7 @@ export class FormularioFiltroEmpresaComponent {
     dialogConfig.data = data;
     const modalDialog = this.DownLoadDialog.open(
       DownloadDialogComponent,
-      dialogConfig
+      dialogConfig,
     )
       .beforeClosed()
       .subscribe((data: DownloadDialogData) => {});

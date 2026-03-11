@@ -31,7 +31,7 @@ const routes: Routes = [
     path: 'grupos',
     loadChildren: () =>
       import('./modules/grupousuario/grupousuario.module').then(
-        (m) => m.GrupousuarioModule
+        (m) => m.GrupousuarioModule,
       ),
   },
   {
@@ -40,10 +40,17 @@ const routes: Routes = [
       import('./modules/evento/evento.module').then((m) => m.EventoModule),
   },
   {
+    path: 'planilhas',
+    loadChildren: () =>
+      import('./modules/planilha/planilha.module').then(
+        (m) => m.PlanilhaModule,
+      ),
+  },
+  {
     path: 'tela01',
     loadChildren: () =>
       import('./modules/mobile-v02/mobile-v02.module').then(
-        (m) => m.MobileV02Module
+        (m) => m.MobileV02Module,
       ),
   },
   {

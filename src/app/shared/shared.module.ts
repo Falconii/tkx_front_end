@@ -21,6 +21,7 @@ import { ControlePaginas } from './classes/controle-paginas';
 import { FormularioFiltroUsuarioComponent } from './components/formulario-filtro-usuario/formulario-filtro-usuario.component';
 import { FormularioFiltroEventoComponent } from './components/formulario-filtro-evento/formulario-filtro-evento.component';
 import { FormularioFiltroInscritoComponent } from './components/formulario-filtro-inscrito/formulario-filtro-inscrito.component';
+import { FormularioFiltroCabplanilhaComponent } from './components/formulario-filtro-cabplanilha/formulario-filtro-cabplanilha.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { FormularioFiltroInscritoComponent } from './components/formulario-filtr
     FormularioFiltroUsuarioComponent,
     FormularioFiltroEventoComponent,
     FormularioFiltroInscritoComponent,
+    FormularioFiltroCabplanilhaComponent,
   ],
   imports: [
     CommonModule,
@@ -60,6 +62,7 @@ import { FormularioFiltroInscritoComponent } from './components/formulario-filtr
     FormularioFiltroGrupousuarioComponent,
     FormularioFiltroUsuarioComponent,
     FormularioFiltroEventoComponent,
+    FormularioFiltroCabplanilhaComponent,
   ],
 })
 export class SharedModule {}
