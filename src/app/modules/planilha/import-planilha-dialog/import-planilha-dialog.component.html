@@ -1,12 +1,70 @@
-<div fxLayout="column" fxLayoutAlign="center stretch" class="upload-container">
-    <h2>Upload de Planilha</h2>
-
-    <form fxLayout="column" fxLayoutGap="20px">
-        <mat-form-field appearance="outline">
-            <mat-label>Selecione o arquivo</mat-label>
-            <input type="file" accept=".xlsx,.xls,.csv" matInput />
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" type="submit">Enviar</button>
-    </form>
+<div class="div-barra">
+  <mat-toolbar>
+    <span class="example-spacer"
+      >Rotina Para Fazer Upload Dos Parcitipantes</span
+    >
+  </mat-toolbar>
 </div>
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="formulario" autocomplete="off" class="form-container">
+    <div class="col-med-2">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Evento</mat-label>
+        <mat-select formControlName="id_evento">
+          <mat-option *ngFor="let evento of lsEventos" [value]="evento.id">
+            {{ evento.descricao }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="NoValidtouchedOrDirty('id_evento')"
+          >{{ getMensafield("id_evento") }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Arquivo</mat-label>
+        <input matInput formControlName="caminho" />
+        <button
+          mat-icon-button
+          matSuffix
+          matTooltip="Limpar seleção"
+          (click)="fileInput.click(); $event.stopPropagation()"
+          class="clear-buttoncd abs"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <mat-error *ngIf="NoValidtouchedOrDirty('caminho')"
+          >{{ getMensafield("caminho") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <input
+      #fileInput
+      type="file"
+      hidden
+      (change)="onFileSelected($event)"
+      accept=".csv"
+    />
+  </form>
+  <div class="progress-bar" *ngIf="emProcessamento">
+    <h4>{{ progress }}</h4>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div class="resumo" *ngIf="foiProcessada">
+    <h2>Planilha Sendo Processada....</h2>
+  </div>
+  <div class="resumo" *ngIf="total_linhas > 0">
+    <h3>Total De Linhas.....: {{ total_linhas }}</h3>
+    <h3>Total De Linhas Erro: {{ total_linhas_erro }}</h3>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="button-container-right">
+    <button mat-raised-button color="#FFFFFF" (click)="onUpload()">
+      <mat-icon>check</mat-icon>
+      Processar
+    </button>
+    <button mat-raised-button color="accent" (click)="closeModal()">
+      <mat-icon>cancel</mat-icon>
+      Cancelar
+    </button>
+  </div>
+</mat-dialog-actions>

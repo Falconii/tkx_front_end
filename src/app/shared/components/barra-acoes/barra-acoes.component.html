@@ -13,6 +13,9 @@
     <button mat-button color="accent" [matTooltip]="getTexto().kit" *ngIf="kit" (click)="onChangeOpcao(getAcoes().Kit)" matTooltipPosition="above">
     KIT
   </button>
+    <button mat-icon-button class="botoes" [matTooltip]="getTexto().processar" *ngIf="excluir" (click)="onChangeOpcao(getAcoes().Processar)" matTooltipPosition="above">
+    <mat-icon class="icon-size">play_circle_filled</mat-icon>
+  </button>
 
     <mat-menu #appMenu="matMenu">
         <ng-template matMenuContent>

@@ -15,5 +15,6 @@ export enum CadastroAcoes {
   Substituir = 23,
   Trocar = 24,
   Kit = 25,
+  Processar = 26,
   None = 99,
 }

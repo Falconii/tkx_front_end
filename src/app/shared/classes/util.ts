@@ -82,6 +82,7 @@ export class MensagensBotoes {
   static financeiro = 'Financeiro';
   static multi_edicao = 'Alteração Em Lote';
   static kit = 'Kits';
+  static processar = 'Processamento';
 }
 
 export function adicionaZero(numero: number) {

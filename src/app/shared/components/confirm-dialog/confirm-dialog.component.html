@@ -1,0 +1,20 @@
+<h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="warn-icon" color="warn">
+        {{ data.icone || "warning" }}
+    </mat-icon>
+    {{ data.title || "Confirmação" }}
+</h2>
+
+<mat-dialog-content>
+    <p>{{ data.message || "Tem Certeza Que Deseja Continuar?" }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">
+    {{ data.cancelText || "Cancelar" }}
+  </button>
+
+    <button mat-raised-button color="warn" (click)="onConfirm()">
+    {{ data.confirmText || "Excluir" }}
+  </button>
+</mat-dialog-actions>
