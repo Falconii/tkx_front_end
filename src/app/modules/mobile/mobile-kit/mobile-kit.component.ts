@@ -87,7 +87,7 @@ export class MobileKitComponent {
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
-    par.id_evento = 1;
+    par.id_evento = 2;
 
     par.kit = this.parametroPesquisa.kit;
 
