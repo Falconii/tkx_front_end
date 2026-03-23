@@ -1,13 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
-export interface ConfirmDialogData {
-  title?: string;
-  message?: string;
-  confirmText?: string;
-  cancelText?: string;
-  icone?: string;
-}
+import { ConfirmDialogConfig } from './confirm-dialog-config.interface';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -17,10 +10,10 @@ export interface ConfirmDialogData {
 export class ConfirmDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData,
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogConfig,
   ) {
-    if (data.icone == null) {
-      data.icone = 'warning';
+    if (data.icon == null) {
+      data.icon = 'warning';
     }
   }
 

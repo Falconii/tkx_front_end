@@ -1,52 +1,82 @@
 <div class="toolbar-alinhada dialog-header">
-    <mat-toolbar color="primary">
-        <span class="example-spacer">
+  <mat-toolbar color="primary">
+    <span class="example-spacer">
       <mat-label>Cadastro De Kit</mat-label>
     </span>
-    </mat-toolbar>
+    <div class="botao-com-legenda">
+      <button
+        mat-icon-button
+        (click)="onSetarOMesmo()"
+        matTooltip='Ajustar  P/ "O MESMO"'
+        matTooltipPosition="above"
+      >
+        <mat-icon>person</mat-icon>
+      </button>
+      <span class="texto-pequeno">o mesmo</span>
+    </div>
+  </mat-toolbar>
 </div>
 
 <mat-dialog-content class="dialog-content">
-    <div cdkScrollable class="scroll-wrapper">
-        <form [formGroup]="formulario" autocomplete="off">
-            <div class="col-med-1">
-                <mat-form-field appearance="outline" class="uppercase-input col-max">
-                    <mat-label>RG Do Responsável:</mat-label>
-                    <input matInput formControlName="rg_retirada" />
-                    <mat-error *ngIf="NoValidtouchedOrDirty('rg_retirada')">{{ getMensafield("rg_retirada") }}
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="col-med-1">
-                <mat-form-field appearance="outline" class="uppercase-input col-max">
-                    <mat-label>Retirado Por:</mat-label>
-                    <input matInput formControlName="nome_retirada" />
-                    <mat-error *ngIf="NoValidtouchedOrDirty('nome_retirada')">{{ getMensafield("nome_retirada") }}
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="col-med-1">
-                <mat-form-field appearance="outline" class="uppercase-input col-max">
-                    <mat-label>Tam Camiseta:</mat-label>
-                    <input matInput formControlName="tam_camisa" />
-                    <mat-error *ngIf="NoValidtouchedOrDirty('tam_camisa')">{{ getMensafield("tam_camisa") }}
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="button-container">
-                <button mat-raised-button color="warn" class="botao" (click)="onExcluir()" *ngIf="botaoExcluir">
+  <div cdkScrollable class="scroll-wrapper">
+    <form [formGroup]="formulario" autocomplete="off">
+      <div class="col-med-1">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>RG Do Responsável:</mat-label>
+          <input matInput formControlName="rg_retirada" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('rg_retirada')"
+            >{{ getMensafield("rg_retirada") }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-med-1">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Retirado Por:</mat-label>
+          <input matInput formControlName="nome_retirada" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('nome_retirada')"
+            >{{ getMensafield("nome_retirada") }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-med-1">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Tam Camiseta:</mat-label>
+          <input matInput formControlName="tam_camisa" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('tam_camisa')"
+            >{{ getMensafield("tam_camisa") }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="button-container">
+        <button
+          mat-raised-button
+          color="warn"
+          class="botao"
+          (click)="onExcluir()"
+          *ngIf="botaoExcluir"
+        >
           <mat-icon>delete</mat-icon>
           Excluir
         </button>
-                <button mat-raised-button color="primary" class="botao" (click)="onCancelar()">
+        <button
+          mat-raised-button
+          color="primary"
+          class="botao"
+          (click)="onCancelar()"
+        >
           <mat-icon>cancel</mat-icon>
           Cancelar
         </button>
-                <button mat-raised-button color="accent" class="botao" (click)="onProcessar()">
+        <button
+          mat-raised-button
+          color="accent"
+          class="botao"
+          (click)="onProcessar()"
+        >
           <mat-icon>check</mat-icon>
           Gravar
         </button>
-            </div>
-        </form>
-    </div>
+      </div>
+    </form>
+  </div>
 </mat-dialog-content>

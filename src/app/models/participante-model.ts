@@ -11,7 +11,7 @@ export class ParticipanteModel {
   public evento_descricao: string = '';
   public inscrito_nome: string = '';
   public inscrito_cpf: string = '';
-  public inscrito_dt_nascimento: Date = new Date();
+  public inscrito_dt_nascimento: string = '';
   public inscrito_sexo: string = '';
   public categoria_descricao: string = '';
   public link_token: string = '';

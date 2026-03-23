@@ -13,6 +13,7 @@ import { DataYYYYMMDD, messageError } from '../../../shared/classes/util';
 import { ValidatorStringLen } from '../../../shared/Validators/validator-string-len';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
+import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
 
 @Component({
   selector: 'app-entrega-dialog',
@@ -36,6 +37,7 @@ export class EntregaDialogComponent {
     private entregaSrv: EntregaService,
     private globalService: GlobalService,
     public dialogRef: MatDialogRef<EntregaDialogComponent>,
+    private confirmDialog: ConfirmDialogService,
     @Inject(MAT_DIALOG_DATA) public data: EntregaDialogData,
   ) {
     this.formulario = formBuilder.group({
@@ -188,6 +190,13 @@ export class EntregaDialogComponent {
     });
   }
 
+  onSetarOMesmo() {
+    this.formulario.patchValue({
+      rg_retirada: 'O MESMO',
+      nome_retirada: 'O MESMO',
+    });
+  }
+
   NoValidtouchedOrDirty(campo: string): boolean {
     if (
       !this.formulario.get(campo)?.valid &&
@@ -246,7 +255,20 @@ export class EntregaDialogComponent {
   }
 
   onExcluir() {
-    this.deleteEntrega();
+    this.confirmDialog
+      .open({
+        title: 'Exclusão',
+        message: `Deseja Realmente Excluir o Kit ?`,
+        icon: 'warning',
+        iconColor: 'warn',
+        confirmText: 'Processar',
+        cancelText: 'Cancelar',
+      })
+      .subscribe(async (result) => {
+        if (result) {
+          this.deleteEntrega();
+        }
+      });
   }
 
   scrollAte(event: FocusEvent) {

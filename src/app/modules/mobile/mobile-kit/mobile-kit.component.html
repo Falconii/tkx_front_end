@@ -64,7 +64,7 @@
 
       <div class="linha">
         <span class="label">Nascimento:</span>
-        <span>{{ dado.inscrito_dt_nascimento | date: "dd/MM/yyyy" }}</span>
+        <span>{{ dado.inscrito_dt_nascimento }}</span>
       </div>
 
       <div class="linha destaque" *ngIf="dado.entre_tam_camisa">
@@ -74,7 +74,11 @@
 
       <div class="linha destaque" *ngIf="dado.entre_nome">
         <span class="label">Recebido Por:</span>
-        <span>{{ dado.entre_nome }} — RG: {{ dado.entre_rg }}</span>
+        <span>{{ dado.entre_nome }}</span>
+      </div>
+      <div class="linha destaque" *ngIf="dado.entre_rg">
+        <span class="label">RG:</span>
+        <span>RG: {{ dado.entre_rg }}</span>
       </div>
     </mat-card-content>
 
