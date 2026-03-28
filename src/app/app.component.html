@@ -1,72 +1,70 @@
-<mat-toolbar color="primary" class="div-barra" *ngIf="!isMobile">
-    <!-- Menu e título -->
-    <div class="toolbar-left">
-        <button mat-icon-button aria-label="Menu" routerLink="">
-      <mat-icon>menu</mat-icon>
-    </button>
-        <img src="/logo-tkx.jpg" alt="TKX-Experience" class="logo-img" />
-        <ng-container *ngIf="showMenu && !isMobile">
-            <button mat-button [matMenuTriggerFor]="cadastros">Cadastros</button>
-            <button mat-button [matMenuTriggerFor]="eventos">Eventos</button>
-            <button mat-button [matMenuTriggerFor]="entrega_kits">
-        Entrega De Kits
-      </button>
-            <button mat-button [matMenuTriggerFor]="gerencial">Gerencial</button>
-            <button mat-button [matMenuTriggerFor]="sobre">Sobre</button>
-            <span>
-        <!-- #docregion sub-menu -->
-        <mat-menu #cadastros="matMenu">
-          <button mat-menu-item routerLink="empresas">Empresas</button>
-          <button mat-menu-item routerLink="usuarios">Usuários</button>
-          <button mat-menu-item routerLink="grupos">Grupos De Usuários</button>
-          <button mat-menu-item routerLink="cadastro_padrao">Categorias</button>
-          <button mat-menu-item routerLink="cadastro_padrao">
-            Intervalo Número
-          </button>
-          <button mat-menu-item routerLink="cadastro_padrao">Kits</button>
-        </mat-menu>
-        <mat-menu #eventos="matMenu">
-          <button mat-menu-item routerLink="eventos">Eventos</button>
-          <button mat-menu-item routerLink="participantes">
-            Participantes
-          </button>
-          <button mat-menu-item routerLink="inscritos">Inscritos</button>
+<!-- ACTION BAR (FORA do sidenav-container) -->
+<mat-toolbar color="primary">
+    <button mat-icon-button (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
 
-          <!-- Agora Importações aparece direto no menu Eventos -->
-          <button mat-menu-item [matMenuTriggerFor]="processamednto">
-            Processamento
-          </button>
-        </mat-menu>
+    <img src="/logo-tkx.jpg" class="logo-img" />
 
-        <mat-menu #processamednto="matMenu">
-          <button mat-menu-item routerLink="planilhas">Planilhas</button>
-          <button mat-menu-item routerLink="planilhas_processamento">
-            Processar Planilha
-          </button>
-        </mat-menu>
-        <mat-menu #entrega_kits="matMenu">
-          <button mat-menu-item routerLink="mobile">Entregar Kits</button>
-        </mat-menu>
-        <mat-menu #gerencial="matMenu"> </mat-menu>
-        <mat-menu #sobre="matMenu">
-          <button mat-menu-item routerLink="param">
-            Parâmentos Do Sistema
-          </button>
-        </mat-menu>
-      </span>
-        </ng-container>
-    </div>
-    <!-- Usuário e login -->
-    <div class="toolbar-right">
-        <div class="nav-item">
-            <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" matTooltip="LOGIN" matTooltipPosition="above" (click)="onLogin()">
-        <mat-icon>person</mat-icon>
-      </button>
-            <span>{{ getUsuarioNome().razao | firstName }}</span>
-        </div>
-    </div>
+    <span class="spacer"></span>
+
+    <button mat-icon-button (click)="onLogin()">
+    <mat-icon>person</mat-icon>
+  </button>
+    <span>{{ getUsuarioNome().razao | firstName }}</span>
 </mat-toolbar>
 
-<div class="container">
-    <router-outlet></router-outlet>
-</div>
+<!-- LAYOUT PRINCIPAL -->
+<mat-sidenav-container class="layout-container">
+    <!-- MENU LATERAL -->
+    <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="side-menu">
+        <div class="menu-wrapper">
+            <!-- MENU PRINCIPAL (só aparece no desktop) -->
+            <ng-container *ngIf="!isMobile">
+                <ng-container *ngFor="let item of menu">
+                    <!-- ITEM PRINCIPAL -->
+                    <div class="menu-item" (click)="toggle(item.key)">
+                        <span>{{ item.label }}</span>
+                        <mat-icon class="arrow">
+                            {{ open[item.key] ? "expand_less" : "expand_more" }}
+                        </mat-icon>
+                    </div>
+
+                    <!-- SUBMENU -->
+                    <div *ngIf="open[item.key]">
+                        <a *ngFor="let link of item.links" class="submenu-link" [routerLink]="link.route" (click)="onNavigate()">
+              {{ link.label }}
+            </a>
+
+                        <ng-container *ngFor="let sub of item.children">
+                            <div class="submenu-title" (click)="toggle(sub.key)">
+                                <span>{{ sub.label }}</span>
+                                <mat-icon class="arrow">
+                                    {{ open[sub.key] ? "expand_less" : "expand_more" }}
+                                </mat-icon>
+                            </div>
+
+                            <div *ngIf="open[sub.key]" class="sub-submenu">
+                                <a *ngFor="let link of sub.links" class="submenu-link" [routerLink]="link.route" (click)="onNavigate()">
+                  {{ link.label }}
+                </a>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="isMobile">
+                <div class="menu-item" routerLink="mobile" (click)="onNavigate()">
+                    <span>Entrega de Kits</span>
+                </div>
+            </ng-container>
+        </div>
+    </mat-sidenav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <mat-sidenav-content>
+        <div class="container">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

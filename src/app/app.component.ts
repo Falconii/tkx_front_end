@@ -1,4 +1,4 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { GlobalService } from './services/global.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -19,13 +19,20 @@ import { UsuarioTrocaSenhaDialogComponent } from './modules/usuario/usuario-troc
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { UsuarioDialogComponent } from './modules/usuario/usuario-dialog/usuario-dialog.component';
 import { UsuarioDialogData } from './modules/usuario/usuario-dialog/UsuarioDialogData';
+import { MatSidenav } from '@angular/material/sidenav';
+import { ParametroEvento01 } from './parametros/parametro-evento01';
+import { EventoService } from './services/evento.service';
+import { EventoModel } from './models/evento-model';
+
+type MenuKeys = 'cadastros' | 'eventos' | 'processamento' | 'sobre';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  @ViewChild('sidenav') sidenav!: MatSidenav;
   title = 'tkx_frontend';
   showMenu: boolean = true;
   isMobile: boolean = false;
@@ -33,6 +40,62 @@ export class AppComponent {
   inscricaoLogin!: Subscription;
   inscricaoEmpresa!: Subscription;
   inscricaoUsuario!: Subscription;
+  inscricaoEvento!: Subscription;
+
+  // 🔹 2. Objeto de controle do menu
+  open: { [key: string]: boolean } = {
+    cadastros: false,
+    eventos: false,
+    processamento: false,
+    kits: false,
+    sobre: false,
+  };
+
+  // 🔹 3. Estrutura do menu
+  menu = [
+    {
+      key: 'cadastros',
+      label: 'Cadastros',
+      links: [
+        { label: 'Empresas', route: 'empresas' },
+        { label: 'Usuários', route: 'usuarios' },
+        { label: 'Grupos de Usuários', route: 'grupos' },
+        { label: 'Categorias', route: 'cadastro_padrao' },
+      ],
+      children: [],
+    },
+    {
+      key: 'eventos',
+      label: 'Eventos',
+      links: [
+        { label: 'Eventos', route: 'eventos' },
+        { label: 'Participantes', route: 'participantes' },
+        { label: 'Inscritos', route: 'inscritos' },
+      ],
+      children: [
+        {
+          key: 'processamento',
+          label: 'Processamento',
+          links: [
+            { label: 'Planilhas', route: 'planilhas' },
+            { label: 'Processar Planilha', route: 'planilhas_processamento' },
+          ],
+        },
+      ],
+    },
+    {
+      key: 'kits',
+      label: 'Kits',
+      links: [{ label: 'Entrega De Kits', route: 'mobile' }],
+      children: [],
+    },
+    {
+      key: 'sobre',
+      label: 'Sobre',
+      links: [{ label: 'Parâmetros do Sistema', route: 'param' }],
+      children: [],
+    },
+  ];
 
   constructor(
     private globalService: GlobalService,
@@ -44,7 +107,7 @@ export class AppComponent {
     private usuarioService: UsuarioService,
     private titleService: Title,
     private breakpoint: BreakpointObserver,
-
+    private eventoSrv: EventoService,
     private usuarioDialog: MatDialog,
   ) {
     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
@@ -54,7 +117,15 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.titleService.setTitle('TKX-Experience');
-
+    this.globalService.shomMenuEmitter.subscribe((show) => {
+      this.showMenu = show;
+    });
+    this.globalService.changePassWordEmitter.subscribe((change) => {
+      //this.openTrocaSenhaDialog(
+      //  CadastroAcoes.Edicao,
+      // this.globalService.getUsuario(),
+      // );
+    });
     this.globalService.shomMenuEmitter.subscribe((show) => {
       this.showMenu = show;
     });
@@ -66,6 +137,12 @@ export class AppComponent {
     }
   }
 
+  ngOnDestroy(): void {
+    this.inscricaoLogin?.unsubscribe();
+    this.inscricaoUsuario?.unsubscribe();
+    this.inscricaoEmpresa?.unsubscribe();
+    this.inscricaoEvento?.unsubscribe();
+  }
   onLogin() {
     this.router.navigate(['/login']);
   }
@@ -98,7 +175,7 @@ export class AppComponent {
     }
   }
 
-  getEmpresa(id_empresa: number, id_usuario: number) {
+  getEmpresa(id_empresa: number = 1, id_usuario: number) {
     this.inscricaoEmpresa = this.empresaService
       .getEmpresa(id_empresa)
       .subscribe({
@@ -126,9 +203,6 @@ export class AppComponent {
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
-          if (this.isMobile) {
-            this.router.navigate(['/mobile']);
-          }
         },
         error: (error: any) => {
           if (error.status && error.status == 401) {
@@ -136,7 +210,7 @@ export class AppComponent {
             this.appSnackBar.openFailureSnackBar(`Ação Não Autorizada!`, 'OK');
           } else {
             this.appSnackBar.openFailureSnackBar(
-              `Problemas Com O Usuário ${messageError(error)}`,
+              `Problemas Com O Usuário -- APP ${messageError(error)}`,
               'OK',
             );
           }
@@ -200,6 +274,40 @@ export class AppComponent {
           }
         } else {
         }
+      });
+  }
+
+  toggle(menu: string) {
+    this.open[menu] = !this.open[menu];
+  }
+
+  onNavigate() {
+    if (this.isMobile) {
+      this.sidenav.close();
+    }
+  }
+
+  getEvento(id_empresa: number = 1) {
+    const par: ParametroEvento01 = new ParametroEvento01();
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+    par.status = '1';
+    par.contador = 'N';
+
+    this.inscricaoEvento = this.eventoSrv
+      .getEventosParametro_01(par)
+      .subscribe({
+        next: (data: EventoModel[]) => {
+          if (this.isMobile) {
+            this.router.navigate(['/mobile']);
+          }
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Nenhum Evento Encontrado! ${messageError(error)}`,
+            'OK',
+          );
+        },
       });
   }
 }

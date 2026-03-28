@@ -261,11 +261,12 @@ export class EntregaDialogComponent {
         message: `Deseja Realmente Excluir o Kit ?`,
         icon: 'warning',
         iconColor: 'warn',
-        confirmText: 'Processar',
+        confirmText: 'Excluir',
         cancelText: 'Cancelar',
       })
       .subscribe(async (result) => {
         if (result) {
+          console.log('Vou deletar..');
           this.deleteEntrega();
         }
       });

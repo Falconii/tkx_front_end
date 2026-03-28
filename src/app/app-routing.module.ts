@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MobileKitComponent } from './modules/mobile/mobile-kit/mobile-kit.component';
 import { HomeComponent } from './modules/home/home/home.component';
+import { SecureGuard } from './guards/secure.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -11,6 +12,7 @@ const routes: Routes = [
     path: 'mobile',
     loadChildren: () =>
       import('./modules/mobile/mobile.module').then((m) => m.MobileModule),
+    canActivate: [SecureGuard],
   },
   {
     path: 'login',

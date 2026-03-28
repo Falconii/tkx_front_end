@@ -1,37 +1,54 @@
 <div class="quadro login-mobile">
-    <form [formGroup]="formulario" autocomplete="off" class="formulario">
-        <h2>** TKX-Experience **</h2>
-        <h3>Identifique-se Por Favor</h3>
+  <form [formGroup]="formulario" autocomplete="off" class="formulario">
+    <h2>** TKX-Experience **</h2>
+    <h3>Identifique-se Por Favor</h3>
 
-        <div class="col-med-1">
-            <mat-form-field appearance="outline" class="col-max">
-                <mat-label>CÓDIGO</mat-label>
-                <input matInput formControlName="id" />
-            </mat-form-field>
-        </div>
-        <div class="col-med-1">
-            <mat-form-field appearance="outline" class="col-max">
-                <mat-label>Senha</mat-label>
-                <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha" required />
-                <mat-icon matSuffix (click)="hide = !hide">{{ hide ? "visibility_off" : "visibility" }}
-                </mat-icon>
-            </mat-form-field>
-        </div>
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>CÓDIGO</mat-label>
+        <input matInput formControlName="id" />
+      </mat-form-field>
+    </div>
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Senha</mat-label>
+        <input
+          matInput
+          [type]="hide ? 'password' : 'text'"
+          formControlName="senha"
+          required
+        />
+        <mat-icon matSuffix (click)="hide = !hide"
+          >{{ hide ? "visibility_off" : "visibility" }}
+        </mat-icon>
+      </mat-form-field>
+    </div>
 
-        <div class="button-container-right">
-            <button mat-raised-button color="primary" class="botao" (click)="validar.emit()">
+    <div class="button-container-right">
+      <button
+        mat-raised-button
+        color="primary"
+        class="botao"
+        (click)="validar.emit()"
+        [disabled]="onSubmit"
+      >
         Login
       </button>
-            <button mat-raised-button color="accent" class="botao" (click)="cancelar.emit()">
+      <button
+        mat-raised-button
+        color="accent"
+        class="botao"
+        (click)="cancelar.emit()"
+      >
         Cancelar
       </button>
-        </div>
+    </div>
 
-        <div class="button-container-right botoes-secundarios">
-            <button mat-button class="green-icon" (click)="sair.emit()">Sair</button>
-            <button mat-button class="green-icon" (click)="esqueceu.emit()">
+    <div class="button-container-right botoes-secundarios">
+      <button mat-button class="green-icon" (click)="sair.emit()">Sair</button>
+      <button mat-button class="green-icon" (click)="esqueceu.emit()">
         Esqueceu A Senha
       </button>
-        </div>
-    </form>
+    </div>
+  </form>
 </div>

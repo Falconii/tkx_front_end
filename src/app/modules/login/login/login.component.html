@@ -1,7 +1,19 @@
 <ng-container *ngIf="isMobile; else desktop">
-    <app-login-mobile [formulario]="formulario" (validar)="onValidar()" (cancelar)="onCancelar()" (sair)="onSair()" (esqueceu)="onEsqueceu()"></app-login-mobile>
+  <app-login-mobile
+    [formulario]="formulario"
+    (validar)="onValidar()"
+    (cancelar)="onCancelar()"
+    (sair)="onSair()"
+    (esqueceu)="onEsqueceu()"
+  ></app-login-mobile>
 </ng-container>
 
 <ng-template #desktop>
-    <app-login-desktop [formulario]="formulario" (validar)="onValidar()" (cancelar)="onCancelar()" (sair)="onSair()" (esqueceu)="onEsqueceu()"></app-login-desktop>
+  <app-login-desktop
+    [formulario]="formulario"
+    (validar)="onValidar()"
+    (cancelar)="onCancelar()"
+    (sair)="onSair()"
+    (esqueceu)="onEsqueceu()"
+  ></app-login-desktop>
 </ng-template>

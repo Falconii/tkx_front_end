@@ -8,6 +8,6 @@ import { Component } from '@angular/core';
 })
 export class Tela01Component {
   constructor(private globalService: GlobalService) {
-    this.globalService.setMobile(true);
+    //this.globalService.setMobile(true);
   }
 }

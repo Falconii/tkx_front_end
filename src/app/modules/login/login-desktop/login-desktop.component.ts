@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class LoginDesktopComponent {
   @Input() formulario!: FormGroup;
-
+  @Input() onSubmit: boolean = false;
   @Output() validar = new EventEmitter();
   @Output() cancelar = new EventEmitter();
   @Output() sair = new EventEmitter();

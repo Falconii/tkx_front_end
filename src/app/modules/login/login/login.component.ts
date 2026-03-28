@@ -1,6 +1,6 @@
 import { loginService } from './../../../services/login.service';
 import { EmpresaModel } from './../../../models/empresa-model';
-import { Component, numberAttribute } from '@angular/core';
+import { Component, EventEmitter, numberAttribute } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -14,6 +14,9 @@ import { messageError } from '../../../shared/classes/util';
 import { LocalStorageService } from '../../../services/localStorage.service';
 import { PayLoadModel } from '../../../models/payload-model';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
+import { EventoModel } from '../../../models/evento-model';
+import { EventoService } from '../../../services/evento.service';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +30,10 @@ export class LoginComponent {
   inscricaoUsuario!: Subscription;
   inscricaoEmpresa!: Subscription;
   inscricaoLogin!: Subscription;
+  inscricaoEvento!: Subscription;
+
   isMobile = false;
+  evento: EventoModel = new EventoModel();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,6 +42,7 @@ export class LoginComponent {
     private empresasServices: EmpresaService,
     private localStorageSrv: LocalStorageService,
     private loginSrv: loginService,
+    private eventoSrv: EventoService,
     private router: Router,
     private matDialog: MatDialog,
     private appSnackBar: AppSnackbar,
@@ -54,12 +61,14 @@ export class LoginComponent {
 
   ngOnInit(): void {
     this.setValue();
+    this.getValoresIniciais();
   }
 
   ngOnDestroy(): void {
     this.inscricaoUsuario?.unsubscribe();
     this.inscricaoEmpresa?.unsubscribe();
     this.inscricaoLogin?.unsubscribe();
+    this.inscricaoEvento?.unsubscribe();
   }
 
   setValue() {
@@ -88,21 +97,22 @@ export class LoginComponent {
           this.getEmpresa(payload.id_empresa, payload.id_usuario);
         }
       }
+    } else {
+      this.globalService.setOnSubmit(false);
     }
   }
 
-  getEmpresa(id_empresa: number, id_usuario: number) {
+  getEmpresa(id_empresa: number = 1, id_usuario: number) {
     this.inscricaoEmpresa = this.empresasServices
       .getEmpresa(id_empresa)
       .subscribe({
         next: (data: EmpresaModel) => {
+          this.globalService.setOnSubmit(false);
           this.globalService.setEmpresa(data);
           this.getUsuario(id_empresa, id_usuario);
-          if (this.isMobile) {
-            this.router.navigate(['/mobile']);
-          }
         },
         error: (error: any) => {
+          this.globalService.setOnSubmit(false);
           console.log('Login', error);
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com A Empresa ${messageError(error)}`,
@@ -119,22 +129,20 @@ export class LoginComponent {
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
-          if (this.isMobile) {
-          }
         },
         error: (error: any) => {
+          this.globalService.setOnSubmit(false);
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com O Usuário ${messageError(error)}`,
             'OK',
           );
-
           this.globalService.setUsuario(new UsuarioModel());
           this.globalService.setLogado(false);
         },
       });
   }
 
-  getLogin(id_empresa: number, id_usuario: number, senha: string) {
+  getLogin(id_empresa: number = 1, id_usuario: number, senha: string) {
     const par = {
       id_empresa: id_empresa,
       codigo: id_usuario,
@@ -142,19 +150,26 @@ export class LoginComponent {
     };
     this.inscricaoLogin = this.loginSrv.login(par).subscribe({
       next: (data: any) => {
+        console.log('Buscando Empresa');
         this.localStorageSrv.setString('Token', data.accessToken);
         this.getEmpresa(data.id_empresa, data.id);
       },
       error: (error: any) => {
-        this.appSnackBar.openFailureSnackBar(`Problemas Com O Login`, 'OK');
+        this.globalService.setOnSubmit(false);
+        console.log('error', error);
+        this.appSnackBar.openFailureSnackBar(
+          `Problemas Com O Login - GetLogin`,
+          'OK',
+        );
       },
     });
   }
 
   onValidar() {
+    this.globalService.setOnSubmit(true);
     const id_usuario = this.formulario.value.id;
     const senha = this.formulario.value.senha;
-    this.getLogin(1, id_usuario, senha);
+    this.getLogin(this.globalService.getEmpresa().id, id_usuario, senha);
   }
 
   onCancelar() {
@@ -188,5 +203,27 @@ export class LoginComponent {
       console.error('Erro ao decodificar o token:', error);
       return null;
     }
+  }
+
+  getEvento(id_empresa: number = 1) {
+    const par: ParametroEvento01 = new ParametroEvento01();
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+    par.status = '1';
+    par.contador = 'N';
+
+    this.inscricaoEvento = this.eventoSrv
+      .getEventosParametro_01(par)
+      .subscribe({
+        next: (data: EventoModel[]) => {
+          console.log(data);
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Nenhum Evento Encontrado! ${messageError(error)}`,
+            'OK',
+          );
+        },
+      });
   }
 }

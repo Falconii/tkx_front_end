@@ -19,7 +19,11 @@
 
 <mat-dialog-content class="dialog-content">
   <div cdkScrollable class="scroll-wrapper">
-    <form [formGroup]="formulario" autocomplete="off">
+    <form
+      [formGroup]="formulario"
+      (ngSubmit)="onProcessar()"
+      autocomplete="off"
+    >
       <div class="col-med-1">
         <mat-form-field appearance="outline" class="uppercase-input col-max">
           <mat-label>RG Do Responsável:</mat-label>
@@ -52,6 +56,7 @@
           mat-raised-button
           color="warn"
           class="botao"
+          type="button"
           (click)="onExcluir()"
           *ngIf="botaoExcluir"
         >
@@ -62,17 +67,13 @@
           mat-raised-button
           color="primary"
           class="botao"
+          type="button"
           (click)="onCancelar()"
         >
           <mat-icon>cancel</mat-icon>
           Cancelar
         </button>
-        <button
-          mat-raised-button
-          color="accent"
-          class="botao"
-          (click)="onProcessar()"
-        >
+        <button mat-raised-button color="accent" class="botao" type="submit">
           <mat-icon>check</mat-icon>
           Gravar
         </button>

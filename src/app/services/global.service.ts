@@ -4,15 +4,15 @@ import { UsuarioModel } from '../models/usuario-model';
 import { EmpresaModel } from '../models/empresa-model';
 import { UsuarioService } from './usuario.service';
 import { SimNao } from '../shared/classes/sim-nao';
+import { EventoModel } from '../models/evento-model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalService {
-  token: string =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9lbXByZXNhIjoxLCJpZF91c3VhcmlvIjoxLCJpYXQiOjE3NjE5MTk5ODIsImV4cCI6MTc2MjUyNDc4Mn0.1L5CweiLEsIU9vZZXym1lLzC0aeDefGQSNKyrv4Xkho';
   usuario: UsuarioModel;
   empresa: EmpresaModel;
+  evento: EventoModel = new EventoModel();
   evento_situacoes: SimNao[] = [];
   logado: boolean = false;
   showSpin: boolean = false;
@@ -22,6 +22,8 @@ export class GlobalService {
   showEmpresaEmitter = new EventEmitter<boolean>();
   showUsuarioEmitter = new EventEmitter();
   isMobileEmitter = new EventEmitter<boolean>();
+
+  onSubmit = new EventEmitter<boolean>();
 
   changePassWordEmitter = new EventEmitter<boolean>();
 
@@ -39,11 +41,15 @@ export class GlobalService {
       new SimNao('1', 'Em Andamento'),
       new SimNao('0', 'Encerrado'),
     ];
+    this.evento.id_empresa = 1;
+    this.evento.id = 3;
+    this.evento.descricao = 'EVENTO MOGI-MIRIM/26';
+    this.evento.status = '1';
   }
 
-  setMobile(value: boolean) {
-    this.isMobileEmitter.emit(value);
-  }
+  //setMobile(value: boolean) {
+  //  this.isMobileEmitter.emit(value);
+  // }
 
   getEmpresa(): EmpresaModel {
     return this.empresa;
@@ -61,6 +67,10 @@ export class GlobalService {
     this.usuario = user;
   }
 
+  getEvento(): EventoModel {
+    return this.evento;
+  }
+
   setTrocaUsuario() {
     this.showUsuarioEmitter.emit();
   }
@@ -71,6 +81,14 @@ export class GlobalService {
     this.router.navigate(['/']);
   }
 
+  getLogado(): boolean {
+    if (this.usuario.id == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   setSpin(value: boolean) {
     this.showSpin = value;
     this.showSpinEmitter.emit(this.showSpin);
@@ -78,10 +96,6 @@ export class GlobalService {
 
   getSpin(): boolean {
     return this.showSpin;
-  }
-
-  getToken(): string {
-    return this.token;
   }
 
   getSituacoesEvento(): SimNao[] {
@@ -95,5 +109,13 @@ export class GlobalService {
       // pode ser um valor padrão de SimNao, ou lançar erro
       return new SimNao('', '');
     }
+  }
+
+  setChangePassWord() {
+    this.changePassWordEmitter.emit();
+  }
+
+  setOnSubmit(value: boolean) {
+    this.onSubmit.emit(value);
   }
 }

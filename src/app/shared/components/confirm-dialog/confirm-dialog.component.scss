@@ -1,78 +1,82 @@
 :host {
-    display: block;
+  display: block;
 }
-
 
 /* Título com ícone */
 
 .dialog-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    .warn-icon {
-        font-size: 28px;
-        height: 28px;
-        width: 28px;
-    }
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
+.dialog-title .warn-icon {
+  font-size: 28px;
+  height: 28px;
+  width: 28px;
+}
 
 /* Conteúdo */
 
 mat-dialog-content {
-    font-size: 15px;
-    color: #444;
-    margin-bottom: 20px;
-    line-height: 1.4;
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 20px;
+  line-height: 1.4;
 }
 
-
-/* Ações */
+/* Ações: sempre em linha */
 
 mat-dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding-top: 10px;
-    button {
-        min-width: 100px;
-    }
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  flex-wrap: nowrap;
+  /* não deixa quebrar linha */
 }
 
+/* Botões: deixam encolher e dividir espaço */
+
+mat-dialog-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  /* permite encolher bem */
+  max-width: 140px;
+  /* limite opcional */
+}
 
 /* Botão crítico */
 
 button[color="warn"] {
-    font-weight: 600;
+  font-weight: 600;
 }
 
+/* Ajustes leves para telas menores */
 
-/* 📱 Versão mobile */
-
-@media (max-width: 480px) {
-    .dialog-title {
-        font-size: 18px;
-        gap: 8px;
-        .warn-icon {
-            font-size: 24px;
-            height: 24px;
-            width: 24px;
-        }
-    }
-    mat-dialog-content {
-        font-size: 14px;
-        margin-bottom: 16px;
-    }
-    mat-dialog-actions {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        button {
-            width: 100%;
-            min-width: unset;
-        }
-    }
+@media (max-width: 600px) {
+  .dialog-title {
+    font-size: 18px;
+    gap: 8px;
+  }
+  .dialog-title .warn-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+  }
+  mat-dialog-content {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  mat-dialog-actions {
+    justify-content: space-between;
+    gap: 6px;
+  }
+  mat-dialog-actions button {
+    max-width: none;
+    /* deixa eles usarem a largura disponível */
+  }
 }

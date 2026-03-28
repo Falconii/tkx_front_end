@@ -1,1 +1,0 @@
-import{qa as t}from"./chunk-CTU5KEDL.js";var n=class i{transform(e){if(e=="")return"";let r="N\xE3o";return e=="S"?r="Sim":r="N\xE3o",r}static \u0275fac=function(r){return new(r||i)};static \u0275pipe=t({name:"simNao",type:i,pure:!0})};export{n as a};

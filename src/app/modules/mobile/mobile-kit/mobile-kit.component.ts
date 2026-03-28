@@ -24,6 +24,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { LocalStorageService } from '../../../services/localStorage.service';
 import { Router } from '@angular/router';
 import { UsuarioModel } from '../../../models/usuario-model';
+import { EventoModel } from '../../../models/evento-model';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -44,6 +45,8 @@ export class MobileKitComponent {
 
   participantes: ParticipanteModel[] = [];
 
+  evento: EventoModel = new EventoModel();
+
   constructor(
     private appSnackBar: AppSnackbar,
     private globalService: GlobalService,
@@ -51,10 +54,16 @@ export class MobileKitComponent {
     private localStorageSrv: LocalStorageService,
     private router: Router,
     private kitEntrega: MatDialog,
-  ) {}
+  ) {
+    /*  if (this.globalService.getEvento().id == 0) {
+      this.appSnackBar.openFailureSnackBar('Nenhum Evento Definido!', 'OK');
+      this.router.navigate(['/home']);
+    } */
+    this.evento = globalService.getEvento();
+  }
 
   ngOnInit(): void {
-    this.globalService.setMobile(true);
+    //this.globalService.setMobile(true);
     this.getParticipantes();
   }
 
@@ -87,7 +96,7 @@ export class MobileKitComponent {
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
-    par.id_evento = 2;
+    par.id_evento = this.globalService.getEvento().id;
 
     par.kit = this.parametroPesquisa.kit;
 
@@ -170,17 +179,19 @@ export class MobileKitComponent {
     dialogConfig.disableClose = true;
     dialogConfig.id = 'trocar';
     dialogConfig.width = '700px';
-    dialogConfig.autoFocus = false;
+    dialogConfig.autoFocus = true;
     dialogConfig.data = data;
     const modalDialog = this.kitEntrega
       .open(EntregaDialogComponent, dialogConfig)
       .beforeClosed()
       .subscribe((data: EntregaDialogData) => {
         if (data.processar) {
+          console.log('dado', dado);
+          console.log('data', data);
+          console.log('data.entrega', data.entrega);
           dado.entre_tam_camisa = data.entrega.tam_camisa;
           dado.entre_nome = data.entrega.nome_retirada;
           dado.entre_rg = data.entrega.rg_retirada;
-          console.log('dado', dado);
         }
       });
   }
