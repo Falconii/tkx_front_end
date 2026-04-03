@@ -118,9 +118,11 @@ export class MobileKitComponent {
         break;
     }
 
+    par.orderby = '000003';
+
     par.pagina = this.controlePaginas.getPaginalAtual();
 
-    par.tamPagina = 100;
+    par.tamPagina = 200;
 
     this.globalService.setSpin(true); // liga spinner
 

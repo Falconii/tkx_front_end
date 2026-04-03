@@ -1,0 +1,38 @@
+<mat-form-field appearance="outline" class="col-max">
+  <mat-label>{{ label }}</mat-label>
+
+  <!-- Modo somente leitura -->
+  <ng-container *ngIf="readOnly; else editMode">
+    <input matInput [value]="displayValue" readonly />
+  </ng-container>
+
+  <!-- Modo edição -->
+  <ng-template #editMode>
+    <!-- Lista pequena → mat-select -->
+    <ng-container *ngIf="!useSearch; else searchMode">
+      <mat-select [formControl]="control">
+        <mat-option *ngFor="let item of items" [value]="item[valueField]">
+          {{ item[displayField] }}
+        </mat-option>
+      </mat-select>
+    </ng-container>
+
+    <!-- Lista grande → input + lupa -->
+    <ng-template #searchMode>
+      <div class="search-wrapper">
+        <input
+          matInput
+          [value]="displayValue"
+          readonly
+          (click)="openSearchDialog()"
+        />
+        <button mat-icon-button type="button" (click)="openSearchDialog()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </ng-template>
+
+  <!-- Mensagens de erro -->
+  <mat-error *ngIf="NoValidtouchedOrDirty()">{{ getMensafield() }} </mat-error>
+</mat-form-field>

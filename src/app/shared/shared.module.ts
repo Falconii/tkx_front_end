@@ -23,6 +23,7 @@ import { FormularioFiltroEventoComponent } from './components/formulario-filtro-
 import { FormularioFiltroInscritoComponent } from './components/formulario-filtro-inscrito/formulario-filtro-inscrito.component';
 import { FormularioFiltroCabplanilhaComponent } from './components/formulario-filtro-cabplanilha/formulario-filtro-cabplanilha.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { CrudDisplayComponent } from './components/crud-display/crud-display.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     FormularioFiltroInscritoComponent,
     FormularioFiltroCabplanilhaComponent,
     ConfirmDialogComponent,
+    CrudDisplayComponent,
   ],
   imports: [
     CommonModule,
@@ -66,6 +68,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     FormularioFiltroEventoComponent,
     FormularioFiltroCabplanilhaComponent,
     ConfirmDialogComponent,
+    CrudDisplayComponent,
   ],
 })
 export class SharedModule {}

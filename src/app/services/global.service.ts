@@ -42,8 +42,8 @@ export class GlobalService {
       new SimNao('0', 'Encerrado'),
     ];
     this.evento.id_empresa = 1;
-    this.evento.id = 3;
-    this.evento.descricao = 'EVENTO MOGI-MIRIM/26';
+    this.evento.id = 4;
+    this.evento.descricao = 'EVENTO PIRACICABA/26';
     this.evento.status = '1';
   }
 

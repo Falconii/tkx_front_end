@@ -53,7 +53,7 @@ export class CrudEventoComponent {
     private route: ActivatedRoute,
     private router: Router,
     private appSnackBar: AppSnackbar,
-    private eventoDialog: MatDialog
+    private eventoDialog: MatDialog,
   ) {}
 
   ngOnInit(): void {}
@@ -98,7 +98,7 @@ export class CrudEventoComponent {
           } else {
             this.controlePaginas = new ControlePaginas(
               this.tamPagina,
-              data.total == 0 ? 1 : data.total
+              data.total == 0 ? 1 : data.total,
             );
             this.getEventos();
           }
@@ -132,49 +132,49 @@ export class CrudEventoComponent {
   openEventooDialog(
     opcao: CadastroAcoes = CadastroAcoes.Consulta,
     i: number,
-    evento?: EventoModel
+    evento?: EventoModel,
   ): void {
-    const data: EventoDialogData = new EventoDialogData();
+    const data: EventoDialogData = {
+      opcao,
+      processar: false,
+      evento: evento ?? {
+        ...new EventoModel(),
+        id_empresa: this.globalService.getEmpresa().id,
+        inicio: DataDDMMYYYY(new Date()),
+      },
+    };
 
-    if (evento == null) {
-      evento = new EventoModel();
-      evento.id_empresa = this.globalService.getEmpresa().id;
-      evento.inicio = DataDDMMYYYY(new Date());
-    }
-    data.opcao = opcao;
-    data.processar = false;
-    data.evento = evento;
-    console.log('Ação:', opcao, data.evento);
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
-    dialogConfig.id = 'crud-usuario';
-    dialogConfig.width = '80vw';
-    dialogConfig.height = '80vh';
-    dialogConfig.disableClose = true;
-    dialogConfig.panelClass = 'dialog-font-small';
+    dialogConfig.id = 'evento-dialog-fullscreen';
+
+    // FULLSCREEN REAL
+    dialogConfig.width = '100vw';
+    dialogConfig.height = '100vh';
+    dialogConfig.maxWidth = '100vw';
+    dialogConfig.panelClass = 'fullscreen-dialog';
+
     dialogConfig.data = data;
-    const modalDialog = this.eventoDialog
+
+    this.eventoDialog
       .open(EventoDialogComponent, dialogConfig)
       .beforeClosed()
-      .subscribe((data: EventoDialogData | null) => {
-        if (data?.processar) {
+      .subscribe((result: EventoDialogData | null) => {
+        if (result?.processar) {
           switch (opcao) {
             case CadastroAcoes.Inclusao:
-              this.eventos.push(data.evento!);
+              this.eventos.push(result.evento!);
               break;
+
             case CadastroAcoes.Edicao:
-              if (i >= 0) {
-                this.eventos[i] = data.evento!;
-              }
+              if (i >= 0) this.eventos[i] = result.evento!;
               break;
+
             case CadastroAcoes.Exclusao:
               this.eventos.splice(i, 1);
               break;
-            default:
-              break;
           }
-        } else {
         }
       });
   }

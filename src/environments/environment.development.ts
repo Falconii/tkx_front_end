@@ -3,7 +3,13 @@ export const environment = {
   data: '09/11/2023',
   production: false,
   ambiente: 'Desenvolvimento',
-  apiURL: 'http://192.168.15.12:3000/api/',
+  apiURL: 'http://localhost:3000/api/',
   apiOAuth2: 'http://localhost:3000/',
   wsURL: 'ws://localhost:8080',
 };
+
+/*
+
+apiURL: 'http://192.168.15.12:3000/api/'
+
+*/

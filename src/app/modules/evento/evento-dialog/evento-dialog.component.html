@@ -25,55 +25,118 @@
     <div class="moldura">
       <div class="col-med-3">
         <mat-form-field appearance="outline" class="col-max">
-          <mat-label>CÓDIGO</mat-label>
+          <mat-label>Código</mat-label>
           <input matInput formControlName="id" />
         </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Ativo</mat-label>
-          <input matInput formControlName="ativo" />
+        <app-crud-display
+          label="Situação"
+          [items]="lsSituacoes"
+          [control]="statusControl"
+          [readOnly]="true"
+          displayField="descricao"
+          valueField="sigla"
+        ></app-crud-display>
+        <app-crud-display
+          label="Responsável"
+          [items]="lsRresponsaveis"
+          [control]="idResponsavelControl"
+          [readOnly]="isReadOnly()"
+          displayField="razao"
+          valueField="id"
+        ></app-crud-display>
+      </div>
+      <div class="col-med-1">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Descrição</mat-label>
+          <input matInput formControlName="descricao" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('descricao')"
+            >{{ getMensafield("descricao") }}
+          </mat-error>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Cadastro</mat-label>
-          <input
-            matInput
-            formControlName="cadastr"
-            mask="00/00/0000"
-            placeholder="DD/MM/AAAA"
-            [dropSpecialCharacters]="false"
-            placeholder="DD/MM/AAAA"
-            readonly="true"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('cadastr')"
-            >{{ getMensafield("cadastr") }}
+      </div>
+
+      <div class="col-med-2">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Rua</mat-label>
+          <input matInput formControlName="rua" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('rua')"
+            >{{ getMensafield("rua") }}
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Inicio</mat-label>
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Nro</mat-label>
+          <input matInput formControlName="nro" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('nro')"
+            >{{ getMensafield("nro") }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-med-2">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Bairro</mat-label>
+          <input matInput formControlName="bairro" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('bairro')"
+            >{{ getMensafield("bairro") }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Cidade</mat-label>
+          <input matInput formControlName="cidade" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('cidade')"
+            >{{ getMensafield("cidade") }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-med-3">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Complemento</mat-label>
+          <input matInput formControlName="complemento" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('complemento')"
+            >{{ getMensafield("complemento") }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Estado</mat-label>
+          <input matInput formControlName="estado" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('estado')"
+            >{{ getMensafield("estado") }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>CEP</mat-label>
+          <input matInput formControlName="cep" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('cep')"
+            >{{ getMensafield("cep") }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-med-2">
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Data Inicial</mat-label>
           <input
             matInput
-            formControlName="cadastr"
+            formControlName="inicio"
             mask="00/00/0000"
             placeholder="DD/MM/AAAA"
             [dropSpecialCharacters]="false"
             placeholder="DD/MM/AAAA"
-            readonly="true"
           />
           <mat-error *ngIf="NoValidtouchedOrDirty('inicio')"
             >{{ getMensafield("inicio") }}
           </mat-error>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Final</mat-label>
+        <mat-form-field appearance="outline" class="uppercase-input col-max">
+          <mat-label>Data Final</mat-label>
           <input
             matInput
-            formControlName="cadastr"
+            formControlName="final"
             mask="00/00/0000"
             placeholder="DD/MM/AAAA"
             [dropSpecialCharacters]="false"
             placeholder="DD/MM/AAAA"
-            readonly="true"
           />
           <mat-error *ngIf="NoValidtouchedOrDirty('final')"
             >{{ getMensafield("final") }}
@@ -82,164 +145,10 @@
       </div>
       <div class="col-med-1">
         <mat-form-field appearance="outline" class="uppercase-input col-max">
-          <mat-label>Descrição</mat-label>
-          <input
-            matInput
-            formControlName="descricao"
-            autofocus
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('descricao')"
-            >{{ getMensafield("descricao") }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <mat-form-field appearance="outline" class="col-max">
-        <mat-label>Responsável:</mat-label>
-        <mat-select formControlName="id_responsavel">
-          <mat-option *ngFor="let resp of responsaveis" [value]="resp.id">
-            {{ resp.razao }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div class="col-med-3">
-        <mat-form-field appearance="outline" class="col-max column-span-2">
-          <mat-label>Endereço:</mat-label>
-          <input
-            matInput
-            formControlName="rua"
-            oninput="this.value = this.value.toUpperCase()"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('rua')"
-            >{{ getMensafield("rua") }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Número</mat-label>
-          <input
-            matInput
-            formControlName="nro"
-            oninput="this.value = this.value.toUpperCase()"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('nro')"
-            >{{ getMensafield("nro") }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-med-1">
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Complemento:</mat-label>
-          <input
-            matInput
-            formControlName="complemento"
-            oninput="this.value = this.value.toUpperCase()"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('complemento')"
-            >{{ getMensafield("complemento") }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-med-3">
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Bairro:</mat-label>
-          <input
-            matInput
-            formControlName="bairro"
-            oninput="this.value = this.value.toUpperCase()"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('bairro')"
-            >{{ getMensafield("bairro") }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Cidade:</mat-label>
-          <input
-            matInput
-            formControlName="cidade"
-            oninput="this.value = this.value.toUpperCase()"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('cidade')"
-            >{{ getMensafield("cidade") }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field
-          field
-          appearance="outline"
-          class="col-max"
-          *ngIf="
-            idAcao != getAcoes()['Consulta'] && idAcao != getAcoes()['Exclusao']
-          "
-        >
-          <mat-label>Estado:</mat-label>
-          <mat-select formControlName="uf">
-            <mat-option *ngFor="let uf of ufs" [value]="uf.sigla">
-              {{ uf.sigla }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field
-          field
-          appearance="outline"
-          class="col-max"
-          *ngIf="
-            idAcao == getAcoes()['Consulta'] || idAcao == getAcoes()['Exclusao']
-          "
-        >
-          <mat-label>Estado:</mat-label>
-          <input matInput formControlName="uf_" [readonly]="readOnly" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>CEP:</mat-label>
-          <input
-            matInput
-            formControlName="cep"
-            mask="99999-999"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('cep')"
-            >{{ getMensafield("cep") }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-med-3">
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>E-Mail:</mat-label>
-          <input
-            matInput
-            formControlName="email"
-            [readonly]="setEmailReadOnly()"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('email')"
-            >{{ getMensafield("email") }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Telefone 1:</mat-label>
-          <input
-            matInput
-            formControlName="tel1"
-            mask="(00) 0 0000-0000"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('tel1')"
-            >{{ getMensafield("tel1") }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Telefone 2:</mat-label>
-          <input
-            matInput
-            formControlName="tel2"
-            mask="(00) 0 0000-0000"
-            [readonly]="readOnly"
-          />
-          <mat-error *ngIf="NoValidtouchedOrDirty('tel2')"
-            >{{ getMensafield("tel2") }}
+          <mat-label>Observação</mat-label>
+          <input matInput formControlName="obs" [readonly]="readOnly" />
+          <mat-error *ngIf="NoValidtouchedOrDirty('obs')"
+            >{{ getMensafield("obs") }}
           </mat-error>
         </mat-form-field>
       </div>
