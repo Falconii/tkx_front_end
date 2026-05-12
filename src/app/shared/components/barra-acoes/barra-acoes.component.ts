@@ -14,7 +14,11 @@ export class BarraAcoesComponent implements OnInit {
   @Input('KIT') kit: boolean = false;
   @Input('PROCESSAR') processar: boolean = false;
   @Input('BARRA_VERTICAL') barra: boolean = false;
-  @Input('BARRA_EXCLUIR') barra_excluir: boolean = true;
+  @Input('BARRA_EXCLUIR') barra_excluir: boolean = false;
+  @Input('BARRA_LIBERAR') barra_liberar: boolean = false;
+  @Input('BARRA_ATIVAR') barra_ativar: boolean = false;
+  @Input('BARRA_ENCERRAR') barra_encerrar: boolean = false;
+
   @Output('changeOpcao') changeOpcao = new EventEmitter<number>();
 
   constructor() {}

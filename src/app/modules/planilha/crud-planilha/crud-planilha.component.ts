@@ -1,10 +1,11 @@
+import { ProcessaPlanilhaDialogData } from './../processa-planilha-dialog/processa-planilha-dialog-data';
 import { CabplanilhaModel } from './../../../models/cabplanilha-model';
 import { ParametroDeletaplanilha } from './../../../parametros/parametro-deletaplanilha';
 import { Component } from '@angular/core';
 import { ParametroCabplanilha01 } from '../../../parametros/parametro-cabplanilha01';
 import { ParametroModel } from '../../../models/parametro-model';
 import { ControlePaginas } from '../../../shared/classes/controle-paginas';
-import { MensagensBotoes } from '../../../shared/classes/util';
+import { MensagensBotoes, messageError } from '../../../shared/classes/util';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 import { Subscription } from 'rxjs';
 import { GlobalService } from '../../../services/global.service';
@@ -18,6 +19,7 @@ import { ImportPlanilhaDialogComponent } from '../import-planilha-dialog/import-
 import { Importplanilhadata } from '../import-planilha-dialog/importplanilha-data';
 import { CabplanilhaComplementarService } from '../../../services/cabplanilhaComplementar.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ProcessaPlanilhaDialogComponent } from '../processa-planilha-dialog/processa-planilha-dialog.component';
 
 @Component({
   selector: 'app-crud-planilha',
@@ -98,27 +100,23 @@ export class CrudPlanilhaComponent {
   }
 
   deletePlanilha(planilha: CabplanilhaModel, indice: number) {
-    let par = new ParametroDeletaplanilha();
-
-    par.id_empresa = planilha.id_empresa;
-
-    par.id_evento = planilha.id_evento;
-
-    par.id_planilha = planilha.id;
-    console.log('Parametro:', par);
-
-    this.inscricaoPlanilha = this.cabComplSrv.deletePlanilha(par).subscribe({
-      next: (data: any) => {
-        this.lsPlanilhas.splice(indice, 1);
-        this.getPlanilhas();
-      },
-      error: (error: any) => {
-        this.appSnackBar.openFailureSnackBar(
-          `Erro No UpLoad ${error.error?.tabela ?? ''} - ${error.error?.erro ?? ''} - ${error.error?.message ?? ''}`,
-          'OK',
-        );
-      },
-    });
+    this.inscricaoPlanilha = this.cabSrv
+      .cabplanilhaDelete(planilha.id_empresa, planilha.id_evento, planilha.id)
+      .subscribe({
+        next: (data: any) => {
+          this.appSnackBar.openSuccessSnackBar(
+            `Planilha Excluída Com Sucesso!`,
+            'OK',
+          );
+          this.lsPlanilhas.splice(indice, 1);
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Erro Na Exclusão ${messageError(error)}`,
+            'OK',
+          );
+        },
+      });
   }
 
   onHome() {}
@@ -163,9 +161,11 @@ export class CrudPlanilhaComponent {
   openUloadLoadDialog() {
     const dialogConfig = new MatDialogConfig();
     const data: Importplanilhadata = new Importplanilhadata();
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '1000px';
+    dialogConfig.height = '480px';
     dialogConfig.disableClose = true;
-    dialogConfig.id = 'linkmanual';
-    dialogConfig.panelClass = 'fullscreen-dialog';
+    dialogConfig.id = 'upload-planilha-dialog';
     dialogConfig.data = data;
     const modalDialog = this.uploadDialog
       .open(ImportPlanilhaDialogComponent, dialogConfig)
@@ -210,7 +210,24 @@ export class CrudPlanilhaComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        //this.deletePlanilha(planilha, indice);
+        const dialogConfig = new MatDialogConfig();
+        const data: ProcessaPlanilhaDialogData =
+          new ProcessaPlanilhaDialogData();
+        data.planilha = planilha;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = '1000px';
+        dialogConfig.height = '480px';
+        dialogConfig.disableClose = true;
+        dialogConfig.id = 'processar-planilha-dialog';
+        dialogConfig.data = data;
+        const modalDialog = this.uploadDialog
+          .open(ProcessaPlanilhaDialogComponent, dialogConfig)
+          .beforeClosed()
+          .subscribe((data: ProcessaPlanilhaDialogData | null) => {
+            if (data?.processar) {
+              this.getPlanilhas(TipoOperacao.Contador);
+            }
+          });
       }
     });
   }

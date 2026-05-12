@@ -1,70 +1,88 @@
 <!-- ACTION BAR (FORA do sidenav-container) -->
 <mat-toolbar color="primary">
-    <button mat-icon-button (click)="sidenav.toggle()">
+  <button mat-icon-button (click)="sidenav.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
 
-    <img src="/logo-tkx.jpg" class="logo-img" />
+  <img src="/logo-tkx.jpg" class="logo-img" />
 
-    <span class="spacer"></span>
+  <span class="spacer"></span>
 
-    <button mat-icon-button (click)="onLogin()">
+  <button mat-icon-button (click)="onLogin()">
     <mat-icon>person</mat-icon>
   </button>
-    <span>{{ getUsuarioNome().razao | firstName }}</span>
+  <span>{{ getUsuarioNome().razao | firstName }}</span>
 </mat-toolbar>
 
 <!-- LAYOUT PRINCIPAL -->
 <mat-sidenav-container class="layout-container">
-    <!-- MENU LATERAL -->
-    <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="side-menu">
-        <div class="menu-wrapper">
-            <!-- MENU PRINCIPAL (só aparece no desktop) -->
-            <ng-container *ngIf="!isMobile">
-                <ng-container *ngFor="let item of menu">
-                    <!-- ITEM PRINCIPAL -->
-                    <div class="menu-item" (click)="toggle(item.key)">
-                        <span>{{ item.label }}</span>
-                        <mat-icon class="arrow">
-                            {{ open[item.key] ? "expand_less" : "expand_more" }}
-                        </mat-icon>
-                    </div>
+  <!-- MENU LATERAL -->
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    class="side-menu"
+  >
+    <div class="menu-wrapper">
+      <!-- MENU PRINCIPAL (só aparece no desktop) -->
+      <ng-container *ngIf="!isMobile">
+        <ng-container *ngFor="let item of menu">
+          <!-- ITEM PRINCIPAL -->
+          <div class="menu-item" (click)="toggle(item.key)">
+            <span>{{ item.label }}</span>
+            <mat-icon class="arrow">
+              {{ open[item.key] ? "expand_less" : "expand_more" }}
+            </mat-icon>
+          </div>
 
-                    <!-- SUBMENU -->
-                    <div *ngIf="open[item.key]">
-                        <a *ngFor="let link of item.links" class="submenu-link" [routerLink]="link.route" (click)="onNavigate()">
+          <!-- SUBMENU -->
+          <div *ngIf="open[item.key]">
+            <a
+              *ngFor="let link of item.links"
+              class="submenu-link"
+              [routerLink]="link.route"
+              (click)="onNavigate()"
+            >
               {{ link.label }}
             </a>
 
-                        <ng-container *ngFor="let sub of item.children">
-                            <div class="submenu-title" (click)="toggle(sub.key)">
-                                <span>{{ sub.label }}</span>
-                                <mat-icon class="arrow">
-                                    {{ open[sub.key] ? "expand_less" : "expand_more" }}
-                                </mat-icon>
-                            </div>
+            <ng-container *ngFor="let sub of item.children">
+              <div class="submenu-title" (click)="toggle(sub.key)">
+                <span>{{ sub.label }}</span>
+                <mat-icon class="arrow">
+                  {{ open[sub.key] ? "expand_less" : "expand_more" }}
+                </mat-icon>
+              </div>
 
-                            <div *ngIf="open[sub.key]" class="sub-submenu">
-                                <a *ngFor="let link of sub.links" class="submenu-link" [routerLink]="link.route" (click)="onNavigate()">
+              <div *ngIf="open[sub.key]" class="sub-submenu">
+                <a
+                  *ngFor="let link of sub.links"
+                  class="submenu-link"
+                  [routerLink]="link.route"
+                  (click)="onNavigate()"
+                >
                   {{ link.label }}
                 </a>
-                            </div>
-                        </ng-container>
-                    </div>
-                </ng-container>
+              </div>
             </ng-container>
-            <ng-container *ngIf="isMobile">
-                <div class="menu-item" routerLink="mobile" (click)="onNavigate()">
-                    <span>Entrega de Kits</span>
-                </div>
-            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isMobile">
+        <div class="menu-item" routerLink="mobile" (click)="onNavigate()">
+          <span>Entrega de Kits</span>
         </div>
-    </mat-sidenav>
+      </ng-container>
+    </div>
+  </mat-sidenav>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <mat-sidenav-content>
-        <div class="container">
-            <router-outlet></router-outlet>
-        </div>
-    </mat-sidenav-content>
+  <!-- CONTEÚDO PRINCIPAL -->
+  <mat-sidenav-content>
+    <div class="div-spin">
+      <app-spins></app-spins>
+    </div>
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
 </mat-sidenav-container>

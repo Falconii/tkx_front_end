@@ -69,8 +69,7 @@ export class AppComponent {
       label: 'Eventos',
       links: [
         { label: 'Eventos', route: 'eventos' },
-        { label: 'Participantes', route: 'participantes' },
-        { label: 'Inscritos', route: 'inscritos' },
+        { label: 'Participantes', route: 'participantesv2' },
       ],
       children: [
         {

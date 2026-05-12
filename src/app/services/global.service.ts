@@ -5,6 +5,7 @@ import { EmpresaModel } from '../models/empresa-model';
 import { UsuarioService } from './usuario.service';
 import { SimNao } from '../shared/classes/sim-nao';
 import { EventoModel } from '../models/evento-model';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
   providedIn: 'root',
@@ -14,11 +15,13 @@ export class GlobalService {
   empresa: EmpresaModel;
   evento: EventoModel = new EventoModel();
   evento_situacoes: SimNao[] = [];
+  planilha_situacoes: SimNao[] = [];
+  lsSexos: SimNao[] = [];
   logado: boolean = false;
   showSpin: boolean = false;
 
   shomMenuEmitter = new EventEmitter<boolean>();
-  showSpinEmitter = new EventEmitter<boolean>();
+
   showEmpresaEmitter = new EventEmitter<boolean>();
   showUsuarioEmitter = new EventEmitter();
   isMobileEmitter = new EventEmitter<boolean>();
@@ -26,6 +29,11 @@ export class GlobalService {
   onSubmit = new EventEmitter<boolean>();
 
   changePassWordEmitter = new EventEmitter<boolean>();
+
+  private showSpinSubject = new BehaviorSubject<boolean>(false);
+
+  // Observable público para os componentes assinarem
+  showSpin$ = this.showSpinSubject.asObservable();
 
   constructor(
     private usuarioService: UsuarioService,
@@ -37,13 +45,25 @@ export class GlobalService {
     this.empresa.id = 1;
     this.logado = false;
     this.evento_situacoes = [
-      new SimNao('0', 'Em Abeto'),
-      new SimNao('1', 'Em Andamento'),
-      new SimNao('0', 'Encerrado'),
+      new SimNao('0', 'Aguardando Liberação'),
+      new SimNao('1', 'Inativo'),
+      new SimNao('2', 'StandBy'),
+      new SimNao('3', 'Ativo'),
+      new SimNao('4', 'Encerrado'),
     ];
+    this.planilha_situacoes = [
+      new SimNao('1', 'Importada'),
+      new SimNao('2', 'Processada'),
+    ];
+    this.lsSexos = [
+      { sigla: 'M', descricao: 'MASCULINO' },
+      { sigla: 'F', descricao: 'FEMININO' },
+      { sigla: 'O', descricao: 'OUTROS' },
+    ];
+
     this.evento.id_empresa = 1;
-    this.evento.id = 4;
-    this.evento.descricao = 'EVENTO PIRACICABA/26';
+    this.evento.id = 6;
+    this.evento.descricao = 'ESPORTE E MOVIMENTO';
     this.evento.status = '1';
   }
 
@@ -90,23 +110,50 @@ export class GlobalService {
   }
 
   setSpin(value: boolean) {
-    this.showSpin = value;
-    this.showSpinEmitter.emit(this.showSpin);
+    Promise.resolve().then(() => {
+      this.showSpinSubject.next(value);
+    });
   }
 
   getSpin(): boolean {
-    return this.showSpin;
+    return this.showSpinSubject.value;
   }
-
   getSituacoesEvento(): SimNao[] {
     return this.evento_situacoes;
   }
-  getSituacoesEventoByCodigo(idx: number): SimNao {
+  getSituacoesEventoByCodigo(value: string): SimNao {
+    const idx = this.evento_situacoes.findIndex(
+      (situacao) => situacao.sigla === value,
+    );
     if (idx >= 0 && idx < this.evento_situacoes.length) {
       return this.evento_situacoes[idx];
     } else {
-      // aqui você decide o que retornar quando o índice é inválido
-      // pode ser um valor padrão de SimNao, ou lançar erro
+      return new SimNao('', '');
+    }
+  }
+
+  getLsSexo(): SimNao[] {
+    return this.lsSexos;
+  }
+  getSexoBySigla(value: string): SimNao {
+    const idx = this.lsSexos.findIndex((sexo) => sexo.sigla === value);
+    if (idx >= 0 && idx < this.lsSexos.length) {
+      return this.lsSexos[idx];
+    } else {
+      return new SimNao('', '');
+    }
+  }
+
+  getPlanilha_situacoes(): SimNao[] {
+    return this.planilha_situacoes;
+  }
+  getPlanilha_situacoesBySigla(value: string): SimNao {
+    const idx = this.planilha_situacoes.findIndex(
+      (plan) => plan.sigla === value,
+    );
+    if (idx >= 0 && idx < this.lsSexos.length) {
+      return this.planilha_situacoes[idx];
+    } else {
       return new SimNao('', '');
     }
   }

@@ -1,7 +1,7 @@
+import { GlobalService } from './../../../services/global.service';
 import { Component, ViewChild } from '@angular/core';
 import { MensagensBotoes } from '../../../shared/classes/util';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
-import { GlobalService } from '../../../services/global.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -21,6 +21,8 @@ import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 import { AtualizaParametroEvento01 } from '../../../shared/classes/atualiza-parametro-evento01';
 import { UsuarioService } from '../../../services/usuario.service';
 import { UsuarioModule } from '../../usuario/usuario.module';
+import { EmpresaModel } from '../../../models/empresa-model';
+import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
 
 @Component({
   selector: 'app-crud-evento',
@@ -31,6 +33,8 @@ export class CrudEventoComponent {
   @ViewChild(CdkVirtualScrollViewport) viewPort!: CdkVirtualScrollViewport;
 
   inscricaoEvento!: Subscription;
+
+  inscricaoSituacao!: Subscription;
 
   eventos: EventoModel[] = [];
 
@@ -54,16 +58,41 @@ export class CrudEventoComponent {
     private router: Router,
     private appSnackBar: AppSnackbar,
     private eventoDialog: MatDialog,
+    private confirmDialog: ConfirmDialogService,
   ) {}
 
   ngOnInit(): void {}
 
   ngOnDestroy() {
     this.inscricaoEvento?.unsubscribe();
+    this.inscricaoSituacao?.unsubscribe();
+  }
+
+  getEmpresa(): EmpresaModel {
+    return this.globalService.getEmpresa();
   }
 
   escolha(opcao: number, i: number, evento?: EventoModel) {
-    this.openEventooDialog(opcao, i, evento);
+    if (evento) {
+      switch (opcao) {
+        case this.getAcoes().Liberar:
+          this.alteraSituacao(opcao, evento);
+          break;
+
+        case this.getAcoes().Ativar:
+          this.alteraSituacao(opcao, evento);
+          break;
+
+        case this.getAcoes().Encerrar:
+          this.alteraSituacao(opcao, evento);
+          break;
+        default:
+          this.openEventooDialog(opcao, i, evento);
+          break;
+      }
+    } else {
+      this.openEventooDialog(opcao, i, evento);
+    }
   }
 
   onHome() {
@@ -135,7 +164,8 @@ export class CrudEventoComponent {
     evento?: EventoModel,
   ): void {
     const data: EventoDialogData = {
-      opcao,
+      indice: i,
+      opcao: opcao,
       processar: false,
       evento: evento ?? {
         ...new EventoModel(),
@@ -172,10 +202,79 @@ export class CrudEventoComponent {
               break;
 
             case CadastroAcoes.Exclusao:
-              this.eventos.splice(i, 1);
+              if (result.indice >= 0) {
+                this.eventos.splice(result.indice, 1);
+              }
               break;
           }
         }
       });
+  }
+
+  alteraSituacao(opcao: CadastroAcoes, evento: EventoModel) {
+    let config: any = {};
+    let situacao: string = '0';
+
+    switch (opcao) {
+      case this.getAcoes().Liberar:
+        config = {
+          title: 'Liberação De Evento',
+          message: `Deseja Realmente Liberar Este Evento ?`,
+          icon: 'warning',
+          iconColor: 'warn',
+          confirmText: 'Liberar',
+          cancelText: 'Cancelar',
+        };
+        situacao = '1';
+        break;
+
+      case this.getAcoes().Ativar:
+        config = {
+          title: 'Ativar O Evento',
+          message: `Deseja Realmente Ativar O Evento ?`,
+          icon: 'warning',
+          iconColor: 'warn',
+          confirmText: 'Ativar',
+          cancelText: 'Cancelar',
+        };
+        situacao = '3';
+        break;
+
+      case this.getAcoes().Encerrar:
+        config = {
+          title: 'Encerrar O Evento',
+          message: `Deseja Realmente Encerrar O Evento ?`,
+          icon: 'warning',
+          iconColor: 'warn',
+          confirmText: 'Encerrar',
+          cancelText: 'Cancelar',
+        };
+        situacao = '4';
+        break;
+
+      default:
+        break;
+    }
+    this.confirmDialog.open(config).subscribe(async (result) => {
+      if (result) {
+        evento.user_update = this.globalService.getUsuario().id;
+        evento.status = situacao;
+        this.inscricaoSituacao = this.eventoSrv.eventoUpdate(evento).subscribe({
+          next: (data: any) => {
+            this.appSnackBar.openSuccessSnackBar(
+              `Situação Do Evento Alterada !`,
+              'OK',
+            );
+            evento.status = situacao;
+          },
+          error: (error: any) => {
+            this.appSnackBar.openFailureSnackBar(
+              `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+              'OK',
+            );
+          },
+        });
+      }
+    });
   }
 }

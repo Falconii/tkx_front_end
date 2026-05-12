@@ -3,14 +3,16 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 export function ValidatorStringLen(
   tamMin: number,
   tamMax: number,
-  required: boolean = false
+  required: boolean = false,
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     let message = '';
 
     let valido = true;
 
-    const value = control.value;
+    let value = control.value;
+
+    value = value == null ? '' : String(value);
 
     if (!required && value == null) {
       return null;

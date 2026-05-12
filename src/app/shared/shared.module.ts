@@ -24,6 +24,10 @@ import { FormularioFiltroInscritoComponent } from './components/formulario-filtr
 import { FormularioFiltroCabplanilhaComponent } from './components/formulario-filtro-cabplanilha/formulario-filtro-cabplanilha.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { CrudDisplayComponent } from './components/crud-display/crud-display.component';
+import { SituacaoEventoPipe } from './pipes/situacao-evento.pipe';
+import { FormularioFiltroParticipantev2Component } from './components/formulario-filtro-participantev2/formulario-filtro-participantev2.component';
+import { SpinsComponent } from './spins/spins.component';
+import { SituacaoPlanilhaPipe } from './pipes/situacao-planilha.pipe';
 
 @NgModule({
   declarations: [
@@ -37,6 +41,8 @@ import { CrudDisplayComponent } from './components/crud-display/crud-display.com
     ZeroFillPipe,
     TruncatePipe,
     FirstNamePipe,
+    SituacaoEventoPipe,
+    SituacaoPlanilhaPipe,
     FormularioFiltroEmpresaComponent,
     FormularioFiltroGrupousuarioComponent,
     FormularioFiltroUsuarioComponent,
@@ -45,6 +51,8 @@ import { CrudDisplayComponent } from './components/crud-display/crud-display.com
     FormularioFiltroCabplanilhaComponent,
     ConfirmDialogComponent,
     CrudDisplayComponent,
+    FormularioFiltroParticipantev2Component,
+    SpinsComponent,
   ],
   imports: [
     CommonModule,
@@ -61,14 +69,18 @@ import { CrudDisplayComponent } from './components/crud-display/crud-display.com
     ZeroFillPipe,
     TruncatePipe,
     FirstNamePipe,
+    SituacaoEventoPipe,
+    SituacaoPlanilhaPipe,
     SharedNavegatorComponent,
     FormularioFiltroEmpresaComponent,
     FormularioFiltroGrupousuarioComponent,
     FormularioFiltroUsuarioComponent,
     FormularioFiltroEventoComponent,
     FormularioFiltroCabplanilhaComponent,
+    FormularioFiltroParticipantev2Component,
     ConfirmDialogComponent,
     CrudDisplayComponent,
+    SpinsComponent,
   ],
 })
 export class SharedModule {}

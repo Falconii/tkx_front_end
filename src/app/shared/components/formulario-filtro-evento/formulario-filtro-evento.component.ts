@@ -116,7 +116,7 @@ export class FormularioFiltroEventoComponent {
       .get('id')
       ?.valueChanges.pipe(
         map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
+        filter((value) => value?.length >= 0),
         debounceTime(350),
         distinctUntilChanged(),
       )
@@ -126,7 +126,7 @@ export class FormularioFiltroEventoComponent {
       .get('descricao')
       ?.valueChanges.pipe(
         map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
+        filter((value) => value?.length >= 0),
         debounceTime(350),
         distinctUntilChanged(),
       )
@@ -287,6 +287,8 @@ export class FormularioFiltroEventoComponent {
           this.parametro.parametro = data[0].parametro;
           this.parametro.user_insert = data[0].user_insert;
           this.parametro.user_update = data[0].user_update;
+
+          console.log('Parâmetros Carregados: ', this.parametro.getParametro);
           this.setValues();
           this.setEnableFilter(true);
           this.onChangeParametros();
@@ -325,7 +327,7 @@ export class FormularioFiltroEventoComponent {
   refreshParametro() {
     let config = this.parametro.getParametro();
     Object(config).orderby = this.formulario.value.orderby;
-    Object(config).id = this.formulario.value.codigo;
+    Object(config).id = this.formulario.value.id;
     Object(config).descricao = this.formulario.value.descricao.toUpperCase();
     Object(config).id_responsavel = this.formulario.value.id_responsavel;
     Object(config).status = this.formulario.value.status;

@@ -1,3 +1,4 @@
+import { TipoPesquisa } from './../../classes/tipo-pesquisa';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Subscription, finalize } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -33,6 +34,9 @@ import { ParametroSendemailv2 } from '../../../parametros/parametro-sendemailv2'
 import { ControlePaginas } from '../../classes/controle-paginas';
 import { ParametroModel } from '../../../models/parametro-model';
 import { ParametroService } from '../../../services/parametro.service';
+import { Pesquisa } from '../../classes/Pesquisa';
+
+import { hasNonNumeric } from '../../classes/util';
 
 @Component({
   selector: 'app-formulario-filtro-usuario',
@@ -71,6 +75,8 @@ export class FormularioFiltroUsuarioComponent {
 
   parametro: ParametroModel = new ParametroModel();
 
+  pesquisa: Pesquisa = new Pesquisa();
+
   enable_filter: boolean = false;
 
   valueChangeSubs: Subscription[] = [];
@@ -87,9 +93,7 @@ export class FormularioFiltroUsuarioComponent {
   ) {
     this.formulario = formBuilder.group({
       orderby: [{ value: '' }],
-      id: [{ value: '' }],
-      razao: [{ value: '' }],
-      cnpj_cpf: [{ value: '' }],
+      pesquisa: [{ value: '' }],
       grupos: [{ value: '' }],
     });
     this.setHide();
@@ -109,37 +113,17 @@ export class FormularioFiltroUsuarioComponent {
     }
 
     // Se ativar, registrar os valueChanges
-    const idSub = this.formulario
-      .get('id')
+    const pesquisarSub = this.formulario
+      .get('pesquisa')
       ?.valueChanges.pipe(
         map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
+        filter((value) => value?.length >= 0),
         debounceTime(350),
         distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
 
-    const razaoSub = this.formulario
-      .get('razao')
-      ?.valueChanges.pipe(
-        map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
-        debounceTime(350),
-        distinctUntilChanged(),
-      )
-      .subscribe(() => this.onChangeParametros());
-
-    const cnpjSub = this.formulario
-      .get('cnpj_cpf')
-      ?.valueChanges.pipe(
-        map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
-        debounceTime(350),
-        distinctUntilChanged(),
-      )
-      .subscribe(() => this.onChangeParametros());
-
-    this.valueChangeSubs = [idSub, razaoSub, cnpjSub].filter(
+    this.valueChangeSubs = [pesquisarSub].filter(
       (sub): sub is Subscription => !!sub,
     );
   }
@@ -148,6 +132,8 @@ export class FormularioFiltroUsuarioComponent {
     this.inscricaoGrupo?.unsubscribe();
     this.inscricaoParametro?.unsubscribe();
     this.inscricaoEmail?.unsubscribe();
+    this.valueChangeSubs.forEach((sub) => sub.unsubscribe());
+    this.valueChangeSubs = [];
   }
 
   getGruposUsuarios() {
@@ -214,21 +200,19 @@ export class FormularioFiltroUsuarioComponent {
   }
 
   setValues() {
+    this.enable_filter = false;
     this.formulario.setValue({
       orderby: GetValueJsonString(this.parametro.getParametro(), 'orderby'),
-      id: GetValueJsonNumber(this.parametro.getParametro(), 'id'),
-      razao: GetValueJsonString(this.parametro.getParametro(), 'razao'),
-      cnpj_cpf: GetValueJsonString(this.parametro.getParametro(), 'cnpj_cpf'),
+      pesquisa: GetValueJsonString(this.parametro.getParametro(), 'pesquisa'),
       grupos: GetValueJsonNumber(this.parametro.getParametro(), 'grupo'),
     });
+    this.enable_filter = true;
   }
 
   setValuesNoParam() {
     this.formulario.setValue({
       orderby: '',
-      id: '',
-      razao: '',
-      cnpj_cpf: '',
+      pesquisa: '',
       grupos: 0,
     });
   }
@@ -254,10 +238,9 @@ export class FormularioFiltroUsuarioComponent {
     param.id_usuario = this.globalService.getUsuario().id;
     param.parametro = `
        {
-         "id":"",
-         "razao":"",
+         "pesquisa":"",
+         "pesquisarPor":99,
          "grupo":"",
-         "cnpj_cpf":"",
          "orderby":"000001",
          "page": 1,
          "sharp":false
@@ -328,10 +311,9 @@ export class FormularioFiltroUsuarioComponent {
 
   refreshParametro() {
     let config = this.parametro.getParametro();
-
-    Object(config).id = this.formulario.value.id;
-    Object(config).razao = this.formulario.value.razao.toUpperCase();
-    Object(config).cnpj_cpf = this.formulario.value.cnpj_cpf;
+    Object(config).pesquisa =
+      this.formulario.value.pesquisa.toUpperCase() || '';
+    Object(config).pesquisarPor = this.definirPesquisa();
     Object(config).grupo = this.formulario.value.grupos;
     Object(config).orderby = this.formulario.value.orderby;
 
@@ -339,10 +321,8 @@ export class FormularioFiltroUsuarioComponent {
   }
 
   onChangeParametros() {
-    if (this.enable_filter) {
-      this.refreshParametro();
-      this.change.emit(this.parametro);
-    }
+    this.refreshParametro();
+    this.change.emit(this.parametro);
   }
 
   onSaveConfig() {
@@ -362,19 +342,9 @@ export class FormularioFiltroUsuarioComponent {
   }
 
   clearValue(campo: string) {
-    if (campo == 'id') {
+    if (campo == 'pesquisa') {
       this.formulario.patchValue({
-        id: '',
-      });
-    }
-    if (campo == 'razao') {
-      this.formulario.patchValue({
-        razao: '',
-      });
-    }
-    if (campo == 'cnpj_cpf') {
-      this.formulario.patchValue({
-        cnpj_cpf: '',
+        pesquisa: '',
       });
     }
     if (campo == 'grupos')
@@ -385,17 +355,13 @@ export class FormularioFiltroUsuarioComponent {
   }
 
   ChangeValue(campo: string, value: string) {
-    if (campo == 'id')
+    if (campo == 'pesquisa')
       this.formulario.patchValue({
-        id: value,
+        pesquisa: value,
       });
-    if (campo == 'razao')
+    if (campo == 'grupos')
       this.formulario.patchValue({
-        observacao: value,
-      });
-    if (campo == 'cnpj_cpf')
-      this.formulario.patchValue({
-        observacao: value,
+        grupos: value,
       });
   }
 
@@ -463,5 +429,41 @@ export class FormularioFiltroUsuarioComponent {
 
   getMensafield(field: string): string {
     return this.formulario.get(field)?.errors?.['message'];
+  }
+
+  definirPesquisa(): TipoPesquisa {
+    const texto = this.formulario.get('pesquisa')?.value || '';
+    if (texto.trim().length == 0) {
+      return TipoPesquisa.None;
+    }
+    const isTexto = hasNonNumeric(texto);
+    if (isTexto) {
+      return TipoPesquisa.Nome;
+    }
+    if (texto.trim().length <= 6) {
+      return TipoPesquisa.Codigo;
+    }
+    return TipoPesquisa.Cpf;
+  }
+
+  getTextoTipoPesquisa(): string {
+    const tipo = parseInt(
+      Object(this.parametro.getParametro()).pesquisarPor,
+      10,
+    );
+
+    switch (tipo) {
+      case TipoPesquisa.Nome:
+        return 'Pelo Descrição';
+
+      case TipoPesquisa.Cpf:
+        return 'Pelo CPF/CNPJ';
+
+      case TipoPesquisa.Codigo:
+        return 'Pelo Código';
+
+      default:
+        return '';
+    }
   }
 }

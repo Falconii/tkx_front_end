@@ -204,6 +204,7 @@ export class FiltroEntregaKitComponent implements OnInit {
     }
     return TipoPesquisa.Cpf;
   }
+
   getTextoTipoPesquisa(
     value: TipoPesquisa = this.parametroPesquisa.pesquisarPor,
   ): string {

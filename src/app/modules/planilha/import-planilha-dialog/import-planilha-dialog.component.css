@@ -1,57 +1,95 @@
-.padrao {
-  font-size: 14px;
-  padding: 5px;
+:host {
+  display: block;
 }
 
-.mat-form-field {
-  font-size: 12px;
-}
+/* Título com ícone */
 
-.container {
+.dialog-title {
   display: flex;
-  margin-top: 3px;
-  margin-bottom: 3px;
-  justify-content: flex-start;
-  /* Alinha os elementos no centro horizontalmente */
   align-items: center;
-  /* Alinha os elementos no centro verticalmente */
   gap: 10px;
-  /* Espaçamento entre os elementos */
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.lancamento {
-  width: 100%;
-  margin-bottom: 10px;
+.dialog-title .warn-icon {
+  font-size: 28px;
+  height: 28px;
+  width: 28px;
 }
 
-.dialog-content {
-  height: calc(100vh - 64px);
-  width: 100%;
-  /* ajuste se tiver toolbar */
-  overflow-y: auto;
+/* Conteúdo */
+
+mat-dialog-content {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 20px;
+  line-height: 1.4;
 }
 
-.mat-dialog-container {
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.2),
-    0 6px 20px rgba(0, 0, 0, 0.19);
+/* Ações: sempre em linha */
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  flex-wrap: nowrap;
+  /* não deixa quebrar linha */
 }
 
-.fullscreen-dialog .mat-dialog-container {
-  width: 1200px !important;
-  height: 1100px !important;
-  max-width: 1200px !important;
-  min-width: 1200px !important;
-  min-height: 1100px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
+/* Botões: deixam encolher e dividir espaço */
+
+mat-dialog-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  /* permite encolher bem */
+  max-width: 140px;
+  /* limite opcional */
 }
 
-tr:nth-child(even) {
-  background-color: #f2f2aa;
+/* Botão crítico */
+
+button[color="warn"] {
+  font-weight: 600;
 }
 
-tr:hover {
-  background-color: rgb(202, 169, 157);
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 1em;
+  border-top: 1px solid #ccc;
+}
+
+button:disabled {
+  background-color: white;
+  cursor: not-allowed;
+}
+
+/* Ajustes leves para telas menores */
+
+@media (max-width: 600px) {
+  .dialog-title {
+    font-size: 18px;
+    gap: 8px;
+  }
+  .dialog-title .warn-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+  }
+  mat-dialog-content {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  mat-dialog-actions {
+    justify-content: space-between;
+    gap: 6px;
+  }
+  mat-dialog-actions button {
+    max-width: none;
+    /* deixa eles usarem a largura disponível */
+  }
 }

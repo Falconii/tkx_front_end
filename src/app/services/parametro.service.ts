@@ -18,7 +18,8 @@ export class ParametroService {
   getParametrosParametro_01(
     params: ParametroParametro01,
   ): Observable<ParametroModel[]> {
-    return this.http.post<ParametroModel[]>(`${this.apiURL}parametros`, params);
+    const url = new URL('parametro/parametros', this.apiURL).toString();
+    return this.http.post<ParametroModel[]>(url, params);
   }
   getParametro(
     id_empresa: number,
@@ -37,7 +38,7 @@ export class ParametroService {
   }
   parametroUpdate(parametro: ParametroModel): Observable<ParametroModel> {
     const url = new URL('parametro', this.apiURL).toString();
-    return this.http.put<ParametroModel>(`url,parametro`, parametro);
+    return this.http.put<ParametroModel>(url, parametro);
   }
 
   ParametroAtualiza(parametro: ParametroModel) {

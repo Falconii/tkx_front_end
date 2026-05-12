@@ -39,6 +39,10 @@ export function AtualizaParametroEvento01(
       par.status = Object(config).status;
     }
 
+    
+         if (Object(config).orderby?.trim() !== '') {
+           par.orderby = Object(config).orderby;
+         }
     return par;
   } catch (error) {
     throw error;

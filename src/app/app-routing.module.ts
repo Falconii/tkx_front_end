@@ -41,6 +41,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/evento/evento.module').then((m) => m.EventoModule),
   },
+
+  {
+    path: 'participantesv2',
+    loadChildren: () =>
+      import('./modules/participantev2/participantev2.module').then(
+        (m) => m.Participantev2Module,
+      ),
+  },
   {
     path: 'planilhas',
     loadChildren: () =>

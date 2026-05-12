@@ -83,6 +83,9 @@ export class MensagensBotoes {
   static multi_edicao = 'Alteração Em Lote';
   static kit = 'Kits';
   static processar = 'Processamento';
+  static liberar = 'Liberar Evento';
+  static ativar = 'Ativar Evento';
+  static encerrar = 'Encerrar Evento';
 }
 
 export function adicionaZero(numero: number) {

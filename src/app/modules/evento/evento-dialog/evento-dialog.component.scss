@@ -1,3 +1,16 @@
+:host ::ng-deep .mdc-dialog__surface {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep mat-dialog-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: none !important;
+}
+
 .form-container {
   flex: 1;
   display: flex;

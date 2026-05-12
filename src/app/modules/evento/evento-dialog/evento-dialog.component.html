@@ -7,13 +7,13 @@
       <button
         mat-raised-button
         color="#FFFFFF"
-        (click)="actionFunction()"
+        (click)="onSubmit()"
         *ngIf="idAcao != 3"
       >
         <mat-icon>check</mat-icon>
         {{ acao }}
       </button>
-      <button mat-raised-button color="accent" (click)="closeModal()">
+      <button mat-raised-button color="accent" (click)="onCancel()">
         <mat-icon>cancel</mat-icon>
         {{ getLabelCancel() }}
       </button>
@@ -97,17 +97,24 @@
             >{{ getMensafield("complemento") }}
           </mat-error>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="uppercase-input col-max">
-          <mat-label>Estado</mat-label>
-          <input matInput formControlName="estado" [readonly]="readOnly" />
-          <mat-error *ngIf="NoValidtouchedOrDirty('estado')"
-            >{{ getMensafield("estado") }}
-          </mat-error>
-        </mat-form-field>
+        <app-crud-display
+          label="Estado"
+          [items]="ufs"
+          [control]="ufControl"
+          [readOnly]="isReadOnly()"
+          displayField="nome"
+          valueField="sigla"
+        ></app-crud-display>
 
         <mat-form-field appearance="outline" class="uppercase-input col-max">
           <mat-label>CEP</mat-label>
-          <input matInput formControlName="cep" [readonly]="readOnly" />
+          <input
+            matInput
+            formControlName="cep"
+            mask="00000-000"
+            [dropSpecialCharacters]="true"
+            [readonly]="readOnly"
+          />
           <mat-error *ngIf="NoValidtouchedOrDirty('cep')"
             >{{ getMensafield("cep") }}
           </mat-error>

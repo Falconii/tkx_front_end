@@ -16,5 +16,8 @@ export enum CadastroAcoes {
   Trocar = 24,
   Kit = 25,
   Processar = 26,
+  Liberar = 27,
+  Ativar = 28,
+  Encerrar = 29,
   None = 99,
 }

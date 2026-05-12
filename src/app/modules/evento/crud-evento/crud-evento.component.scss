@@ -10,3 +10,118 @@ tr:nth-child(even) {
 tr:hover {
   background-color: rgb(202, 169, 157);
 }
+
+/* ================================
+   TABELA ESTÁVEL E RESPONSIVA
+   ================================ */
+
+.tabela-fixa {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Células com ellipsis e separação vertical */
+
+.tabela-fixa td,
+.tabela-fixa th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 8px;
+  /* linhas mais compactas */
+  vertical-align: top;
+  border-right: 1px solid #ccc;
+  /* linha vertical */
+}
+
+/* Remove linha da última coluna */
+
+.tabela-fixa td:last-child,
+.tabela-fixa th:last-child {
+  border-right: none;
+}
+
+/* ================================
+   LARGURAS DAS COLUNAS (percentuais)
+   ================================ */
+
+.col-situacao {
+  width: 15%;
+  /* ID + datas */
+}
+
+.col-evento {
+  width: 65%;
+  /* descrição */
+}
+
+.col-participantes {
+  width: 15%;
+  /* qtd participantes */
+}
+
+.col-acoes {
+  width: 15%;
+  /* botões */
+}
+
+/* ================================
+   AJUSTES DOS MAT-LABELS
+   ================================ */
+
+.Browse_Lanc_td {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.1;
+  /* deixa mais compacto */
+}
+
+/* ================================
+   ALINHAMENTOS INTERNOS
+   ================================ */
+
+.alinha_centro {
+  text-align: center;
+}
+
+/* GRID para alinhar Código / Início / Término */
+
+.alinha_esquerda {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  /* rótulo | valor */
+  column-gap: 6px;
+  /* espaço horizontal */
+  row-gap: 2px;
+  /* espaço vertical entre linhas */
+  align-items: center;
+  /* alinha verticalmente */
+}
+
+/* Rótulos (Código, Início, Término) */
+
+.alinha_esquerda .rotulo {
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  /* deixa mais compacto */
+}
+
+/* Valores (datas e código) */
+
+.alinha_esquerda .valor {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  /* deixa mais compacto */
+}
+
+/* Compactar a linha da tabela */
+
+.tabela-fixa td {
+  padding: 2px 8px;
+  /* diminui altura da linha */
+}

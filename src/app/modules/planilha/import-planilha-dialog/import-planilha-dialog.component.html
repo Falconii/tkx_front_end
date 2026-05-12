@@ -3,6 +3,16 @@
     <span class="example-spacer"
       >Rotina Para Fazer Upload Dos Parcitipantes</span
     >
+    <div class="button-container">
+      <button mat-raised-button color="#FFFFFF" (click)="onUpload()">
+        <mat-icon>check</mat-icon>
+        Upload
+      </button>
+      <button mat-raised-button color="accent" (click)="closeModal()">
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+      </button>
+    </div>
   </mat-toolbar>
 </div>
 <mat-dialog-content class="dialog-content">
@@ -56,15 +66,3 @@
     <h3>Total De Linhas Erro: {{ total_linhas_erro }}</h3>
   </div>
 </mat-dialog-content>
-<mat-dialog-actions>
-  <div class="button-container-right">
-    <button mat-raised-button color="#FFFFFF" (click)="onUpload()">
-      <mat-icon>check</mat-icon>
-      Processar
-    </button>
-    <button mat-raised-button color="accent" (click)="closeModal()">
-      <mat-icon>cancel</mat-icon>
-      Cancelar
-    </button>
-  </div>
-</mat-dialog-actions>

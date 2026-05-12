@@ -1,0 +1,109 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Participantes </span>
+    <app-navegator
+      [controle]="controlePaginas"
+      (changePage)="onChangePage()"
+    ></app-navegator>
+    <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      matTooltip="Retorno"
+      matTooltipPosition="above"
+      (click)="onHome()"
+    >
+      <mat-icon>home</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="example-icon"
+      aria-label="Example icon-button with share icon"
+      (click)="getParticpantes()"
+      matTooltip="Atualizar"
+      matTooltipPosition="above"
+    >
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()['Inclusao'], -1)"
+      [matTooltip]="getTexto().incluir"
+      matTooltipPosition="above"
+    >
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-participantev2
+  PARAMNAME="participantes"
+  [HIDE]="hide"
+  [EMAIL]="true"
+  [DOWNLOAD]="true"
+  [CONTROLE_PAGINAS]="controlePaginas"
+  (changeParametro)="onChangeParametros($event)"
+  (changeHide)="onChangeHide($event)"
+/>
+<table class="Browse_Lanc tabela-fixa">
+  <tr class="coluna-cabec">
+    <th class="col-situacao">Quando</th>
+    <th class="col-evento">Evento</th>
+    <th class="col-acoes">AÇÕES</th>
+  </tr>
+
+  <tr *ngFor="let participante of participantes; let i = index">
+    <td class="col-situacao">
+      <div class="alinha_esquerda">
+        <mat-label class="rotulo">Código:</mat-label>
+        <mat-label class="valor">{{ participante.id | zeroFill }}</mat-label>
+
+        <mat-label class="rotulo">Nº Do Peito:</mat-label>
+        <mat-label class="valor"
+          >{{ participante.nro_peito | zeroFill }}
+        </mat-label>
+
+        <mat-label class="rotulo">Inscrição:</mat-label>
+        <mat-label class="valor">{{ participante.inscricao }}</mat-label>
+
+        <mat-label class="rotulo">Kit:</mat-label>
+        <mat-label class="valor">?????</mat-label>
+      </div>
+    </td>
+
+    <td class="col-participante">
+      <div class="linha-info">
+        <span class="titulo">Nome:</span>
+        <span class="valor">{{ participante.nome }}</span>
+
+        <span class="titulo">Sexo:</span>
+        <span class="valor">{{
+          sexoBySigla(participante.sexo).descricao
+        }}</span>
+      </div>
+      <div class="alinha_esquerda">
+        <mat-label class="rotulo">Evento:</mat-label>
+        <mat-label class="valor"
+          >{{ participante.id_evento | zeroFill }}-{{
+            participante.evento_descricao
+          }}
+        </mat-label>
+      </div>
+      <div class="linha-info">
+        <span class="titulo">Categoria:</span>
+        <span class="valor">{{ participante.categoria_descricao }}</span>
+
+        <span class="titulo">Nasc.:</span>
+        <span class="valor">{{ participante.data_nasc }}</span>
+
+        <span class="titulo">CPF:</span>
+        <span class="valor">{{ participante.cnpj_cpf }}</span>
+      </div>
+    </td>
+
+    <td class="col-acoes">
+      <barra-acoes
+        (changeOpcao)="escolha($event, i, participante)"
+      ></barra-acoes>
+    </td>
+  </tr>
+</table>

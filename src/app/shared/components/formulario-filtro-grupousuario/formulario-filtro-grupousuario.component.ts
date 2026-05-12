@@ -1,3 +1,4 @@
+import { TipoPesquisa } from './../../classes/tipo-pesquisa';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ControlePaginas } from '../../classes/controle-paginas';
 import { Subscription, finalize } from 'rxjs';
@@ -30,6 +31,8 @@ import { DownloadDialogComponent } from '../download-dialog/download-dialog.comp
 import { ParametroSendemailv2 } from '../../../parametros/parametro-sendemailv2';
 import { ParametroService } from '../../../services/parametro.service';
 
+import { hasNonNumeric } from '../../classes/util';
+
 @Component({
   selector: 'app-formulario-filtro-grupousuario',
   templateUrl: './formulario-filtro-grupousuario.component.html',
@@ -56,9 +59,8 @@ export class FormularioFiltroGrupousuarioComponent {
   hideAcao: string = 'Ocultar';
 
   orderby: Orderby[] = [
-    { sigla: '000000', descricao: 'Código' },
-    { sigla: '000001', descricao: 'Razão Social' },
-    { sigla: '000002', descricao: 'CNPJ-CPF' },
+    { sigla: '000001', descricao: 'Código' },
+    { sigla: '000002', descricao: 'Descrição' },
   ];
 
   parametro: ParametroModel = new ParametroModel();
@@ -78,8 +80,7 @@ export class FormularioFiltroGrupousuarioComponent {
   ) {
     this.formulario = formBuilder.group({
       orderby: [{ value: '' }],
-      codigo: [{ value: '' }],
-      descricao: [{ value: '' }],
+      pesquisa: [{ value: '' }],
     });
     this.setHide();
     this.setValuesNoParam();
@@ -99,27 +100,16 @@ export class FormularioFiltroGrupousuarioComponent {
     }
 
     // Se ativar, registrar os valueChanges
-    const idSub = this.formulario
-      .get('codigo')
+    const pesquisaSub = this.formulario
+      .get('pesquisa')
       ?.valueChanges.pipe(
         map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
+        filter((value) => value?.length >= 0),
         debounceTime(350),
         distinctUntilChanged(),
       )
       .subscribe(() => this.onChangeParametros());
-
-    const razaoSub = this.formulario
-      .get('descricao')
-      ?.valueChanges.pipe(
-        map((value) => value?.trim()),
-        filter((value) => value?.length > 0),
-        debounceTime(350),
-        distinctUntilChanged(),
-      )
-      .subscribe(() => this.onChangeParametros());
-
-    this.valueChangeSubs = [idSub, razaoSub].filter(
+    this.valueChangeSubs = [pesquisaSub].filter(
       (sub): sub is Subscription => !!sub,
     );
   }
@@ -171,16 +161,18 @@ export class FormularioFiltroGrupousuarioComponent {
   setValues() {
     this.formulario.setValue({
       orderby: GetValueJsonString(this.parametro.getParametro(), 'orderby'),
-      codigo: GetValueJsonNumber(this.parametro.getParametro(), 'codigo'),
-      descricao: GetValueJsonString(this.parametro.getParametro(), 'descricao'),
+      pesquisa:
+        GetValueJsonString(
+          this.parametro.getParametro(),
+          'pesquisa',
+        ).toUpperCase() || '',
     });
   }
 
   setValuesNoParam() {
     this.formulario.setValue({
-      orderby: '',
-      codigo: '',
-      descricao: '',
+      orderby: '000001',
+      pesquisa: '',
     });
   }
 
@@ -205,8 +197,8 @@ export class FormularioFiltroGrupousuarioComponent {
     param.id_usuario = this.globalService.getUsuario().id;
     param.parametro = `
          {
-            "codigo":"",
-            "descricao":"",
+            "pesquisa":"",
+            "pesquisarPor":"",
             "tamPagina":50,
             "contador":"N",
             "orderby":"000001",
@@ -280,17 +272,16 @@ export class FormularioFiltroGrupousuarioComponent {
   refreshParametro() {
     let config = this.parametro.getParametro();
     Object(config).orderby = this.formulario.value.orderby;
-    Object(config).codigo = this.formulario.value.codigo;
-    Object(config).descricao = this.formulario.value.descricao.toUpperCase();
+    Object(config).pesquisa =
+      this.formulario.value.pesquisa.toUpperCase() || '';
+    Object(config).pesquisarPor = this.definirPesquisa();
 
     this.parametro.parametro = JSON.stringify(config);
   }
 
   onChangeParametros() {
-    if (this.enable_filter) {
-      this.refreshParametro();
-      this.change.emit(this.parametro);
-    }
+    this.refreshParametro();
+    this.change.emit(this.parametro);
   }
 
   onSaveConfig() {
@@ -310,28 +301,18 @@ export class FormularioFiltroGrupousuarioComponent {
   }
 
   clearValue(campo: string) {
-    if (campo == 'codigo') {
+    if (campo == 'pesquisa') {
       this.formulario.patchValue({
-        id: '',
+        pesquisa: '',
       });
     }
-    if (campo == 'descricao') {
-      this.formulario.patchValue({
-        razao: '',
-      });
-    }
-
     this.onChangeParametros();
   }
 
   ChangeValue(campo: string, value: string) {
-    if (campo == 'codigo')
+    if (campo == 'pesquisa')
       this.formulario.patchValue({
-        codigo: value,
-      });
-    if (campo == 'descricao')
-      this.formulario.patchValue({
-        descricao: value,
+        pesquisa: value,
       });
   }
 
@@ -399,5 +380,35 @@ export class FormularioFiltroGrupousuarioComponent {
 
   getMensafield(field: string): string {
     return this.formulario.get(field)?.errors?.['message'];
+  }
+
+  definirPesquisa(): TipoPesquisa {
+    const texto = this.formulario.get('pesquisa')?.value || '';
+    if (texto.trim().length == 0) {
+      return TipoPesquisa.None;
+    }
+    const isTexto = hasNonNumeric(texto);
+    if (isTexto) {
+      return TipoPesquisa.Nome;
+    }
+    return TipoPesquisa.Codigo;
+  }
+
+  getTextoTipoPesquisa(): string {
+    const tipo = parseInt(
+      Object(this.parametro.getParametro()).pesquisarPor,
+      10,
+    );
+
+    switch (tipo) {
+      case TipoPesquisa.Nome:
+        return 'Pelo Descrição';
+
+      case TipoPesquisa.Codigo:
+        return 'Pelo Código';
+
+      default:
+        return '';
+    }
   }
 }

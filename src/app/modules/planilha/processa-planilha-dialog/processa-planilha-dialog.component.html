@@ -1,0 +1,37 @@
+<div class="div-barra">
+    <mat-toolbar>
+        <span class="example-spacer">Rotina Para Fazer Upload Dos Parcitipantes</span
+    >
+    <div class="button-container">
+      <button mat-raised-button color="#FFFFFF" (click)="onExecucao()">
+        <mat-icon>check</mat-icon>
+        Executar
+      </button>
+      <button mat-raised-button color="accent" (click)="closeModal()">
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+      </button>
+    </div>
+  </mat-toolbar>
+</div>
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="formulario" autocomplete="off" class="form-container">
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="uppercase-input col-max">
+        <mat-label>Planilha</mat-label>
+        <input matInput formControlName="planilha" [readonly]="true" />
+      </mat-form-field>
+    </div>
+  </form>
+  <div class="progress-bar" *ngIf="emProcessamento">
+    <h4>{{ progress }}</h4>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div class="resumo" *ngIf="foiProcessada">
+    <h2>Planilha Sendo Processada....</h2>
+  </div>
+  <div class="resumo" *ngIf="total_linhas > 0">
+    <h3>Total De Linhas.....: {{ total_linhas }}</h3>
+    <h3>Total De Linhas Erro: {{ total_linhas_erro }}</h3>
+  </div>
+</mat-dialog-content>

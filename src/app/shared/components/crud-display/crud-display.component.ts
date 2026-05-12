@@ -20,38 +20,47 @@ export class CrudDisplayComponent {
 
   constructor() {}
 
+  ngDoCheck() {
+    // Se o pai marcou como touched, força o Angular Material a atualizar
+    if (this.control.touched && this.control.invalid) {
+      this.control.updateValueAndValidity({ onlySelf: true });
+    }
+  }
+
   get displayValue(): string {
     if (!this.control) return '';
 
     const value = this.control.value; // ex: '3'
 
     const item = this.items?.find((i) => i[this.valueField] == value);
-    // this.valueField = 'sigla' → i['sigla'] == '3'
 
     return item ? item[this.displayField] : '';
-    // this.displayField = 'descricao' → 'Ativa'
-  }
-
-  getErrorMessage(): string {
-    if (!this.control?.errors) return '';
-
-    if (this.control.errors['required']) return 'Campo obrigatório';
-    if (this.control.errors['minlength']) return 'Valor muito curto';
-    if (this.control.errors['maxlength']) return 'Valor muito longo';
-
-    return 'Valor inválido';
   }
 
   NoValidtouchedOrDirty(): boolean {
-    if (!this.control.valid && (this.control.touched || this.control.dirty)) {
-      return true;
-    }
-    return false;
+    return this.control.invalid && this.control.touched;
   }
 
   getMensafield(): string {
-    return 'Deu erro';
-    //turn this.control.errors?.['message'] || '';
+    if (!this.control || !this.control.errors) return '';
+
+    if (this.control.errors['required']) {
+      return 'Campo Obrigatório';
+    }
+
+    if (this.control.errors['minlength']) {
+      return 'Valor Abaixo Do Minimo';
+    }
+
+    if (this.control.errors['maxlength']) {
+      return 'Valor Acima Do Maximo';
+    }
+
+    if (this.control.errors['message']) {
+      return this.control.errors['message'];
+    }
+
+    return 'Valor inválido';
   }
 
   openSearchDialog() {

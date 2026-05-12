@@ -1,28 +1,105 @@
 <div class="barras2">
-    <button mat-icon-button aria-label="Example icon-button with share icon " class="botoes" (click)="onChangeOpcao(getAcoes().Consulta)" [matTooltip]="getTexto().consultar" *ngIf="consulta" matTooltipPosition="above">
+  <button
+    mat-icon-button
+    aria-label="Example icon-button with share icon "
+    class="botoes"
+    (click)="onChangeOpcao(getAcoes().Consulta)"
+    [matTooltip]="getTexto().consultar"
+    *ngIf="consulta"
+    matTooltipPosition="above"
+  >
     <mat-icon class="icon-size">remove_red_eye</mat-icon>
   </button>
 
-    <button mat-icon-button aria-label="Example icon-button with share icon " class="botoes" (click)="onChangeOpcao(getAcoes().Edicao)" [matTooltip]="getTexto().alterar" *ngIf="alterar" matTooltipPosition="above">
+  <button
+    mat-icon-button
+    aria-label="Example icon-button with share icon "
+    class="botoes"
+    (click)="onChangeOpcao(getAcoes().Edicao)"
+    [matTooltip]="getTexto().alterar"
+    *ngIf="alterar"
+    matTooltipPosition="above"
+  >
     <mat-icon class="icon-size">edit</mat-icon>
   </button>
-    <button mat-icon-button class="botoes" [matTooltip]="getTexto().excluir" *ngIf="excluir" (click)="onChangeOpcao(getAcoes().Exclusao)" matTooltipPosition="above">
+  <button
+    mat-icon-button
+    class="botoes"
+    [matTooltip]="getTexto().excluir"
+    *ngIf="excluir"
+    (click)="onChangeOpcao(getAcoes().Exclusao)"
+    matTooltipPosition="above"
+  >
     <mat-icon class="icon-size">delete</mat-icon>
   </button>
 
-    <button mat-button color="accent" [matTooltip]="getTexto().kit" *ngIf="kit" (click)="onChangeOpcao(getAcoes().Kit)" matTooltipPosition="above">
+  <button
+    mat-button
+    color="accent"
+    [matTooltip]="getTexto().kit"
+    *ngIf="kit"
+    (click)="onChangeOpcao(getAcoes().Kit)"
+    matTooltipPosition="above"
+  >
     KIT
   </button>
-    <button mat-icon-button class="botoes" [matTooltip]="getTexto().processar" *ngIf="excluir" (click)="onChangeOpcao(getAcoes().Processar)" matTooltipPosition="above">
+  <button
+    mat-icon-button
+    class="botoes"
+    [matTooltip]="getTexto().processar"
+    *ngIf="processar"
+    (click)="onChangeOpcao(getAcoes().Processar)"
+    matTooltipPosition="above"
+  >
     <mat-icon class="icon-size">play_circle_filled</mat-icon>
   </button>
 
-    <mat-menu #appMenu="matMenu">
-        <ng-template matMenuContent>
-            <button mat-menu-item (click)="onChangeOpcao(getAcoes().Exclusao)" *ngIf="barra_excluir">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="appMenu"
+    aria-label="Example icon-button with share icon "
+    *ngIf="barra"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #appMenu="matMenu">
+    <ng-template matMenuContent>
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Exclusao)"
+        *ngIf="barra_excluir"
+      >
         <mat-icon>delete</mat-icon>
         <span>{{ getTexto().excluir }}</span>
       </button>
-        </ng-template>
-    </mat-menu>
+
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Liberar)"
+        *ngIf="barra_liberar"
+      >
+        <mat-icon>toggle_on</mat-icon>
+        <span>{{ getTexto().liberar }}</span>
+      </button>
+
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Ativar)"
+        *ngIf="barra_ativar"
+      >
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ getTexto().ativar }}</span>
+      </button>
+
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Encerrar)"
+        *ngIf="barra_encerrar"
+      >
+        <mat-icon>close</mat-icon>
+        <span>{{ getTexto().encerrar }}</span>
+      </button>
+    </ng-template>
+  </mat-menu>
 </div>

@@ -1,6 +1,6 @@
 <div class="toolbar-alinhada">
   <mat-toolbar>
-    <span class="example-spacer">Usuários: </span>
+    <span class="example-spacer">Eventos </span>
     <app-navegator
       [controle]="controlePaginas"
       (changePage)="onChangePage()"
@@ -44,32 +44,69 @@
   (changeParametro)="onChangeParametros($event)"
   (changeHide)="onChangeHide($event)"
 />
-<table class="Browse_Lanc">
+<table class="Browse_Lanc tabela-fixa">
   <tr class="coluna-cabec">
-    <th>Cód Evento</th>
-    <th>Descrição</th>
-    <th>AÇÕES</th>
+    <th class="col-situacao">Quando</th>
+    <th class="col-evento">Evento</th>
+    <th class="col-participantes">Evento</th>
+    <th class="col-acoes">AÇÕES</th>
   </tr>
+
   <tr *ngFor="let evento of eventos; let i = index">
-    <td>
-      <div class="alinha_centro">
-        <mat-label class="Browse_Lanc_td"
-          >{{ evento.id | zeroFill }}
+    <td class="col-situacao">
+      <div class="alinha_esquerda">
+        <mat-label class="rotulo">Código:</mat-label>
+        <mat-label class="valor">{{ evento.id | zeroFill }}</mat-label>
+
+        <mat-label class="rotulo">Início:</mat-label>
+        <mat-label class="valor">{{ evento.inicio }}</mat-label>
+
+        <mat-label class="rotulo">Término:</mat-label>
+        <mat-label class="valor">{{ evento.final }}</mat-label>
+      </div>
+    </td>
+
+    <td class="col-evento">
+      <div class="alinha_esquerda">
+        <mat-label class="rotulo">Desc:</mat-label>
+        <mat-label class="valor">{{ evento.descricao }}</mat-label>
+
+        <mat-label class="rotulo">Cidade:</mat-label>
+        <mat-label class="valor">{{ evento.cidade }}</mat-label>
+
+        <mat-label class="rotulo">Situação:</mat-label>
+        <mat-label class="valor"
+          >{{ evento.status | situacao_evento }}
         </mat-label>
       </div>
     </td>
-    <td>
-      <div>
-        <mat-label
-          class="Browse_Lanc_td"
-          [matTooltip]="evento.descricao"
-          matTooltipPosition="above"
-          >{{ evento.descricao | truncate : 30 }}</mat-label
-        >
+
+    <td class="col-particpantes">
+      <div class="alinha_esquerda">
+        <mat-label class="rotulo">Qtd Part.:</mat-label>
+        <mat-label class="valor">{{ evento.qtd_participantes }}</mat-label>
+
+        <mat-label class="rotulo">Qtd Kits:</mat-label>
+        <mat-label class="valor">{{ evento.qtd_kits }}</mat-label>
+
+        <mat-label class="rotulo">Qtd Saldo:</mat-label>
+        <mat-label class="valor"
+          >{{ evento.qtd_participantes - evento.qtd_kits }}
+        </mat-label>
       </div>
     </td>
-    <td class="acoes">
-      <barra-acoes (changeOpcao)="escolha($event, i, evento)"> </barra-acoes>
+
+    <td class="col-acoes">
+      <barra-acoes
+        [EXCLUIR]="evento.status == '0' || evento.status == '1'"
+        [BARRA_VERTICAL]="
+          evento.status == '0' || evento.status == '2' || evento.status == '3'
+        "
+        [BARRA_ATIVAR]="evento.status == '2'"
+        [BARRA_LIBERAR]="evento.status == '0'"
+        [BARRA_ENCERRAR]="evento.status == '3'"
+        (changeOpcao)="escolha($event, i, evento)"
+      ></barra-acoes>
     </td>
   </tr>
 </table>

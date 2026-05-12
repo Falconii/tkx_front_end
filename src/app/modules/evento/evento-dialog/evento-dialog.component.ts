@@ -2,6 +2,7 @@ import { EventoService } from './../../../services/evento.service';
 import { EventoDialogData } from './EventoDialogData';
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -60,12 +61,7 @@ export class EventoDialogComponent {
 
   estadoSrv: EstadoService = new EstadoService();
 
-  lsSituacoes: SimNao[] = [
-    { sigla: '0', descricao: 'Inativo' },
-    { sigla: '1', descricao: 'Standby' },
-    { sigla: '2', descricao: 'Ativa' },
-    { sigla: '3', descricao: 'Finalizado' },
-  ];
+  lsSituacoes: SimNao[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -81,7 +77,14 @@ export class EventoDialogComponent {
       id: [{ value: '', disabled: true }],
       status: [{ value: '' }],
       descricao: [{ value: '' }, [ValidatorStringLen(3, 40, true)]],
-      id_responsavel: [{ value: '' }, [Validators.required]],
+      id_responsavel: [
+        { value: '' },
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(9999),
+        ],
+      ],
       rua: ['', [ValidatorStringLen(1, 80, false)]],
       nro: ['', [ValidatorStringLen(1, 10, false)]],
       complemento: ['', [ValidatorStringLen(0, 30, false)]],
@@ -90,14 +93,24 @@ export class EventoDialogComponent {
       uf: [['', [ValidatorStringLen(2, 2, false)]]],
       cep: [['', [ValidatorCep]]],
       inicio: [{ value: '' }, [ValidatorDate(true)]],
-      final: [{ value: '' }, [ValidatorDate]],
+      final: [{ value: '' }, [ValidatorDate(true, 'inicio')]],
       obs: [['', [ValidatorStringLen(0, 200, true)]]],
     });
+    this.ufs = this.estadoSrv.getEstados();
+    this.lsSituacoes = this.globalService.getSituacoesEvento();
   }
 
   ngOnInit(): void {
     this.idAcao = this.data.opcao;
     this.setAcao(this.data.opcao);
+    if (this.idAcao == CadastroAcoes.Inclusao) {
+      this.data.evento.status = '0';
+      this.data.evento.id_responsavel = this.globalService.getUsuario().id;
+      this.data.evento.uf = this.globalService.getEmpresa().uff;
+    }
+
+    console.log('evento', this.data.evento);
+
     this.getResponsaveis();
   }
 
@@ -115,6 +128,10 @@ export class EventoDialogComponent {
     return this.formulario.get('id_responsavel') as FormControl;
   }
 
+  get ufControl(): FormControl {
+    return this.formulario.get('uf') as FormControl;
+  }
+
   isReadOnly(): boolean {
     return (
       this.idAcao === this.getAcoes().Consulta ||
@@ -122,11 +139,17 @@ export class EventoDialogComponent {
     );
   }
 
-  actionFunction() {
+  onCancel() {
+    this.data.processar = false;
+    this.closeModal();
+  }
+
+  onSubmit() {
     if (this.formulario.valid) {
       this.executaAcao();
     } else {
       this.formulario.markAllAsTouched();
+      this.formulario.updateValueAndValidity();
       this.appSnackBar.openSuccessSnackBar(
         `Formulário Com Campos Inválidos.`,
         'OK',
@@ -134,8 +157,92 @@ export class EventoDialogComponent {
     }
   }
 
+  executaAcao() {
+    this.data.evento.descricao = this.formulario.value.descricao.toUpperCase();
+    this.data.evento.inicio = this.formulario.value.inicio;
+    this.data.evento.final = this.formulario.value.final;
+    this.data.evento.status = this.formulario.value.status;
+    this.data.evento.id_responsavel = this.formulario.value.id_responsavel;
+    this.data.evento.rua = this.formulario.value.rua.toUpperCase();
+    this.data.evento.nro = this.formulario.value.nro;
+    this.data.evento.complemento =
+      this.formulario.value.complemento.toUpperCase();
+    this.data.evento.bairro = this.formulario.value.bairro.toUpperCase();
+    this.data.evento.cidade = this.formulario.value.cidade.toUpperCase();
+    this.data.evento.uf = this.formulario.value.uf;
+    this.data.evento.cep = this.formulario.value.cep;
+    this.data.evento.obs = this.formulario.value.obs.toUpperCase();
+
+    switch (+this.idAcao) {
+      case CadastroAcoes.Inclusao:
+        this.data.evento.user_insert = this.globalService.getUsuario().id;
+        this.inscricaoAcao = this.eventoSrv
+          .eventoInsert(this.data.evento)
+          .subscribe({
+            next: (data: any) => {
+              this.appSnackBar.openSuccessSnackBar(
+                `Evento Incluido Com Sucesso !`,
+                'OK',
+              );
+              this.data.evento = data;
+              this.getEvento(this.data.evento);
+            },
+            error: (error: any) => {
+              console.log('error =>', error);
+              this.appSnackBar.openFailureSnackBar(
+                `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+                'OK',
+              );
+            },
+          });
+        break;
+      case CadastroAcoes.Edicao:
+        this.data.evento.user_update = this.globalService.getUsuario().id;
+        this.inscricaoAcao = this.eventoSrv
+          .eventoUpdate(this.data.evento)
+          .subscribe({
+            next: (data: any) => {
+              this.appSnackBar.openSuccessSnackBar(
+                `Usuário Alterado Com Sucesso !`,
+                'OK',
+              );
+              this.data.evento = data;
+              this.getEvento(this.data.evento);
+            },
+            error: (error: any) => {
+              this.appSnackBar.openFailureSnackBar(
+                `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+                'OK',
+              );
+            },
+          });
+        break;
+      case CadastroAcoes.Exclusao:
+        this.inscricaoAcao = this.eventoSrv
+          .eventoDelete(this.data.evento.id_empresa, this.data.evento.id)
+          .subscribe({
+            next: (data: any) => {
+              this.appSnackBar.openSuccessSnackBar(
+                `Evento Excluido Com Sucesso !`,
+                'OK',
+              );
+              this.data.processar = true;
+              this.closeModal();
+            },
+            error: (error: any) => {
+              this.appSnackBar.openFailureSnackBar(
+                `Erro Na Exclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+                'OK',
+              );
+            },
+          });
+        break;
+      default:
+        break;
+    }
+  }
+
   closeModal() {
-    this.data.processar = true;
     this.dialogRef.close(this.data);
   }
 
@@ -149,14 +256,14 @@ export class EventoDialogComponent {
       .subscribe({
         next: (data: EventoModel) => {
           this.data.evento = data;
-          this.closeModal;
+          this.data.processar = true;
+          this.closeModal();
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Problemas na Atualização Dos Eventos`,
             'OK',
           );
-          this.closeModal;
         },
       });
   }
@@ -193,7 +300,7 @@ export class EventoDialogComponent {
       complemento: this.data.evento.complemento,
       bairro: this.data.evento.bairro,
       cidade: this.data.evento.cidade,
-      uf: this.data.evento.uf,
+      uf: 'SP',
       cep: this.data.evento.cep,
       inicio: this.data.evento.inicio,
       final: this.data.evento.final,
@@ -260,99 +367,13 @@ export class EventoDialogComponent {
     }
   }
 
-  executaAcao() {
-    /*
-    this.data.evento.descricao = this.formulario.value.razao.toUpperCase();
-    this.data.evento.inicio = this.formulario.value.inicio;
-    this.data.evento.final = this.formulario.value.final;
-    this.data.evento.status = this.formulario.value.status;
-    this.data.evento.id_responsavel = this.formulario.value.id_responsavel;
-    this.data.evento.rua = this.formulario.value.rua.toUpperCase();
-    this.data.evento.nro = this.formulario.value.nro;
-    this.data.evento.complemento =
-      this.formulario.value.complemento.toUpperCase();
-    this.data.evento.bairro = this.formulario.value.bairro.toUpperCase();
-    this.data.evento.cidade = this.formulario.value.cidade.toUpperCase();
-    this.data.evento.uf = this.formulario.value.uf;
-    this.data.evento.cep = this.formulario.value.cep;
-    */
-    switch (+this.idAcao) {
-      case CadastroAcoes.Inclusao:
-        this.data.evento.user_insert = this.globalService.getUsuario().id;
-        this.inscricaoAcao = this.eventoSrv
-          .eventoInsert(this.data.evento)
-          .subscribe({
-            next: (data: any) => {
-              this.appSnackBar.openSuccessSnackBar(
-                `Usuário Incluido Com Sucesso !`,
-                'OK',
-              );
-              this.data.evento = data;
-              this.getEvento(this.data.evento);
-            },
-            error: (error: any) => {
-              console.log('error =>', error);
-              this.appSnackBar.openFailureSnackBar(
-                `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK',
-              );
-            },
-          });
-        break;
-      case CadastroAcoes.Edicao:
-        this.data.evento.user_update = this.globalService.getUsuario().id;
-        this.inscricaoAcao = this.eventoSrv
-          .eventoUpdate(this.data.evento)
-          .subscribe({
-            next: (data: any) => {
-              this.appSnackBar.openSuccessSnackBar(
-                `Usuário Alterado Com Sucesso !`,
-                'OK',
-              );
-              this.data.evento = data;
-
-              this.getEvento(this.data.evento);
-            },
-            error: (error: any) => {
-              this.appSnackBar.openFailureSnackBar(
-                `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK',
-              );
-            },
-          });
-        break;
-      case CadastroAcoes.Exclusao:
-        this.inscricaoAcao = this.eventoSrv
-          .eventoDelete(this.data.evento.id_empresa, this.data.evento.id)
-          .subscribe({
-            next: (data: any) => {
-              this.appSnackBar.openSuccessSnackBar(
-                `Usuário Excluido Com Sucesso !`,
-                'OK',
-              );
-              this.data.evento = data;
-              this.closeModal();
-            },
-            error: (error: any) => {
-              this.appSnackBar.openFailureSnackBar(
-                `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK',
-              );
-            },
-          });
-        break;
-      default:
-        break;
-    }
-  }
-
   getAcoes() {
     return CadastroAcoes;
   }
 
   NoValidtouchedOrDirty(campo: string): boolean {
     if (
-      !this.formulario.get(campo)?.valid &&
+      this.formulario.get(campo)?.invalid &&
       (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
     ) {
       return true;

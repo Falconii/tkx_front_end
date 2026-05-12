@@ -79,7 +79,7 @@ export class ImportPlanilhaDialogComponent {
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
-    par.status = '0';
+    par.status = '1';
 
     ((par.contador = 'N'), (par.tamPagina = 0));
 
@@ -157,52 +157,53 @@ export class ImportPlanilhaDialogComponent {
 
     let id_evento = 0;
 
-    key = parseInt(this.formulario.value.id_inventario);
+    key = parseInt(this.formulario.value.id_evento);
 
     if (isNaN(key)) {
-      id_evento = 0;
+      this.appSnackBar.openFailureSnackBar('Código Do Evento Inválido!', 'OK');
+      return;
     } else {
       id_evento = key;
     }
 
     this.emProcessamento = true;
 
-    this.importacaoSrv
-      .uploadPlanilha(this.globalService.getEmpresa().id, this.selectedFile)
-      .subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.UploadProgress) {
-            this.progress = Math.round((100 * event.loaded) / event.total);
-          } else if (event.type === HttpEventType.Response) {
-            this.emProcessamento = false;
-            this.foiProcessada = true;
-            this.progress = 0;
-            this.appSnackBar.openSuccessSnackBar(
-              'Planilha Importada com Sucesso!',
-              'OK',
-            );
+    console.log('id_evento', id_evento);
 
-            if (this.selectedFile?.name) {
-              this.verificaStatus(
-                this.globalService.getEmpresa().id,
-                id_evento,
-                this.selectedFile.name,
-              );
-            }
-          }
-        },
-        error: (error) => {
+    this.importacaoSrv.uploadPlanilha(id_evento, this.selectedFile).subscribe({
+      next: (event: any) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progress = Math.round((100 * event.loaded) / event.total);
+        } else if (event.type === HttpEventType.Response) {
           this.emProcessamento = false;
-          this.foiProcessada = false;
-          this.appSnackBar.openFailureSnackBar(
-            `Erro No UpLoad ${error.error?.tabela ?? ''} - ${error.error?.erro ?? ''} - ${error.error?.message ?? ''}`,
+          this.foiProcessada = true;
+          this.progress = 0;
+          this.appSnackBar.openSuccessSnackBar(
+            'Planilha Importada com Sucesso!',
             'OK',
           );
-          this.progress = 0;
-          this.selectedFile = null;
-          this.formulario.patchValue({ caminho: '' });
-        },
-      });
+
+          if (this.selectedFile?.name) {
+            this.verificaStatus(
+              this.globalService.getEmpresa().id,
+              id_evento,
+              this.selectedFile.name,
+            );
+          }
+        }
+      },
+      error: (error) => {
+        this.emProcessamento = false;
+        this.foiProcessada = false;
+        this.appSnackBar.openFailureSnackBar(
+          `Erro No UpLoad ${error.error?.tabela ?? ''} - ${error.error?.erro ?? ''} - ${error.error?.message ?? ''}`,
+          'OK',
+        );
+        this.progress = 0;
+        this.selectedFile = null;
+        this.formulario.patchValue({ caminho: '' });
+      },
+    });
   }
 
   verificaStatus(id_empresa: number, id_evento: number, fileName: string) {

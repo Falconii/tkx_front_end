@@ -8,9 +8,10 @@ import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { MaterialModule } from '../../../material/material.module';
 import { SharedModule } from '../../shared/shared.module';
 import { ImportPlanilhaDialogComponent } from './import-planilha-dialog/import-planilha-dialog.component';
+import { ProcessaPlanilhaDialogComponent } from './processa-planilha-dialog/processa-planilha-dialog.component';
 
 @NgModule({
-  declarations: [CrudPlanilhaComponent, ImportPlanilhaDialogComponent],
+  declarations: [CrudPlanilhaComponent, ImportPlanilhaDialogComponent, ProcessaPlanilhaDialogComponent],
   imports: [
     CommonModule,
     PlanilhaRoutingModule,
