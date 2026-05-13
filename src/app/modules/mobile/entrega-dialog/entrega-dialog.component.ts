@@ -14,6 +14,10 @@ import { ValidatorStringLen } from '../../../shared/Validators/validator-string-
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
+import { Entregav2Service } from '../../../services/entregav2.service';
+import { Entregav2Model } from '../../../models/entregav2-model';
+import { EntregaV2DialogData } from './entrega-v2-dialog-data';
+import { Participantev2Service } from '../../../services/participantev2.service';
 
 @Component({
   selector: 'app-entrega-dialog',
@@ -26,6 +30,8 @@ export class EntregaDialogComponent {
   formulario: FormGroup;
 
   inscricaoEntrega!: Subscription;
+  inscricaoAcao!: Subscription;
+  inscricaoParticipante!: Subscription;
 
   botaoExcluir: boolean = false;
 
@@ -34,11 +40,12 @@ export class EntregaDialogComponent {
   constructor(
     private formBuilder: FormBuilder,
     private appSnackBar: AppSnackbar,
-    private entregaSrv: EntregaService,
+    private entregaSrv: Entregav2Service,
+    private participanteSrv: Participantev2Service,
     private globalService: GlobalService,
     public dialogRef: MatDialogRef<EntregaDialogComponent>,
     private confirmDialog: ConfirmDialogService,
-    @Inject(MAT_DIALOG_DATA) public data: EntregaDialogData,
+    @Inject(MAT_DIALOG_DATA) public data: EntregaV2DialogData,
   ) {
     this.formulario = formBuilder.group({
       nome_retirada: [{ value: '' }, [ValidatorStringLen(3, 60, true)]],
@@ -48,24 +55,27 @@ export class EntregaDialogComponent {
   }
 
   ngOnInit() {
+    console.log('data', this.data);
     this.setValueNoParam();
     this.getEntrega();
   }
 
   ngOnDestroy(): void {
     this.inscricaoEntrega?.unsubscribe();
+    this.inscricaoAcao?.unsubscribe();
+    this.inscricaoParticipante?.unsubscribe();
   }
 
   getEntrega() {
     this.inscricaoEntrega = this.entregaSrv
-      .getEntrega(
+      .getEntregav2(
         this.data.dado.id_empresa,
         this.data.dado.id_evento,
-        this.data.dado.id_inscrito,
+        this.data.dado.id_entrega,
       )
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
-        next: (data: EntregaModel) => {
+        next: (data: Entregav2Model) => {
           this.botaoExcluir = true;
           this.data.entrega = data;
           this.acao = CadastroAcoes.Edicao;
@@ -77,10 +87,11 @@ export class EntregaDialogComponent {
           if (error.status && error.status == 409) {
             this.botaoExcluir = false;
             const dataAtual: Date = new Date();
-            this.data.entrega = new EntregaModel();
+            this.data.entrega = new Entregav2Model();
             this.data.entrega.id_empresa = this.data.dado.id_empresa;
             this.data.entrega.id_evento = this.data.dado.id_evento;
-            this.data.entrega.id_inscrito = this.data.dado.id_inscrito;
+            this.data.entrega.id = 0;
+            this.data.entrega.id_entrega = this.data.dado.id_entrega;
             this.data.entrega.data_retirada = DataYYYYMMDD(dataAtual);
             this.acao = CadastroAcoes.Inclusao;
             console.log('Inclusão');
@@ -99,17 +110,13 @@ export class EntregaDialogComponent {
   insertEntrega() {
     console.log('Fazendo Insert', this.data.entrega);
     this.inscricaoEntrega = this.entregaSrv
-      .entregaInsert(this.data.entrega)
+      .entregav2Insert(this.data.entrega)
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
-        next: (data: EntregaModel) => {
+        next: (data: Entregav2Model) => {
           this.data.entrega = data;
-          this.appSnackBar.openSuccessSnackBar(
-            `Kit Retirado Com Sucesso`,
-            'OK',
-          );
-          this.data.processar = true;
-          this.closeModal();
+          this.data.dado.id_entrega = data.id;
+          this.updateParticipante();
         },
         error: (error: any) => {
           console.log(error);
@@ -124,10 +131,10 @@ export class EntregaDialogComponent {
   updatetEntrega() {
     console.log('Fazendo Update', this.data.entrega);
     this.inscricaoEntrega = this.entregaSrv
-      .entregaUpdate(this.data.entrega)
+      .entregav2Update(this.data.entrega)
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
-        next: (data: EntregaModel) => {
+        next: (data: Entregav2Model) => {
           this.data.entrega = data;
           this.appSnackBar.openSuccessSnackBar(
             `Kit Retirado Com Sucesso`,
@@ -138,7 +145,7 @@ export class EntregaDialogComponent {
         },
         error: (error: any) => {
           console.log(error);
-          this.data.entrega = new EntregaModel();
+          this.data.entrega = new Entregav2Model();
           this.appSnackBar.openFailureSnackBar(
             `Falha Na Alteração Da entrega Do Kit ${messageError(error)}`,
             'OK',
@@ -149,15 +156,15 @@ export class EntregaDialogComponent {
 
   deleteEntrega() {
     this.inscricaoEntrega = this.entregaSrv
-      .entregaDelete(
+      .entregav2Delete(
         this.data.dado.id_empresa,
         this.data.dado.id_evento,
-        this.data.dado.id_inscrito,
+        this.data.dado.id_entrega,
       )
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
         next: (data: any) => {
-          this.data.entrega = new EntregaModel();
+          this.data.entrega = new Entregav2Model();
           this.appSnackBar.openSuccessSnackBar(
             `Kit Excluido Com Sucesso`,
             'OK',
@@ -180,6 +187,51 @@ export class EntregaDialogComponent {
       nome_retirada: this.data.entrega.nome_retirada,
       tam_camisa: this.data.entrega.tam_camisa,
     });
+  }
+
+  updateParticipante() {
+    this.data.dado.user_update = this.globalService.getUsuario().id;
+    this.inscricaoAcao = this.participanteSrv
+      .participantev2Update(this.data.dado)
+      .subscribe({
+        next: (data: any) => {
+          this.appSnackBar.openSuccessSnackBar(
+            `Kit IncluídoCom Sucesso !`,
+            'OK',
+          );
+
+          this.getParticipante();
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+            'OK',
+          );
+        },
+      });
+  }
+
+  getParticipante() {
+    this.data.dado.user_update = this.globalService.getUsuario().id;
+    this.inscricaoParticipante = this.participanteSrv
+      .getParticipantev2(
+        this.data.dado.id_empresa,
+        this.data.dado.id_evento,
+        this.data.dado.id,
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.data.dado = data;
+          this.data.processar = true;
+          this.closeModal();
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Erro No Lançamento Do Kit ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+            'OK',
+          );
+        },
+      });
   }
 
   setValueNoParam() {

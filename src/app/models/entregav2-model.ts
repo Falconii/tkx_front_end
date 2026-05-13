@@ -1,7 +1,7 @@
-export class EntregaModel{
+export class Entregav2Model{
 		public id_empresa:number =   0   ; 
 		public id_evento:number =   0   ; 
-		public id:number =   0   ; 
+		public id:number =   0  ; 
 		public rg_retirada:string =   ""   ; 
 		public nome_retirada:string =   ""   ; 
 		public tam_camisa:string =   ""   ; 

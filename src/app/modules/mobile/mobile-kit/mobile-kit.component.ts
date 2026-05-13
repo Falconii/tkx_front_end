@@ -9,7 +9,6 @@ import { EntregaDialogComponent } from '../entrega-dialog/entrega-dialog.compone
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ParametroParticipante01 } from '../../../parametros/parametro-participante01';
 import { ControlePaginas } from '../../../shared/classes/controle-paginas';
-import { ParticipanteService } from '../../../services/participante.service';
 import { ParticipanteModel } from '../../../models/participante-model';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import {
@@ -25,6 +24,12 @@ import { LocalStorageService } from '../../../services/localStorage.service';
 import { Router } from '@angular/router';
 import { UsuarioModel } from '../../../models/usuario-model';
 import { EventoModel } from '../../../models/evento-model';
+import { EventoService } from '../../../services/evento.service';
+import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
+import { Participantev2Service } from '../../../services/participantev2.service';
+import { ParametroParticipantev201 } from '../../../parametros/parametro-participantev201';
+import { Participantev2Model } from '../../../models/participantev2-model';
+import { EntregaV2DialogData } from '../entrega-dialog/entrega-v2-dialog-data';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -33,6 +38,7 @@ import { EventoModel } from '../../../models/evento-model';
 })
 export class MobileKitComponent {
   inscricaoParticipantes!: Subscription;
+  inscricaoEventoAtivo!: Subscription;
 
   tamPagina = 50;
 
@@ -43,32 +49,27 @@ export class MobileKitComponent {
     this.tamPagina,
   );
 
-  participantes: ParticipanteModel[] = [];
+  participantes: Participantev2Model[] = [];
 
   evento: EventoModel = new EventoModel();
 
   constructor(
     private appSnackBar: AppSnackbar,
     private globalService: GlobalService,
-    private participanteSrv: ParticipanteService,
+    private eventoSrv: EventoService,
+    private participanteSrv: Participantev2Service,
     private localStorageSrv: LocalStorageService,
     private router: Router,
     private kitEntrega: MatDialog,
-  ) {
-    /*  if (this.globalService.getEvento().id == 0) {
-      this.appSnackBar.openFailureSnackBar('Nenhum Evento Definido!', 'OK');
-      this.router.navigate(['/home']);
-    } */
-    this.evento = globalService.getEvento();
-  }
+  ) {}
 
   ngOnInit(): void {
-    //this.globalService.setMobile(true);
-    this.getParticipantes();
+    this.getEventoAtivo();
   }
 
   ngOnDestroy(): void {
     this.inscricaoParticipantes?.unsubscribe();
+    this.inscricaoEventoAtivo?.unsubscribe();
   }
 
   getParticipantes() {
@@ -92,21 +93,21 @@ export class MobileKitComponent {
       nro_peito = key;
     }
 
-    let par = new ParametroParticipante01();
+    let par = new ParametroParticipantev201();
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
-    par.id_evento = this.globalService.getEvento().id;
+    par.id_evento = this.evento.id;
 
-    par.kit = this.parametroPesquisa.kit;
+    //par.kit = this.parametroPesquisa.kit;
 
     switch (this.parametroPesquisa.pesquisarPor) {
       case TipoPesquisa.Nome:
-        par.inscrito_nome = this.parametroPesquisa.pesquisar;
+        par.nome = this.parametroPesquisa.pesquisar;
         break;
 
       case TipoPesquisa.Cpf:
-        par.inscrito_cpf = this.parametroPesquisa.pesquisar;
+        par.cnpj_cpf = this.parametroPesquisa.pesquisar;
         break;
 
       case TipoPesquisa.Inscricao:
@@ -127,10 +128,10 @@ export class MobileKitComponent {
     this.globalService.setSpin(true); // liga spinner
 
     this.inscricaoParticipantes = this.participanteSrv
-      .getParticipantesParametro_01(par)
+      .getParticipantesv2Parametro_01(par)
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
-        next: (data: ParticipanteModel[]) => {
+        next: (data: Participantev2Model[]) => {
           this.participantes = data;
         },
         error: (error: any) => {
@@ -152,12 +153,51 @@ export class MobileKitComponent {
       });
   }
 
+  getEventoAtivo() {
+    const par: ParametroEvento01 = new ParametroEvento01();
+
+    par.id_empresa = this.globalService.getEmpresa().id;
+
+    par.status = '3';
+
+    par.orderby = '000001';
+
+    this.inscricaoEventoAtivo = this.eventoSrv
+      .getEventosParametro_01(par)
+      .subscribe({
+        next: (data: EventoModel[]) => {
+          if (data.length > 0) {
+            this.evento = data[0];
+            this.getParticipantes();
+          } else {
+            this.appSnackBar.openFailureSnackBar(
+              'Nenhum Evento Ativo Encontrado!',
+              'OK',
+            );
+            this.evento = new EventoModel();
+          }
+        },
+        error: (error: any) => {
+          if (error.status && error.status == 401) {
+            this.localStorageSrv.clear();
+            this.appSnackBar.openFailureSnackBar('Ação Não Autoizada', 'OK');
+            return;
+          } else {
+            this.appSnackBar.openFailureSnackBar(
+              `Erro Na Pesquisa Dos Eventos ${messageError(error)}`,
+              'OK',
+            );
+          }
+        },
+      });
+  }
+
   onChangeParametro(filtro: FiltroEntregaKitModel) {
     this.parametroPesquisa = filtro;
     this.getParticipantes();
   }
 
-  escolha(op: number, dado: ParticipanteModel) {
+  escolha(op: number, dado: Participantev2Model) {
     if (op == CadastroAcoes.Kit) {
       this.openKitDialog(dado);
     }
@@ -174,8 +214,8 @@ export class MobileKitComponent {
     this.router.navigate(['/login']);
   }
 
-  openKitDialog(dado: ParticipanteModel): void {
-    const data: EntregaDialogData = new EntregaDialogData();
+  openKitDialog(dado: Participantev2Model): void {
+    const data: EntregaV2DialogData = new EntregaV2DialogData();
     data.dado = dado;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
@@ -186,14 +226,9 @@ export class MobileKitComponent {
     const modalDialog = this.kitEntrega
       .open(EntregaDialogComponent, dialogConfig)
       .beforeClosed()
-      .subscribe((data: EntregaDialogData) => {
+      .subscribe((data: EntregaV2DialogData) => {
         if (data.processar) {
-          console.log('dado', dado);
-          console.log('data', data);
-          console.log('data.entrega', data.entrega);
-          dado.entre_tam_camisa = data.entrega.tam_camisa;
-          dado.entre_nome = data.entrega.nome_retirada;
-          dado.entre_rg = data.entrega.rg_retirada;
+          dado = data.dado;
         }
       });
   }

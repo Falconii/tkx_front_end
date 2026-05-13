@@ -90,6 +90,7 @@ export class ProcessaPlanilhaDialogComponent {
     const par = {
       id_empresa: this.data.planilha.id_empresa,
       id_evento: this.data.planilha.id_evento,
+      id_planilha: this.data.planilha.id,
     };
     this.inscricaoAcao = this.importacaoSrv.processaPlanilha(par).subscribe({
       next: (data: any) => {
@@ -101,10 +102,10 @@ export class ProcessaPlanilhaDialogComponent {
         this.data.processar = true;
       },
       error: (err) => {
-        console.error('Erro no polling:', err);
-        if (this.inscricaoStatus) {
-          this.inscricaoStatus.unsubscribe();
-        }
+        this.appSnackBar.openFailureSnackBar(
+          `Falha No Processamento: ${messageError(err)}`,
+          'OK',
+        );
         this.foiProcessada = false;
       },
     });

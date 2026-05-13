@@ -1,4 +1,4 @@
-export class ParametroEntrega01{
+export class ParametroEntregav201{
 		public id_empresa:number = 0 ; 
 		public id_evento:number = 0 ; 
 		public id:number = 0 ; 

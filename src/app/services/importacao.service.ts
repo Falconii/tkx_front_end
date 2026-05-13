@@ -25,7 +25,7 @@ export class ImportacaoService {
   }
 
   processaPlanilha(params: any): Observable<any> {
-    const url = new URL('importacao//processamentoV2', this.apiURL).toString();
+    const url = new URL('importacao/processamentoV2', this.apiURL).toString();
     return this.http.post<any>(url, params);
   }
 }
