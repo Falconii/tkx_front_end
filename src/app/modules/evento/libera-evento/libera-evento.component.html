@@ -1,0 +1,15 @@
+<div class="libera-evento-sucesso" *ngIf="itsOK">
+  <h1>Evento liberado com sucesso!</h1>
+
+  <p>
+    O seu evento foi liberado com sucesso e já está disponível na aplicação.
+  </p>
+
+  <p>
+    Você já pode voltar para o sistema e continuar suas atividades normalmente.
+  </p>
+
+  <a [routerLink]="['/home']" class="btn-voltar">
+    &#8592; Voltar para a aplicação
+  </a>
+</div>

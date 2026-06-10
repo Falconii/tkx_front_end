@@ -19,5 +19,7 @@ export enum CadastroAcoes {
   Liberar = 27,
   Ativar = 28,
   Encerrar = 29,
+  Ativar_Inativar = 30,
+  Zerar_Senha = 31,
   None = 99,
 }

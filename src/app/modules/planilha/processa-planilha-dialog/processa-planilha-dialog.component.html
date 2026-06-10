@@ -1,6 +1,6 @@
 <div class="div-barra">
     <mat-toolbar>
-        <span class="example-spacer">Rotina Para Fazer Upload Dos Parcitipantes</span
+        <span class="example-spacer">Rotina Para Incluir Os Participantes No Evento</span
     >
     <div class="button-container">
       <button mat-raised-button color="#FFFFFF" (click)="onExecucao()">
@@ -26,6 +26,7 @@
   <div class="progress-bar" *ngIf="emProcessamento">
     <h4>{{ progress }}</h4>
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+     <h3>{{ getMessageProgress() }}</h3>
   </div>
   <div class="resumo" *ngIf="foiProcessada">
     <h2>Planilha Sendo Processada....</h2>

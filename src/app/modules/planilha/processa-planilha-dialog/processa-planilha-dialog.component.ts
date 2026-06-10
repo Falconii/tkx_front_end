@@ -86,6 +86,17 @@ export class ProcessaPlanilhaDialogComponent {
 
   onCancelar() {}
 
+  getMessageProgress(): string {
+    if (this.progress < 100) {
+      return `Processando... ${this.progress}%`;
+    } else if (this.foiProcessada) {
+      return `Processamento Concluído! Total de Linhas: ${this.total_linhas}, Total de Erros: ${this.total_linhas_erro}`;
+    } else {
+      return '';
+    }
+  }
+
+
   processarPlanilha() {
     const par = {
       id_empresa: this.data.planilha.id_empresa,

@@ -1,12 +1,19 @@
 import { UsuarioDialogData } from './UsuarioDialogData';
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { UsuarioService } from '../../../services/usuario.service';
+import { GrupousuarioService } from '../../../services/grupousuario.service';
 import { GlobalService } from '../../../services/global.service';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import { Subscription } from 'rxjs';
 import { UsuarioModel } from '../../../models/usuario-model';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
+import { EstadoModel } from '../../../shared/classes/EstadoModel';
 import { SimNaoPipe } from '../../../shared/pipes/sim-nao.pipe';
 import { ValidatorCep } from '../../../shared/Validators/validator-cep';
 import { ValidatorCnpjCpf } from '../../../shared/Validators/validator-Cnpj-Cpf';
@@ -20,14 +27,14 @@ import { TipoOperacao } from '../../../shared/classes/tipo-operacao';
 import { ParametroGrupousuario01 } from '../../../parametros/parametro-grupousuario01';
 import { AtualizaParametroGrupousuario01 } from '../../../shared/classes/atualiza-parametro-grupousuario01';
 import { messageError } from '../../../shared/classes/util';
-import { EstadoModel } from '../../../shared/classes/EstadoModel';
-import { GrupousuarioService } from '../../../services/grupousuario.service';
+import { loginService } from '../../../services/login.service';
+import { ValidatorCheckBox } from '../../../shared/Validators/validator-Check-Box';
+import { FormStateTracker } from '../../../shared/classes/FormStateTracker';
 
 @Component({
   selector: 'app-usuario-dialog',
   templateUrl: './usuario-dialog.component.html',
   styleUrls: ['./usuario-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class UsuarioDialogComponent {
   formulario: FormGroup;
@@ -48,6 +55,8 @@ export class UsuarioDialogComponent {
   inscricaoGrupousuario!: Subscription;
   inscricaoAcao!: Subscription;
 
+  inscricaoIniciarSenha!: Subscription;
+
   labelCadastro: string = '';
 
   estadoSrv: EstadoService = new EstadoService();
@@ -59,6 +68,10 @@ export class UsuarioDialogComponent {
 
   cpfOuCnpjMask: string = '000.000.000-00';
 
+  showSpin: boolean = false;
+
+  tracker!: FormStateTracker;
+
   constructor(
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
@@ -68,7 +81,9 @@ export class UsuarioDialogComponent {
     private appSnackBar: AppSnackbar,
     private simNaoPipe: SimNaoPipe,
     @Inject(MAT_DIALOG_DATA) public data: UsuarioDialogData,
-    private dialogRef: MatDialogRef<UsuarioDialogComponent>
+    private dialogRef: MatDialogRef<UsuarioDialogComponent>,
+
+    private loginSrv: loginService,
   ) {
     this.formulario = formBuilder.group({
       id: [{ value: '', disabled: true }],
@@ -76,28 +91,37 @@ export class UsuarioDialogComponent {
       razao: [{ value: '' }, [ValidatorStringLen(3, 40, true)]],
       cadastr: [{ value: '' }, [ValidatorDate(true)]],
       cnpj_cpf: [{ value: '' }, [ValidatorCnpjCpf(false)]],
-      senha: [{ value: '' }, [ValidatorStringLen(6, 255, false)]],
-      grupo: [{ value: '' }],
-      grupo_: [{ value: '' }],
+      grupo: [{ value: '' }, [ValidatorCheckBox(1, 6, true)]],
       rua: [{ value: '' }, [ValidatorStringLen(3, 80, false)]],
       nro: [{ value: '' }, [ValidatorStringLen(1, 10, false)]],
       complemento: [{ value: '' }, [ValidatorStringLen(0, 30)]],
       bairro: [{ value: '' }, [ValidatorStringLen(3, 40, false)]],
       cidade: [{ value: '' }, [ValidatorStringLen(3, 40, false)]],
       uf: [{ value: '' }, [ValidatorStringLen(2, 2, false)]],
-      uf_: [{ value: '' }],
       cep: [{ value: '' }, [ValidatorCep(false)]],
       tel1: [{ value: '' }, [ValidatorStringLen(0, 23, false)]],
       tel2: [{ value: '' }, [ValidatorStringLen(0, 23)]],
       email: [{ value: '' }, [Validators.required, Validators.email]],
     });
-    /*  this.formulario.get('cnpj_cpf')?.valueChanges.subscribe((value) => {
+    this.formulario.get('cnpj_cpf')?.valueChanges.subscribe((value) => {
       const digits = value?.replace(/\D/g, '') || '';
       this.cpfOuCnpjMask =
         digits.length > 11 ? '00.000.000/0000-00' : '000.000.000-00';
-    }); */
+    });
+    this.globalService.showSpin$.subscribe((show) => {
+      this.showSpin = show;
+    });
     this.ufs = this.estadoSrv.getEstados();
+    this.setValueNoParam();
     this.getGruposUsuarios();
+  }
+
+  get grupoControl(): FormControl {
+    return this.formulario.get('grupo') as FormControl;
+  }
+
+  get ufControl(): FormControl {
+    return this.formulario.get('uf') as FormControl;
   }
 
   ngOnInit(): void {
@@ -109,12 +133,7 @@ export class UsuarioDialogComponent {
     this.inscricaoAcao?.unsubscribe();
     this.inscricaoGetUsuario?.unsubscribe();
     this.inscricaoGrupousuario?.unsubscribe();
-  }
-
-  onInputChangeCnpj_Cpf(event: any) {
-    const value = event.target.value.replace(/\D/g, '');
-    this.cpfOuCnpjMask =
-      value.length > 11 ? '00.000.000/0000-00' : '000.000.000-00';
+    this.inscricaoIniciarSenha?.unsubscribe();
   }
 
   actionFunction() {
@@ -124,13 +143,16 @@ export class UsuarioDialogComponent {
       this.formulario.markAllAsTouched();
       this.appSnackBar.openSuccessSnackBar(
         `Formulário Com Campos Inválidos.`,
-        'OK'
+        'OK',
       );
     }
   }
 
+  onCancel() {
+    this.data.processar = false;
+    this.closeModal();
+  }
   closeModal() {
-    this.data.processar = true;
     this.dialogRef.close(this.data);
   }
 
@@ -140,13 +162,7 @@ export class UsuarioDialogComponent {
       ativo: this.simNaoPipe.transform(this.data.usuario.ativo),
       razao: this.data.usuario.razao,
       cadastr: this.data.usuario.cadastr,
-      senha: this.data.usuario.senha,
       grupo: this.data.usuario.grupo,
-      grupo_:
-        this.idAcao == CadastroAcoes.Consulta ||
-        this.idAcao == CadastroAcoes.Exclusao
-          ? this.data.usuario.grupo_descricao
-          : '',
       cnpj_cpf: this.data.usuario.cnpj_cpf,
       rua: this.data.usuario.rua,
       nro: this.data.usuario.nro,
@@ -154,15 +170,31 @@ export class UsuarioDialogComponent {
       bairro: this.data.usuario.bairro,
       cidade: this.data.usuario.cidade,
       uf: this.data.usuario.uf,
-      uf_:
-        this.idAcao == CadastroAcoes.Consulta ||
-        this.idAcao == CadastroAcoes.Exclusao
-          ? this.data.usuario.uf
-          : '',
       cep: this.data.usuario.cep,
       tel1: this.data.usuario.tel1,
       tel2: this.data.usuario.tel2,
       email: this.data.usuario.email,
+    });
+  }
+
+  setValueNoParam() {
+    this.formulario.setValue({
+      id: '',
+      ativo: '',
+      razao: '',
+      cadastr: '',
+      grupo: '',
+      cnpj_cpf: '',
+      rua: '',
+      nro: '',
+      complemento: '',
+      bairro: '',
+      cidade: '',
+      uf: '',
+      cep: '',
+      tel1: '',
+      tel2: '',
+      email: '',
     });
   }
 
@@ -177,6 +209,7 @@ export class UsuarioDialogComponent {
         next: (data: GrupousuarioModel[]) => {
           this.grupos = data;
           this.setValue();
+          this.tracker = new FormStateTracker(this.formulario, 80);
         },
         error: (error: any) => {},
       });
@@ -237,29 +270,26 @@ export class UsuarioDialogComponent {
     this.data.usuario.tel1 = this.formulario.value.tel1;
     this.data.usuario.tel2 = this.formulario.value.tel2;
     this.data.usuario.email = this.formulario.value.email;
-    this.data.usuario.senha = this.formulario.value.senha;
+    this.data.usuario.senha = '';
     this.data.usuario.grupo = this.formulario.value.grupo;
     //this.usuario.ativo = this.formulario.value.ativo
     switch (+this.idAcao) {
       case CadastroAcoes.Inclusao:
+        this.data.usuario.ativo = 'S';
         this.data.usuario.user_insert = this.globalService.getUsuario().id;
         console.log('usuario =>', this.data.usuario);
         this.inscricaoAcao = this.usuarioService
           .usuarioInsert(this.data.usuario)
           .subscribe({
             next: (data: any) => {
-              this.appSnackBar.openSuccessSnackBar(
-                `Usuário Incluido Com Sucesso !`,
-                'OK'
-              );
               this.data.usuario = data;
-              this.getUsuario(this.data.usuario);
+              this.getUsuario(this.data.usuario, '');
             },
             error: (error: any) => {
               console.log('error =>', error);
               this.appSnackBar.openFailureSnackBar(
                 `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK'
+                'OK',
               );
             },
           });
@@ -270,18 +300,17 @@ export class UsuarioDialogComponent {
           .usuarioUpdate(this.data.usuario)
           .subscribe({
             next: (data: any) => {
-              this.appSnackBar.openSuccessSnackBar(
-                `Usuário Alterado Com Sucesso !`,
-                'OK'
-              );
               this.data.usuario = data;
 
-              this.getUsuario(this.data.usuario);
+              this.getUsuario(
+                this.data.usuario,
+                `Usuário Alterado Com Sucesso !`,
+              );
             },
             error: (error: any) => {
               this.appSnackBar.openFailureSnackBar(
                 `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK'
+                'OK',
               );
             },
           });
@@ -292,17 +321,16 @@ export class UsuarioDialogComponent {
           .usuarioUpdate(this.data.usuario)
           .subscribe({
             next: (data: any) => {
-              this.appSnackBar.openSuccessSnackBar(
-                `Usuário Alterado Com Sucesso !`,
-                'OK'
-              );
               this.data.usuario = data;
-              this.getUsuario(this.data.usuario);
+              this.getUsuario(
+                this.data.usuario,
+                `Usuário Atualizado Com Sucesso !`,
+              );
             },
             error: (error: any) => {
               this.appSnackBar.openFailureSnackBar(
                 `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK'
+                'OK',
               );
             },
           });
@@ -314,15 +342,16 @@ export class UsuarioDialogComponent {
             next: (data: any) => {
               this.appSnackBar.openSuccessSnackBar(
                 `Usuário Excluido Com Sucesso !`,
-                'OK'
+                'OK',
               );
               this.data.usuario = data;
+              this.data.processar = true;
               this.closeModal();
             },
             error: (error: any) => {
               this.appSnackBar.openFailureSnackBar(
                 `Erro Na Inclusão ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-                'OK'
+                'OK',
               );
             },
           });
@@ -357,21 +386,83 @@ export class UsuarioDialogComponent {
     return this.readOnly;
   }
 
-  getUsuario(usuario: UsuarioModel) {
+  getUsuario(usuario: UsuarioModel, msg: string = 'Processo Executado!') {
     this.inscricaoGetUsuario = this.usuarioSrv
       .getUsuario(usuario.id_empresa!, usuario.id!)
       .subscribe({
         next: (data: UsuarioModel) => {
           this.data.usuario = data;
-          this.closeModal();
+          if (this.idAcao == CadastroAcoes.Inclusao) {
+            this.iniciarSenha(usuario);
+          } else {
+            this.appSnackBar.openSuccessSnackBar(msg, 'OK');
+            this.data.processar = true;
+            this.closeModal();
+          }
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
             `Problemas na Atualização Do Usuário`,
-            'OK'
+            'OK',
           );
+          this.data.processar = false;
           this.closeModal;
         },
       });
+  }
+
+  iniciarSenha(usuario: UsuarioModel) {
+    const par = {
+      id_empresa: usuario.id_empresa,
+      id_usuario: usuario.id,
+    };
+
+    this.inscricaoIniciarSenha = this.loginSrv.zerarSenha(par).subscribe({
+      next: (data: any) => {
+        usuario.senha = data.senha;
+        this.appSnackBar.openSuccessSnackBar('Usuário Incluído!', 'OK');
+        this.data.processar = true;
+        this.closeModal();
+      },
+      error: (error: any) => {
+        console.log('ERRO: ', error);
+        this.appSnackBar.openFailureSnackBar(
+          'Falha Na Reciclagem Da Senha!',
+          'OK',
+        );
+      },
+    });
+  }
+
+  isReadOnly(): boolean {
+    return (
+      this.idAcao === this.getAcoes().Consulta ||
+      this.idAcao === this.getAcoes().Exclusao
+    );
+  }
+
+  disabledSubmit() {
+    // Proteção contra tracker indefinido
+    if (!this.tracker) {
+      return true;
+    }
+
+    if (this.showSpin) {
+      return true;
+    }
+
+    if (this.idAcao == this.getAcoes().Edicao && !this.tracker.hasChanged()) {
+      return true;
+    }
+
+    if (this.idAcao == this.getAcoes().Exclusao) {
+      return false;
+    }
+
+    if (this.idAcao == this.getAcoes().Consulta) {
+      return true;
+    }
+
+    return !this.formulario.valid;
   }
 }

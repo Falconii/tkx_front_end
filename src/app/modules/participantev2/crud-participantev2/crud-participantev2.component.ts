@@ -97,6 +97,7 @@ export class CrudParticipantev2Component {
         next: (data: any) => {
           if (tipoOperacao == TipoOperacao.Pesquisa) {
             this.participantes = data;
+            console.log('Participantes Encontrados:', this.participantes);
           } else {
             this.controlePaginas = new ControlePaginas(
               this.tamPagina,

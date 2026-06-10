@@ -1,0 +1,37 @@
+.libera-evento-sucesso {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 24px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.libera-evento-sucesso h1 {
+  margin-bottom: 16px;
+  font-size: 1.8rem;
+  color: #2e7d32; /* verde sucesso */
+}
+
+.libera-evento-sucesso p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.btn-voltar {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  background-color: #1976d2;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-voltar:hover {
+  background-color: #0d47a1;
+}

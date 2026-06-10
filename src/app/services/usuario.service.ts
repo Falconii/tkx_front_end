@@ -33,6 +33,10 @@ export class UsuarioService {
     const url = new URL('usuario', this.apiURL).toString();
     return this.http.put<UsuarioModel>(url, usuario);
   }
+  usuarioUpdateAtivo(usuario: UsuarioModel): Observable<UsuarioModel> {
+    const url = new URL('usuario/updateusuarioativo', this.apiURL).toString();
+    return this.http.put<UsuarioModel>(url, usuario);
+  }
   usuarioDelete(id_empresa: number, id: number): Observable<any> {
     const url = new URL('usuario', this.apiURL).toString();
     return this.http.delete<any>(`${url}/${id_empresa}/${id}`);
@@ -41,5 +45,10 @@ export class UsuarioService {
   updatesenha(params: any): Observable<UsuarioModel[]> {
     const url = new URL('usuario/updatesenha', this.apiURL).toString();
     return this.http.post<UsuarioModel[]>(url, params);
+  }
+
+  logout(): Observable<any> {
+    const url = new URL('usuario/logout', this.apiURL).toString();
+    return this.http.post<any>(url, {});
   }
 }

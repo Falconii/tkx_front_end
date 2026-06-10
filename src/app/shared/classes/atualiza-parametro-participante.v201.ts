@@ -14,19 +14,19 @@ export function AtualizaParametroParticipantev201(
 
     switch (tipo) {
       case TipoPesquisa.Nome:
-        par.nome = Object(config).Pesquisa;
+        par.nome = Object(config).pesquisa;
         break;
 
       case TipoPesquisa.Cpf:
-        par.cnpj_cpf = Object(config).Pesquisa;
+        par.cnpj_cpf = Object(config).pesquisa;
         break;
 
       case TipoPesquisa.Inscricao:
-        par.inscricao = Object(config).Pesquisa;
+        par.inscricao = Object(config).pesquisa;
         break;
 
       case TipoPesquisa.Nro_Peito:
-        par.nro_peito = Object(config).Pesquisa;
+        par.nro_peito = Object(config).pesquisa;
         break;
     }
 

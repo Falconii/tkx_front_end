@@ -136,12 +136,8 @@ export class EntregaDialogComponent {
       .subscribe({
         next: (data: Entregav2Model) => {
           this.data.entrega = data;
-          this.appSnackBar.openSuccessSnackBar(
-            `Kit Retirado Com Sucesso`,
-            'OK',
-          );
-          this.data.processar = true;
-          this.closeModal();
+          this.data.dado.id_entrega = data.id;
+          this.updateParticipante();
         },
         error: (error: any) => {
           console.log(error);
@@ -164,13 +160,9 @@ export class EntregaDialogComponent {
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
         next: (data: any) => {
-          this.data.entrega = new Entregav2Model();
-          this.appSnackBar.openSuccessSnackBar(
-            `Kit Excluido Com Sucesso`,
-            'OK',
-          );
-          this.data.processar = true;
-          this.closeModal();
+          this.data.entrega = data;
+          this.data.dado.id_entrega = 0;
+          this.updateParticipante();
         },
         error: (error: any) => {
           console.log(error);
@@ -195,11 +187,6 @@ export class EntregaDialogComponent {
       .participantev2Update(this.data.dado)
       .subscribe({
         next: (data: any) => {
-          this.appSnackBar.openSuccessSnackBar(
-            `Kit IncluídoCom Sucesso !`,
-            'OK',
-          );
-
           this.getParticipante();
         },
         error: (error: any) => {

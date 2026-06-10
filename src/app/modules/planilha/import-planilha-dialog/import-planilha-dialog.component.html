@@ -1,10 +1,10 @@
 <div class="div-barra">
   <mat-toolbar>
     <span class="example-spacer"
-      >Rotina Para Fazer Upload Dos Parcitipantes</span
+      >Rotina Para Importar Planilha De Participantes</span
     >
     <div class="button-container">
-      <button mat-raised-button color="#FFFFFF" (click)="onUpload()">
+      <button mat-raised-button color="#FFFFFF" (click)="onUpload()"  [disabled]="this.formulario.valid == false || this.emProcessamento == true || this.foiProcessada == true  ">
         <mat-icon>check</mat-icon>
         Upload
       </button>
@@ -54,12 +54,12 @@
       accept=".csv"
     />
   </form>
-  <div class="progress-bar" *ngIf="emProcessamento">
-    <h4>{{ progress }}</h4>
+  <div class="loading-container" *ngIf="showSpin">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <h3>{{ getMessageProgress() }}</h3>
   </div>
   <div class="resumo" *ngIf="foiProcessada">
-    <h2>Planilha Sendo Processada....</h2>
+    <h2>{{ getMessageStatus() }}</h2>
   </div>
   <div class="resumo" *ngIf="total_linhas > 0">
     <h3>Total De Linhas.....: {{ total_linhas }}</h3>

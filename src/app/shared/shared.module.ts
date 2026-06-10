@@ -28,6 +28,7 @@ import { SituacaoEventoPipe } from './pipes/situacao-evento.pipe';
 import { FormularioFiltroParticipantev2Component } from './components/formulario-filtro-participantev2/formulario-filtro-participantev2.component';
 import { SpinsComponent } from './spins/spins.component';
 import { SituacaoPlanilhaPipe } from './pipes/situacao-planilha.pipe';
+import { SituacaoUsuarioPipe } from './pipes/ativo-inativo.pipe';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { SituacaoPlanilhaPipe } from './pipes/situacao-planilha.pipe';
     FirstNamePipe,
     SituacaoEventoPipe,
     SituacaoPlanilhaPipe,
+    SituacaoUsuarioPipe,
     FormularioFiltroEmpresaComponent,
     FormularioFiltroGrupousuarioComponent,
     FormularioFiltroUsuarioComponent,
@@ -71,6 +73,7 @@ import { SituacaoPlanilhaPipe } from './pipes/situacao-planilha.pipe';
     FirstNamePipe,
     SituacaoEventoPipe,
     SituacaoPlanilhaPipe,
+    SituacaoUsuarioPipe,
     SharedNavegatorComponent,
     FormularioFiltroEmpresaComponent,
     FormularioFiltroGrupousuarioComponent,

@@ -115,6 +115,7 @@ export class UsuarioTrocaSenhaDialogComponent {
       senhaantiga: this.formulario.value.senhaantiga.trim(),
       senhanova: this.formulario.value.senha.trim(),
       senharepetida: this.formulario.value.senharepetida.trim(),
+      reciclar: 'N',
     };
     switch (+this.idAcao) {
       case CadastroAcoes.Edicao:

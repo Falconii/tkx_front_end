@@ -8,13 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../../../material/material.module';
 import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.component';
 import { UsuarioTrocaSenhaDialogComponent } from './usuario-troca-senha-dialog/usuario-troca-senha-dialog.component';
+import { RedefineSenhaComponent } from './redefine-senha/redefine-senha.component';
 
 @NgModule({
-  declarations: [
-    CrudUsuarioComponent,
-    UsuarioDialogComponent,
-    UsuarioTrocaSenhaDialogComponent,
-  ],
+  declarations: [CrudUsuarioComponent, UsuarioDialogComponent, UsuarioTrocaSenhaDialogComponent, RedefineSenhaComponent],
   imports: [
     CommonModule,
     UsuarioRoutingModule,

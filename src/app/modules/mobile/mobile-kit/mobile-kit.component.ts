@@ -73,6 +73,10 @@ export class MobileKitComponent {
   }
 
   getParticipantes() {
+    if (!this.evento.id || this.evento.id == 0) {
+      return;
+    }
+
     let key: number = 0;
 
     let inscricao: number = 0;
@@ -99,7 +103,7 @@ export class MobileKitComponent {
 
     par.id_evento = this.evento.id;
 
-    //par.kit = this.parametroPesquisa.kit;
+    par.kit = this.parametroPesquisa.kit;
 
     switch (this.parametroPesquisa.pesquisarPor) {
       case TipoPesquisa.Nome:
@@ -125,11 +129,10 @@ export class MobileKitComponent {
 
     par.tamPagina = 200;
 
-    this.globalService.setSpin(true); // liga spinner
+    console.log('Parâmetros Enviados', par);
 
     this.inscricaoParticipantes = this.participanteSrv
       .getParticipantesv2Parametro_01(par)
-      .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
         next: (data: Participantev2Model[]) => {
           this.participantes = data;
@@ -168,12 +171,7 @@ export class MobileKitComponent {
         next: (data: EventoModel[]) => {
           if (data.length > 0) {
             this.evento = data[0];
-            this.getParticipantes();
           } else {
-            this.appSnackBar.openFailureSnackBar(
-              'Nenhum Evento Ativo Encontrado!',
-              'OK',
-            );
             this.evento = new EventoModel();
           }
         },
@@ -183,10 +181,17 @@ export class MobileKitComponent {
             this.appSnackBar.openFailureSnackBar('Ação Não Autoizada', 'OK');
             return;
           } else {
-            this.appSnackBar.openFailureSnackBar(
-              `Erro Na Pesquisa Dos Eventos ${messageError(error)}`,
-              'OK',
-            );
+            if (error.status && error.status == 409) {
+              this.appSnackBar.openFailureSnackBar(
+                'Nenhum Evento Ativo Encontrado Para Pesquisa Dos Participantes!',
+                'OK',
+              );
+            } else {
+              this.appSnackBar.openFailureSnackBar(
+                `Erro Na Pesquisa Dos Eventos ${messageError(error)}`,
+                'OK',
+              );
+            }
           }
         },
       });
@@ -228,7 +233,10 @@ export class MobileKitComponent {
       .beforeClosed()
       .subscribe((data: EntregaV2DialogData) => {
         if (data.processar) {
-          dado = data.dado;
+          dado.entrega_nome_retirada = data.entrega.nome_retirada;
+          dado.entrega_rg_retirada = data.entrega.rg_retirada;
+          dado.entrega_tam_camisa = data.entrega.tam_camisa;
+          console.log('Dado Processado', dado);
         }
       });
   }

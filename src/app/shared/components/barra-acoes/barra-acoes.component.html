@@ -100,6 +100,22 @@
         <mat-icon>close</mat-icon>
         <span>{{ getTexto().encerrar }}</span>
       </button>
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Zerar_Senha)"
+        *ngIf="barra_zerar_senha"
+      >
+        <mat-icon>lock_reset </mat-icon>
+        <span>{{ getTexto().zerar_senha }}</span>
+      </button>
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Ativar_Inativar)"
+        *ngIf="barra_ativo_inativo"
+      >
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ getTexto().ativar_inativar }}</span>
+      </button>
     </ng-template>
   </mat-menu>
 </div>

@@ -96,6 +96,7 @@ export class EventoDialogComponent {
       final: [{ value: '' }, [ValidatorDate(true, 'inicio')]],
       obs: [['', [ValidatorStringLen(0, 200, true)]]],
     });
+    this.setNoParam();
     this.ufs = this.estadoSrv.getEstados();
     this.lsSituacoes = this.globalService.getSituacoesEvento();
   }

@@ -1,11 +1,3 @@
-.form-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
-}
-
-
 .dialog-header {
   display: flex;
   justify-content: end;
@@ -18,27 +10,21 @@
   z-index: 1;
 }
 
-
-.mat-dialog-container {
-  font-size: 13px;
-}
-
-.mat-form-field,
-.mat-label,
-.mat-input-element,
-.mat-select-value,
-.mat-option,
-.mat-error,
-.mat-button,
-.mat-toolbar {
-  font-size: 13px;
-}
-
-
 .button-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   padding: 1em;
   border-top: 1px solid #ccc;
+}
+
+.form-container {
+  padding: 10px;
+}
+
+button:disabled {
+  background-color: #a9b4c2;
+  color: #ffffff;
+  opacity: 0.8;
+  cursor: not-allowed;
 }

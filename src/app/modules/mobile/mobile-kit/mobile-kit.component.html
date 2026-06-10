@@ -66,20 +66,20 @@
         <span class="label">Nascimento:</span>
         <span>{{ dado.data_nasc }}</span>
       </div>
-      <!--
-      <div class="linha destaque" *ngIf="dado.entre_tam_camisa">
+
+      <div class="linha destaque" *ngIf="dado.entrega_tam_camisa">
         <span class="label">Tamanho Camiseta:</span>
-        <span>{{ dado.entre_tam_camisa }}</span>
+        <span>{{ dado.entrega_tam_camisa }}</span>
       </div>
 
-      <div class="linha destaque" *ngIf="dado.entre_nome">
+      <div class="linha destaque" *ngIf="dado.entrega_nome_retirada">
         <span class="label">Recebido Por:</span>
-        <span>{{ dado.entre_nome }}</span>
+        <span>{{ dado.entrega_nome_retirada }}</span>
       </div>
-      <div class="linha destaque" *ngIf="dado.entre_rg">
+      <div class="linha destaque" *ngIf="dado.entrega_rg_retirada">
         <span class="label">RG:</span>
-        <span>RG: {{ dado.entre_rg }}</span>
-      </div> -->
+        <span>RG: {{ dado.entrega_rg_retirada }}</span>
+      </div>
     </mat-card-content>
 
     <mat-card-actions align="end">

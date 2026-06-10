@@ -6,4 +6,5 @@ export const environment = {
   apiURL: 'https://tkxbackend-producao.up.railway.app/api/',
   apiOAuth2: 'http://localhost:3000/',
   wsURL: 'ws://localhost:8080',
+  appURL: 'https://simionatodev.github.io/aplicacao_conciliador/',
 };

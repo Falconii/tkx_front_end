@@ -1,0 +1,43 @@
+<div class="email-wrapper" *ngIf="itsOK">
+  <div class="header">
+    <h1>Senha Resetada</h1>
+  </div>
+
+  <div class="content">
+    <p>Olá,</p>
+
+    <p>
+      Sua senha foi redefinida com sucesso. Para garantir seu acesso imediato,
+      uma nova senha temporária foi gerada:
+    </p>
+
+    <div class="password-box">nova senha: <strong>mudarsenha</strong></div>
+
+    <p>
+      Por motivos de segurança, recomendamos que você altere essa senha no
+      próximo login, escolhendo uma combinação mais forte e pessoal.
+    </p>
+
+    <p>
+      Caso você não tenha solicitado essa alteração, entre em contato com o
+      suporte imediatamente.
+    </p>
+
+    <p>Obrigado.</p>
+
+    <p>Para acessar o sistema, clique no link abaixo:</p>
+
+    <p>
+      <a
+        href="{{ appurl }}"
+        style="color: #2563eb; font-weight: 600; text-decoration: none"
+      >
+        Acessar o Conciliador
+      </a>
+    </p>
+  </div>
+
+  <div class="footer">
+    Esta é uma mensagem automática. Por favor, não responda este e-mail.
+  </div>
+</div>

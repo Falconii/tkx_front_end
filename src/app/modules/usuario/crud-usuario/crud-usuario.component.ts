@@ -1,23 +1,27 @@
 import { UsuarioDialogData } from './../usuario-dialog/UsuarioDialogData';
-import { UsuarioService } from './../../../services/usuario.service';
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UsuarioModel } from '../../../models/usuario-model';
-import { MensagensBotoes } from '../../../shared/classes/util';
+import { ControlePaginas } from '../../../shared/classes/controle-paginas';
+import { MensagensBotoes, messageError } from '../../../shared/classes/util';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 import { GlobalService } from '../../../services/global.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Subscription } from 'rxjs';
+import { ParametroModel } from '../../../models/parametro-model';
 import { TipoOperacao } from '../../../shared/classes/tipo-operacao';
 import { ParametroUsuario01 } from '../../../parametros/parametro-usuario01';
+import { AtualizaParametroUsuario01 } from '../../../shared/classes/atualiza-parametro-usuario01';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { UsuarioDialogComponent } from '../usuario-dialog/usuario-dialog.component';
 
 import { DataDDMMYYYY } from '../../../shared/classes/util';
-import { ParametroModel } from '../../../models/parametro-model';
-import { AtualizaParametroUsuario01 } from '../../../shared/classes/atualiza-parametro-usuario01';
-import { ControlePaginas } from '../../../shared/classes/controle-paginas';
+import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
+import { loginService } from '../../../services/login.service';
+import { LocalStorageService } from '../../../services/localStorage.service';
+import { EmpresaModel } from '../../../models/empresa-model';
+import { UsuarioService } from '../../../services/usuario.service';
 
 @Component({
   selector: 'app-crud-usuario',
@@ -29,6 +33,12 @@ export class CrudUsuarioComponent {
   @ViewChild(CdkVirtualScrollViewport) viewPort!: CdkVirtualScrollViewport;
 
   inscricaoUsuario!: Subscription;
+
+  inscricaoLogOut!: Subscription;
+
+  inscricaoIniciarSenha!: Subscription;
+
+  inscricaoSituacao!: Subscription;
 
   usuarios: UsuarioModel[] = [];
 
@@ -45,20 +55,53 @@ export class CrudUsuarioComponent {
   constructor(
     private globalService: GlobalService,
     private usuarioSrv: UsuarioService,
+    private loginSrv: loginService,
     private route: ActivatedRoute,
     private router: Router,
     private appSnackBar: AppSnackbar,
-    private usuarioDialog: MatDialog
+    private usuarioDialog: MatDialog,
+    private confirmDialog: ConfirmDialogService,
+
+    private localStorageSrv: LocalStorageService,
   ) {}
 
   ngOnInit(): void {}
 
   ngOnDestroy() {
     this.inscricaoUsuario?.unsubscribe();
+    this.inscricaoLogOut?.unsubscribe();
+    this.inscricaoIniciarSenha?.unsubscribe();
+    this.inscricaoSituacao?.unsubscribe();
   }
 
   escolha(opcao: number, i: number, usuario?: UsuarioModel) {
+    if (opcao == CadastroAcoes.Zerar_Senha && usuario) {
+      this.onZerarSenha(i, usuario);
+      return;
+    }
+    if (opcao == CadastroAcoes.Ativar_Inativar && usuario) {
+      this.onTrocaSituacao(usuario);
+      return;
+    }
+
     this.openUsuarioDialog(opcao, i, usuario);
+  }
+
+  onZerarSenha(i: number, usuario: UsuarioModel) {
+    this.confirmDialog
+      .open({
+        title: 'Zerar Senha',
+        message: `Deseja Realmente Zerar A Senha ?`,
+        icon: 'warning',
+        iconColor: 'warn',
+        confirmText: 'Zerar',
+        cancelText: 'Cancelar',
+      })
+      .subscribe(async (result) => {
+        if (result) {
+          this.trocarSenha(usuario);
+        }
+      });
   }
 
   onHome() {
@@ -93,7 +136,7 @@ export class CrudUsuarioComponent {
           } else {
             this.controlePaginas = new ControlePaginas(
               this.tamPagina,
-              data.total == 0 ? 1 : data.total
+              data.total == 0 ? 1 : data.total,
             );
             this.getUsuarios();
           }
@@ -127,7 +170,7 @@ export class CrudUsuarioComponent {
   openUsuarioDialog(
     opcao: CadastroAcoes = CadastroAcoes.Consulta,
     i: number,
-    usuario?: UsuarioModel
+    usuario?: UsuarioModel,
   ): void {
     const data: UsuarioDialogData = new UsuarioDialogData();
 
@@ -135,6 +178,7 @@ export class CrudUsuarioComponent {
       usuario = new UsuarioModel();
       usuario.id_empresa = this.globalService.getEmpresa().id;
       usuario.cadastr = DataDDMMYYYY(new Date());
+      usuario.trocarsenha = 'S';
     }
     data.opcao = opcao;
     data.processar = false;
@@ -145,7 +189,7 @@ export class CrudUsuarioComponent {
     dialogConfig.disableClose = true;
     dialogConfig.id = 'crud-usuario';
     dialogConfig.width = '80vw';
-    dialogConfig.height = '80vh';
+    dialogConfig.height = '90vh';
     dialogConfig.disableClose = true;
     dialogConfig.panelClass = 'dialog-font-small';
     dialogConfig.data = data;
@@ -156,20 +200,121 @@ export class CrudUsuarioComponent {
         if (data?.processar) {
           switch (opcao) {
             case CadastroAcoes.Inclusao:
-              this.usuarios.push(data.usuario!);
+              this.usuarios.push(data.usuario);
               break;
             case CadastroAcoes.Edicao:
-              if (i >= 0) {
-                this.usuarios[i] = data.usuario!;
+              if (usuario.id == this.globalService.getUsuario().id) {
+                this.logOutUsuario();
+              } else {
+                if (i >= 0) {
+                  this.usuarios[i] = data.usuario!;
+                }
               }
               break;
             case CadastroAcoes.Exclusao:
-              this.usuarios.splice(i, 1);
+              if (usuario.id == this.globalService.getUsuario().id) {
+                this.logOutUsuario();
+              } else {
+                this.usuarios.splice(i, 1);
+              }
               break;
             default:
               break;
           }
         } else {
+        }
+      });
+  }
+
+  trocarSenha(usuario: UsuarioModel) {
+    const par = {
+      id_empresa: usuario.id_empresa,
+      id_usuario: usuario.id,
+    };
+
+    this.inscricaoUsuario = this.loginSrv.zerarSenha(par).subscribe({
+      next: (data: any) => {
+        if (usuario.id == this.globalService.getUsuario().id) {
+          this.logOutUsuario();
+        } else {
+          this.appSnackBar.openSuccessSnackBar(
+            'Senha Resetada Com Sucesso!',
+            'OK',
+          );
+        }
+      },
+      error: (error: any) => {
+        console.log('ERRO: ', error);
+        this.appSnackBar.openFailureSnackBar(
+          'Falha Na Reciclagem Da Senha!',
+          'OK',
+        );
+      },
+    });
+  }
+
+  Ativar_Inativar(usuario: UsuarioModel) {
+    usuario.ativo = usuario.ativo == 'S' ? 'N' : 'S';
+
+    this.inscricaoSituacao = this.usuarioSrv
+      .usuarioUpdateAtivo(usuario)
+      .subscribe({
+        next: (data: any) => {
+          this.appSnackBar.openSuccessSnackBar(
+            'Usuário Alterado Com Sucesso!',
+            'OK',
+          );
+        },
+        error: (error: any) => {
+          console.log('ERRO: ', error);
+          this.appSnackBar.openFailureSnackBar(
+            'Falha Na Atualização Do Usuario!',
+            'OK',
+          );
+        },
+      });
+  }
+
+  logOutUsuario() {
+    this.inscricaoLogOut = this.usuarioSrv.logout().subscribe({
+      next: (any) => {
+        this.localStorageSrv.clear();
+        this.globalService.setLogado(false);
+        this.globalService.setUsuario(new UsuarioModel());
+        this.globalService.setEmpresa(new EmpresaModel());
+        this.router.navigate(['/login']);
+      },
+      error: (error: any) => {
+        this.appSnackBar.openFailureSnackBar(
+          `Problemas Com O Usuário ${messageError(error)}`,
+          'OK',
+        );
+        this.localStorageSrv.clear();
+        this.globalService.setLogado(false);
+        this.globalService.setUsuario(new UsuarioModel());
+        this.globalService.setEmpresa(new EmpresaModel());
+        this.router.navigate(['/login']);
+      },
+    });
+  }
+
+  onTrocaSituacao(usuario: UsuarioModel) {
+    const msg =
+      usuario.ativo == 'S'
+        ? 'Deseja Realmente Inativar O Usuário ?'
+        : 'Deseja Realmente Ativar O Usuário ?';
+    this.confirmDialog
+      .open({
+        title: 'Troca De Situação',
+        message: msg,
+        icon: 'warning',
+        iconColor: 'warn',
+        confirmText: `Sim`,
+        cancelText: 'Cancelar',
+      })
+      .subscribe(async (result) => {
+        if (result) {
+          this.Ativar_Inativar(usuario);
         }
       });
   }

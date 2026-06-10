@@ -1,12 +1,11 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { GlobalService } from './services/global.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UsuarioModel } from './models/usuario-model';
 import { Title } from '@angular/platform-browser';
 import { EmpresaService } from './services/empresa.service';
 import { LocalStorageService } from './services/localStorage.service';
-import { UsuarioService } from './services/usuario.service';
 import { AppSnackbar } from './shared/classes/app-snackbar';
 import { loginService } from './services/login.service';
 import { messageError } from './shared/classes/util';
@@ -23,6 +22,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { ParametroEvento01 } from './parametros/parametro-evento01';
 import { EventoService } from './services/evento.service';
 import { EventoModel } from './models/evento-model';
+import { UsuarioService } from './services/usuario.service';
 
 type MenuKeys = 'cadastros' | 'eventos' | 'processamento' | 'sobre';
 
@@ -96,6 +96,8 @@ export class AppComponent {
     },
   ];
 
+  private valoresIniciaisCarregados = false;
+
   constructor(
     private globalService: GlobalService,
     private router: Router,
@@ -108,31 +110,48 @@ export class AppComponent {
     private breakpoint: BreakpointObserver,
     private eventoSrv: EventoService,
     private usuarioDialog: MatDialog,
+    private usuarioTrocaSenha: MatDialog,
   ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.inicializacao(event.urlAfterRedirects);
+      }
+    });
     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
       this.isMobile = result.matches;
     });
   }
 
-  ngOnInit(): void {
-    this.titleService.setTitle('TKX-Experience');
+  inicializacao(rota: string) {
+    // ROTAS PÚBLICAS — NÃO RODAR FLUXO NORMAL
+    const rotasPublicas = ['/redefine_senha', '/login', '/recuperar_senha','/liberaevento'];
+
+    if (rotasPublicas.some((r) => rota.startsWith(r))) {
+      this.showMenu = false;
+      return; // <-- ESSENCIAL
+    }
+    this.titleService.setTitle('Conciliador');
     this.globalService.shomMenuEmitter.subscribe((show) => {
       this.showMenu = show;
     });
     this.globalService.changePassWordEmitter.subscribe((change) => {
-      //this.openTrocaSenhaDialog(
-      //  CadastroAcoes.Edicao,
-      // this.globalService.getUsuario(),
-      // );
-    });
-    this.globalService.shomMenuEmitter.subscribe((show) => {
-      this.showMenu = show;
+      this.openTrocaSenhaDialog(
+        CadastroAcoes.Edicao,
+        this.globalService.getUsuario(),
+      );
     });
     const token = this.localStorageSrv.getString('Token');
     if (!token) {
+      console.log('Indo Para O Login');
+      this.globalService.setLogado(false);
       this.onLogin();
+      return;
     } else {
-      this.getValoresIniciais();
+      // 👉 Só carrega valores iniciais uma vez
+      if (!this.valoresIniciaisCarregados) {
+        this.valoresIniciaisCarregados = true;
+        this.getValoresIniciais();
+      }
     }
   }
 
@@ -272,6 +291,47 @@ export class AppComponent {
               break;
           }
         } else {
+        }
+      });
+  }
+
+  openTrocaSenhaDialog(
+    opcao: CadastroAcoes = CadastroAcoes.Edicao,
+    usuario: UsuarioModel,
+  ): void {
+    const data: Usuariotrocasenhadata = new Usuariotrocasenhadata();
+
+    if (usuario == null) {
+      return;
+    }
+    data.opcao = opcao;
+    data.processar = false;
+    data.usuario = usuario;
+    console.log('Ação:', opcao, data.usuario);
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.id = 'crud-usuario';
+    dialogConfig.width = '60vw';
+    dialogConfig.height = '65vh';
+    dialogConfig.disableClose = true;
+    dialogConfig.data = data;
+    const modalDialog = this.usuarioTrocaSenha
+      .open(UsuarioTrocaSenhaDialogComponent, dialogConfig)
+      .beforeClosed()
+      .subscribe((data: Usuariotrocasenhadata | null) => {
+        if (data?.trocasenha) {
+          this.globalService.usuario.trocarsenha = 'N';
+          this.appSnackBar.openSuccessSnackBar(
+            `Senha Atualizada Com Sucesso !`,
+            'OK',
+          );
+        }
+        if (data?.cancelar) {
+          this.appSnackBar.openWarningnackBar(
+            `Operação Cancelada Pelo Usuário.`,
+            'OK',
+          );
         }
       });
   }

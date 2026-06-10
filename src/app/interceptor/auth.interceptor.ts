@@ -9,30 +9,40 @@ import {
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { GlobalService } from '../services/global.service';
 import { LocalStorageService } from '../services/localStorage.service';
-import { jwtDecode } from 'jwt-decode';
-
-interface JwtPayload {
-  exp: number;
-  [key: string]: any;
-}
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+
+  // 🔓 Rotas que NÃO exigem token e NÃO devem redirecionar em 401
+  private rotasPublicas = [
+    '/api/login',
+    '/api/login/redefinepassword',
+    '/api/public/liberaevento'
+  ];
+
   constructor(
     private localStorageSrv: LocalStorageService,
-    private router: Router
-  ) {}
+    private router: Router,
+  ) { }
 
   intercept(
     request: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-    if (request.url.includes('/api/login')) {
-      return next.handle(request); // não modifica
+
+    const url = request.url;
+
+    const isPublic = this.rotasPublicas.some(r => url.includes(r));
+
+    // 🔓 Se a rota é pública → não adiciona token
+    if (isPublic) {
+      return next.handle(request);
     }
+
+    // 🔐 Rotas privadas → adiciona token se existir
     const token = this.localStorageSrv.getString('Token');
+
     if (token) {
       request = request.clone({
         setHeaders: {
@@ -40,23 +50,22 @@ export class AuthInterceptor implements HttpInterceptor {
         },
       });
     }
+
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
+
+        // ❗ Se a rota é pública → não redireciona nunca
+        if (isPublic) {
+          return throwError(() => error);
+        }
+
+        // ❗ Se deu 401 e NÃO é rota pública → redireciona
         if (error.status === 401) {
           this.router.navigate(['/login']);
         }
-        return throwError(() => error);
-      })
-    );
-  }
 
-  private isTokenExpired(token: string): boolean {
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      const now = Math.floor(Date.now() / 1000);
-      return decoded.exp < now;
-    } catch (e) {
-      return true;
-    }
+        return throwError(() => error);
+      }),
+    );
   }
 }

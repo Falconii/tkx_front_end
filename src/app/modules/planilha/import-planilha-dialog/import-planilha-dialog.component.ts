@@ -46,6 +46,8 @@ export class ImportPlanilhaDialogComponent {
 
   foiProcessada: boolean = false;
 
+  showSpin: boolean = false;
+
   constructor(
     private eventoSrv: EventoService,
     private globalService: GlobalService,
@@ -57,6 +59,9 @@ export class ImportPlanilhaDialogComponent {
     private router: Router,
     private appSnackBar: AppSnackbar,
   ) {
+    this.globalService.showSpin$.subscribe((show) => {
+      this.showSpin = show;
+    });
     this.formulario = formBuilder.group({
       id_evento: [{ value: '' }, [Validators.required]],
       caminho: [{ value: '' }, [Validators.required]],
@@ -134,6 +139,13 @@ export class ImportPlanilhaDialogComponent {
   }
 
   closeModal() {
+    if (this.emProcessamento) {
+       this.appSnackBar.openWarningnackBar(
+         'Processamento Em Andamento, Aguarde Terminar Para Fechar!',
+         'OK',
+       );
+       return;
+    }
     this.dialogRef.close(this.data);
   }
 
@@ -182,7 +194,6 @@ export class ImportPlanilhaDialogComponent {
             'Planilha Importada com Sucesso!',
             'OK',
           );
-
           if (this.selectedFile?.name) {
             this.verificaStatus(
               this.globalService.getEmpresa().id,
@@ -230,7 +241,7 @@ export class ImportPlanilhaDialogComponent {
         },
         complete: () => {
           this.appSnackBar.openFailureSnackBar(
-            'Processando Terminou Com Falha.0',
+            'Processando Terminou Com Falha!',
             'OK',
           );
           this.foiProcessada = false;
@@ -250,5 +261,29 @@ export class ImportPlanilhaDialogComponent {
 
   getMensafield(field: string): string {
     return this.formulario.get(field)?.errors?.['message'];
+  }
+
+  getMessageProgress(): string {
+    if (this.progress < 100) {
+      return `Processando... ${this.progress}%`;
+    } else if (this.foiProcessada) {
+      return `Processamento Concluído! Total de Linhas: ${this.total_linhas}, Total de Erros: ${this.total_linhas_erro}`;
+    } else {
+      return '';
+    }
+  }
+
+  getMessageStatus(): string {
+    if (this.emProcessamento) {
+      return 'Processando...';
+    } else if (this.foiProcessada) {
+      return 'Processamento Concluído!';
+    } else {
+      return '';
+    }
+  }
+
+  showUploadButton(): boolean {
+    return !this.emProcessamento && !this.foiProcessada;
   }
 }

@@ -4,10 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { MobileKitComponent } from './modules/mobile/mobile-kit/mobile-kit.component';
 import { HomeComponent } from './modules/home/home/home.component';
 import { SecureGuard } from './guards/secure.guard';
+import { LiberaEventoComponent } from './modules/evento/libera-evento/libera-evento.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'liberaevento', component: LiberaEventoComponent },
+
   { path: 'home', component: HomeComponent },
+
   {
     path: 'mobile',
     loadChildren: () =>
@@ -63,6 +66,7 @@ const routes: Routes = [
         (m) => m.MobileV02Module,
       ),
   },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   {
     path: '**',
     redirectTo: 'home',

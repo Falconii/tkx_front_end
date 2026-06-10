@@ -1,3 +1,7 @@
+import { PayLoadModel } from '../../models/payload-model';
+
+import { jwtDecode } from 'jwt-decode';
+
 export function DataYYYYMMDD(value: Date): string {
   let d: Date = new Date(value),
     month = '' + (d.getMonth() + 1),
@@ -86,6 +90,8 @@ export class MensagensBotoes {
   static liberar = 'Liberar Evento';
   static ativar = 'Ativar Evento';
   static encerrar = 'Encerrar Evento';
+  static zerar_senha = 'Zerar Senha';
+  static ativar_inativar = 'Ativar/Inativar';
 }
 
 export function adicionaZero(numero: number) {
@@ -289,4 +295,37 @@ export function ConvertNumberToInt(value: string): number {
 
 export function hasNonNumeric(value: string): boolean {
   return /\D/.test(value);
+}
+
+export function getPayloadData(token: string): PayLoadModel | null {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    const payloadJson = atob(payloadBase64);
+    const payload = JSON.parse(payloadJson);
+
+    const retorno: PayLoadModel = new PayLoadModel();
+
+    retorno.id_empresa = payload.id_empresa;
+    retorno.id_usuario = payload.id_usuario;
+
+    return retorno;
+  } catch (error) {
+    console.error('Erro ao decodificar o token:', error);
+    return null;
+  }
+}
+
+export function isTokenExpired(token: string): boolean {
+  try {
+    const decoded: any = jwtDecode(token);
+
+    if (!decoded.exp) {
+      return true; // token sem exp é considerado inválido
+    }
+
+    const now = Math.floor(Date.now() / 1000); // agora em segundos
+    return decoded.exp < now; // true = expirado
+  } catch (e) {
+    return true; // token inválido ou malformado
+  }
 }

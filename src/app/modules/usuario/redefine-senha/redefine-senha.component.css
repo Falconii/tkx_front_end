@@ -1,0 +1,80 @@
+body {
+  background: #eef1f7;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #333;
+}
+
+/* Container principal */
+
+.email-wrapper {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Cabeçalho */
+
+.header {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  padding: 24px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Conteúdo */
+
+.content {
+  padding: 24px 28px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Caixa da senha */
+
+.password-box {
+  background: #f3f6ff;
+  border-left: 4px solid #2563eb;
+  padding: 12px 16px;
+  margin: 20px 0;
+  border-radius: 6px;
+  font-family: "Courier New", monospace;
+  font-size: 15px;
+}
+
+/* Rodapé */
+
+.footer {
+  padding: 18px 28px;
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Responsividade */
+
+@media (max-width: 480px) {
+  .email-wrapper {
+    margin: 10px;
+  }
+  .content {
+    padding: 20px;
+  }
+  .header {
+    padding: 20px;
+  }
+  .header h1 {
+    font-size: 18px;
+  }
+}

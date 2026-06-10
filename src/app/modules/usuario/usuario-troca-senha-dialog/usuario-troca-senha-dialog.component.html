@@ -1,7 +1,10 @@
 <div class="toolbar-alinhada dialog-header">
   <mat-toolbar color="primary">
     <span class="example-spacer">
-      <mat-label>{{ labelCadastro }}</mat-label>
+      <mat-label
+        >{{ labelCadastro }} - Trocar Senha
+        {{ data.usuario.trocarsenha }}</mat-label
+      >
     </span>
     <div class="button-container">
       <button
@@ -13,7 +16,12 @@
         <mat-icon>check</mat-icon>
         {{ acao }}
       </button>
-      <button mat-raised-button color="accent" (click)="onCancel()">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="onCancel()"
+        [disabled]="data.usuario.trocarsenha == 'S'"
+      >
         <mat-icon>cancel</mat-icon>
         {{ getLabelCancel() }}
       </button>
