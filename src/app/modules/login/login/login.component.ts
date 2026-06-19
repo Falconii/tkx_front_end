@@ -17,6 +17,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 import { EventoModel } from '../../../models/evento-model';
 import { EventoService } from '../../../services/evento.service';
+import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,7 @@ export class LoginComponent {
   inscricaoEmpresa!: Subscription;
   inscricaoLogin!: Subscription;
   inscricaoEvento!: Subscription;
+  inscricaoReset!: Subscription;
 
   isMobile = false;
   evento: EventoModel = new EventoModel();
@@ -47,6 +49,7 @@ export class LoginComponent {
     private matDialog: MatDialog,
     private appSnackBar: AppSnackbar,
     private breakpoint: BreakpointObserver,
+    private confirmDialog: ConfirmDialogService,
   ) {
     this.formulario = this.formulario = formBuilder.group({
       id: [{ value: '' }],
@@ -69,6 +72,7 @@ export class LoginComponent {
     this.inscricaoEmpresa?.unsubscribe();
     this.inscricaoLogin?.unsubscribe();
     this.inscricaoEvento?.unsubscribe();
+    this.inscricaoReset?.unsubscribe();
   }
 
   setValue() {
@@ -148,6 +152,7 @@ export class LoginComponent {
       codigo: id_usuario,
       password: senha,
     };
+    console.log('Login', par);
     this.inscricaoLogin = this.loginSrv.login(par).subscribe({
       next: (data: any) => {
         console.log('Buscando Empresa');
@@ -166,6 +171,13 @@ export class LoginComponent {
   }
 
   onValidar() {
+    if (this.globalService.getEmpresa().id <= 0) {
+      this.appSnackBar.openFailureSnackBar(
+        'Selecione Uma Empresa Para Logar!',
+        'OK'
+      );
+      return;
+    }
     this.globalService.setOnSubmit(true);
     const id_usuario = this.formulario.value.id;
     const senha = this.formulario.value.senha;
@@ -183,27 +195,7 @@ export class LoginComponent {
     this.router.navigate(['/']);
   }
 
-  onEsqueceu(): void {
-    // this.showDialog('Ola....');
-  }
 
-  getPayloadData(token: string): PayLoadModel | null {
-    try {
-      const payloadBase64 = token.split('.')[1];
-      const payloadJson = atob(payloadBase64);
-      const payload = JSON.parse(payloadJson);
-
-      const retorno: PayLoadModel = new PayLoadModel();
-
-      retorno.id_empresa = payload.id_empresa;
-      retorno.id_usuario = payload.id_usuario;
-
-      return retorno;
-    } catch (error) {
-      console.error('Erro ao decodificar o token:', error);
-      return null;
-    }
-  }
 
   getEvento(id_empresa: number = 1) {
     const par: ParametroEvento01 = new ParametroEvento01();
@@ -226,4 +218,73 @@ export class LoginComponent {
         },
       });
   }
+
+  onEsqueceu(): void {
+    const key = parseInt(this.formulario.value.id, 10);
+    let id_usuario: number = 0;
+
+    if (isNaN(key)) {
+      id_usuario = 0;
+    } else {
+      id_usuario = key;
+    }
+
+    if (id_usuario <= 0) {
+      this.appSnackBar.openFailureSnackBar(
+        'Preciso De Um Código Válido!',
+        'OK',
+      );
+      return;
+    }
+
+    this.confirmDialog
+      .open({
+        title: 'Resetar Senha',
+        message: `Deseja Realmente Resetar A Senha`,
+        icon: 'warning',
+        iconColor: 'warn',
+        confirmText: 'Resetar',
+        cancelText: 'Cancelar',
+      })
+      .subscribe(async (result) => {
+        if (result) {
+          this.resetar(1, id_usuario);
+        }
+      });
+  }
+
+  getPayloadData(token: string): PayLoadModel | null {
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64);
+      const payload = JSON.parse(payloadJson);
+
+      const retorno: PayLoadModel = new PayLoadModel();
+
+      retorno.id_empresa = payload.id_empresa;
+      retorno.id_usuario = payload.id_usuario;
+
+      return retorno;
+    } catch (error) {
+      console.error('Erro ao decodificar o token:', error);
+      return null;
+    }
+  }
+
+  resetar(id_empresa: number, id_usuario: number) {
+    const par = {
+      id_empresa: id_empresa,
+      id_usuario: id_usuario,
+    };
+    this.inscricaoReset = this.loginSrv.esqueceuSenha(par).subscribe({
+      next: (data: any) => {
+        this.appSnackBar.openSuccessSnackBar(data.message, 'OK');
+      },
+      error: (error: any) => {
+        console.log('erro', error);
+        this.appSnackBar.openFailureSnackBar(`Falha Na Geração Do Email`, 'OK');
+      },
+    });
+  }
+
 }

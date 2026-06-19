@@ -40,6 +40,7 @@ export class AppComponent {
   inscricaoLogin!: Subscription;
   inscricaoEmpresa!: Subscription;
   inscricaoUsuario!: Subscription;
+  inscricaoLogOut!: Subscription;
   inscricaoEvento!: Subscription;
 
   // 🔹 2. Objeto de controle do menu
@@ -159,23 +160,13 @@ export class AppComponent {
     this.inscricaoLogin?.unsubscribe();
     this.inscricaoUsuario?.unsubscribe();
     this.inscricaoEmpresa?.unsubscribe();
+    this.inscricaoLogOut?.unsubscribe();
     this.inscricaoEvento?.unsubscribe();
   }
   onLogin() {
     this.router.navigate(['/login']);
   }
 
-  onPerfil() {}
-
-  onAlterarSenha() {}
-
-  onSair() {
-    this.localStorageSrv.clear();
-    this.globalService.setLogado(false);
-    this.globalService.setUsuario(new UsuarioModel());
-    this.globalService.setEmpresa(new EmpresaModel());
-    this.router.navigate(['/login']);
-  }
 
   getUsuarioNome(): UsuarioModel {
     return this.globalService.getUsuario();
@@ -369,4 +360,51 @@ export class AppComponent {
         },
       });
   }
+
+
+  logOutUsuario() {
+    this.inscricaoLogOut = this.usuarioService.logout().subscribe({
+      next: (any) => {
+        this.localStorageSrv.clear();
+        this.globalService.setLogado(false);
+        this.globalService.setUsuario(new UsuarioModel());
+        this.globalService.setEmpresa(new EmpresaModel());
+        this.router.navigate(['/login']);
+      },
+      error: (error: any) => {
+        this.appSnackBar.openFailureSnackBar(
+          `Problemas Com O Usuário ${messageError(error)}`,
+          'OK',
+        );
+        this.localStorageSrv.clear();
+        this.globalService.setLogado(false);
+        this.globalService.setUsuario(new UsuarioModel());
+        this.globalService.setEmpresa(new EmpresaModel());
+        this.router.navigate(['/login']);
+      },
+    });
+  }
+
+  isCliente(): boolean {
+    return this.globalService.getUsuario().grupo_descricao == 'CLIENTE';
+  }
+
+  onSair() {
+    this.logOutUsuario();
+  }
+
+  onAlterarSenha() {
+    this.openTrocaSenhaDialog(
+      CadastroAcoes.Edicao,
+      this.globalService.getUsuario(),
+    );
+  }
+
+  onPerfil() {
+    this.openUsuarioDialog(
+      CadastroAcoes.Edicao,
+      this.globalService.getUsuario(),
+    );
+  }
+
 }

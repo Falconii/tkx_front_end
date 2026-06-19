@@ -5,8 +5,12 @@ import { MobileKitComponent } from './modules/mobile/mobile-kit/mobile-kit.compo
 import { HomeComponent } from './modules/home/home/home.component';
 import { SecureGuard } from './guards/secure.guard';
 import { LiberaEventoComponent } from './modules/evento/libera-evento/libera-evento.component';
+import { RedefineSenhaComponent } from './modules/usuario/redefine-senha/redefine-senha.component';
 
 const routes: Routes = [
+
+  { path: 'redefine_senha', component: RedefineSenhaComponent },
+
   { path: 'liberaevento', component: LiberaEventoComponent },
 
   { path: 'home', component: HomeComponent },

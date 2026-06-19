@@ -6,7 +6,7 @@ export const environment = {
   apiURL: 'http://localhost:3000/api/',
   apiOAuth2: 'http://localhost:3000/',
   wsURL: 'ws://localhost:8080',
-  appURL: 'https://simionatodev.github.io/aplicacao_conciliador/',
+  appURL: 'http://localhost:4200/',
 };
 
 /*

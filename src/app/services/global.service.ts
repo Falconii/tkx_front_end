@@ -46,7 +46,7 @@ export class GlobalService {
     this.logado = false;
     this.evento_situacoes = [
       new SimNao('0', 'Aguardando Liberação'),
-      new SimNao('1', 'Inativo'),
+      new SimNao('1', 'Aguardando Importação'),
       new SimNao('2', 'StandBy'),
       new SimNao('3', 'Ativo'),
       new SimNao('4', 'Encerrado'),

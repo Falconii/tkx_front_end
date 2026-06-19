@@ -90,18 +90,18 @@ export class UsuarioDialogComponent {
       ativo: [{ value: '', disabled: true }],
       razao: [{ value: '' }, [ValidatorStringLen(3, 40, true)]],
       cadastr: [{ value: '' }, [ValidatorDate(true)]],
-      cnpj_cpf: [{ value: '' }, [ValidatorCnpjCpf(false)]],
+      cnpj_cpf: [{ value: '' }, [ValidatorCnpjCpf(true)]],
       grupo: [{ value: '' }, [ValidatorCheckBox(1, 6, true)]],
-      rua: [{ value: '' }, [ValidatorStringLen(3, 80, false)]],
-      nro: [{ value: '' }, [ValidatorStringLen(1, 10, false)]],
+      rua: [{ value: '' }, [ValidatorStringLen(0, 80, false)]],
+      nro: [{ value: '' }, [ValidatorStringLen(0, 10, false)]],
       complemento: [{ value: '' }, [ValidatorStringLen(0, 30)]],
-      bairro: [{ value: '' }, [ValidatorStringLen(3, 40, false)]],
-      cidade: [{ value: '' }, [ValidatorStringLen(3, 40, false)]],
+      bairro: [{ value: '' }, [ValidatorStringLen(0, 40, false)]],
+      cidade: [{ value: '' }, [ValidatorStringLen(0, 40, false)]],
       uf: [{ value: '' }, [ValidatorStringLen(2, 2, false)]],
       cep: [{ value: '' }, [ValidatorCep(false)]],
-      tel1: [{ value: '' }, [ValidatorStringLen(0, 23, false)]],
-      tel2: [{ value: '' }, [ValidatorStringLen(0, 23)]],
-      email: [{ value: '' }, [Validators.required, Validators.email]],
+      tel1: [{ value: '' }, [ValidatorStringLen(1, 50, false)]],
+      tel2: [{ value: '' }, [ValidatorStringLen(1, 50, false)]],
+      email: [{ value: '' }, [Validators.email]],
     });
     this.formulario.get('cnpj_cpf')?.valueChanges.subscribe((value) => {
       const digits = value?.replace(/\D/g, '') || '';
@@ -270,7 +270,6 @@ export class UsuarioDialogComponent {
     this.data.usuario.tel1 = this.formulario.value.tel1;
     this.data.usuario.tel2 = this.formulario.value.tel2;
     this.data.usuario.email = this.formulario.value.email;
-    this.data.usuario.senha = '';
     this.data.usuario.grupo = this.formulario.value.grupo;
     //this.usuario.ativo = this.formulario.value.ativo
     switch (+this.idAcao) {
