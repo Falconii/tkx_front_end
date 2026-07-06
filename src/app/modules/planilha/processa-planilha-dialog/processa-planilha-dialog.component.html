@@ -3,19 +3,19 @@
         <span class="example-spacer">Rotina Para Incluir Os Participantes No Evento</span
     >
     <div class="button-container">
-      <button mat-raised-button color="#FFFFFF" (click)="onExecucao()">
+      <button mat-raised-button color="#FFFFFF" (click)="onExecucao()" [disabled]="this.formulario.valid == false || this.emProcessamento == true || this.foiProcessada == true  ">
         <mat-icon>check</mat-icon>
-        Executar
+        Processar
       </button>
       <button mat-raised-button color="accent" (click)="closeModal()">
         <mat-icon>cancel</mat-icon>
-        Cancelar
+         {{ this.foiProcessada == true ? 'Fechar' : 'Cancelar' }}
       </button>
     </div>
   </mat-toolbar>
 </div>
 <mat-dialog-content class="dialog-content">
-  <form [formGroup]="formulario" autocomplete="off" class="form-container">
+  <form [formGroup]="formulario" autocomplete="off" class="form-container" *ngIf="!foiProcessada">
     <div class="col-med-1">
       <mat-form-field appearance="outline" class="uppercase-input col-max">
         <mat-label>Planilha</mat-label>
@@ -23,16 +23,15 @@
       </mat-form-field>
     </div>
   </form>
-  <div class="progress-bar" *ngIf="emProcessamento">
-    <h4>{{ progress }}</h4>
+  <div class="loading-container" *ngIf="emProcessamento">
+    <h3>Incluindo Participantes...</h3>
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-     <h3>{{ getMessageProgress() }}</h3>
+     <h3>Planilha Sendo Processada. Aguarde...</h3>
   </div>
   <div class="resumo" *ngIf="foiProcessada">
-    <h2>Planilha Sendo Processada....</h2>
-  </div>
-  <div class="resumo" *ngIf="total_linhas > 0">
-    <h3>Total De Linhas.....: {{ total_linhas }}</h3>
-    <h3>Total De Linhas Erro: {{ total_linhas_erro }}</h3>
+    <h2>Planilha Processada</h2>
+    <h2>Total de Linhas: {{ processaPlanilha.total_linhas }}</h2>
+    <h2>Linhas Processadas: {{ processaPlanilha.linhas_processadas }}</h2>
+    <h2>Linhas com Erro: {{ processaPlanilha.total_linhas_erro }}</h2>
   </div>
 </mat-dialog-content>

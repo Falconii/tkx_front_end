@@ -48,6 +48,8 @@ export class ImportPlanilhaDialogComponent {
 
   showSpin: boolean = false;
 
+  tentativaAtual: number = 0;
+
   constructor(
     private eventoSrv: EventoService,
     private globalService: GlobalService,
@@ -180,15 +182,12 @@ export class ImportPlanilhaDialogComponent {
 
     this.emProcessamento = true;
 
-    console.log('id_evento', id_evento);
 
     this.importacaoSrv.uploadPlanilha(id_evento, this.selectedFile).subscribe({
       next: (event: any) => {
         if (event.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((100 * event.loaded) / event.total);
         } else if (event.type === HttpEventType.Response) {
-          this.emProcessamento = false;
-          this.foiProcessada = true;
           this.progress = 0;
           this.appSnackBar.openSuccessSnackBar(
             'Planilha Importada com Sucesso!',
@@ -205,7 +204,7 @@ export class ImportPlanilhaDialogComponent {
       },
       error: (error) => {
         this.emProcessamento = false;
-        this.foiProcessada = false;
+        this.foiProcessada = true;
         this.appSnackBar.openFailureSnackBar(
           `Erro No UpLoad ${error.error?.tabela ?? ''} - ${error.error?.erro ?? ''} - ${error.error?.message ?? ''}`,
           'OK',
@@ -221,30 +220,37 @@ export class ImportPlanilhaDialogComponent {
     this.inscricaoStatus = this.cabPlanilhaSrv
       .verificarStatus(id_empresa, id_evento, fileName)
       .subscribe({
-        next: (lista) => {
-          if (lista.length > 0) {
-            this.total_linhas = lista[0].total_linhas;
-            this.total_linhas_erro = lista[0].total_linhas_erro;
+        next: (ret) => {
+
+          this.tentativaAtual = ret.tentativa;
+          if (ret.lista.length > 0) {
+            this.total_linhas = ret.lista[0].total_linhas;
+            this.total_linhas_erro = ret.lista[0].total_linhas_erro;
             this.selectedFile = null;
             this.formulario.patchValue({ caminho: '' });
             this.inscricaoStatus.unsubscribe();
+            this.emProcessamento = false;
+            this.foiProcessada = true;
+            this.data.processar = true;
           }
-          this.foiProcessada = true;
-          this.data.processar = true;
         },
+
         error: (err) => {
           console.error('Erro no polling:', err);
           if (this.inscricaoStatus) {
             this.inscricaoStatus.unsubscribe();
           }
+          this.emProcessamento = false;
           this.foiProcessada = false;
         },
+
         complete: () => {
           this.appSnackBar.openFailureSnackBar(
             'Processando Terminou Com Falha!',
             'OK',
           );
-          this.foiProcessada = false;
+          this.emProcessamento = false;
+          this.foiProcessada = true;
         },
       });
   }
@@ -265,13 +271,12 @@ export class ImportPlanilhaDialogComponent {
 
   getMessageProgress(): string {
     if (this.progress < 100) {
-      return `Processando... ${this.progress}%`;
-    } else if (this.foiProcessada) {
-      return `Processamento Concluído! Total de Linhas: ${this.total_linhas}, Total de Erros: ${this.total_linhas_erro}`;
+       return `Enviando... ${this.progress}%`;
     } else {
-      return '';
+      return `Planilha Enviada, Aguardando Processamento...(${this.tentativaAtual+1}/40) `;
     }
   }
+
 
   getMessageStatus(): string {
     if (this.emProcessamento) {

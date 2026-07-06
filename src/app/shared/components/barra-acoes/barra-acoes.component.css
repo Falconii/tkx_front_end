@@ -5,6 +5,17 @@
   grid-template-columns: 20% 20% 20% 20%;
 }
 
+.botoes-acao {
+  margin: 0 auto;
+  height: inherit;
+  width: inherit;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+}
+
 mat-icon {
   font-size: 20px;
 }

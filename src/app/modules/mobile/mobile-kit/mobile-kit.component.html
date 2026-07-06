@@ -7,6 +7,17 @@
       matTooltip="Retorno"
       matTooltipPosition="above"
       (click)="onHome()"
+      *ngIf="!isMobile"
+    >
+      <mat-icon>home</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      matTooltip="Voltar"
+      matTooltipPosition="above"
+      (click)="onSair()"
+      *ngIf="isMobile"
     >
       <mat-icon>logout</mat-icon>
     </button>
@@ -25,6 +36,7 @@
 <app-filtro-entrega-kit
   [HIDE]="false"
   (changeParametro)="onChangeParametro($event)"
+  *ngIf="evento.id !== 0"
 ></app-filtro-entrega-kit>
 <div class="lista-participantes">
   <mat-card

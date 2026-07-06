@@ -21,7 +21,7 @@ import { TipoPesquisa } from '../../../shared/classes/tipo-pesquisa';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { LocalStorageService } from '../../../services/localStorage.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UsuarioModel } from '../../../models/usuario-model';
 import { EventoModel } from '../../../models/evento-model';
 import { EventoService } from '../../../services/evento.service';
@@ -30,6 +30,7 @@ import { Participantev2Service } from '../../../services/participantev2.service'
 import { ParametroParticipantev201 } from '../../../parametros/parametro-participantev201';
 import { Participantev2Model } from '../../../models/participantev2-model';
 import { EntregaV2DialogData } from '../entrega-dialog/entrega-v2-dialog-data';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -53,18 +54,30 @@ export class MobileKitComponent {
 
   evento: EventoModel = new EventoModel();
 
+  isMobile: boolean = false;
+
+
   constructor(
     private appSnackBar: AppSnackbar,
     private globalService: GlobalService,
     private eventoSrv: EventoService,
     private participanteSrv: Participantev2Service,
     private localStorageSrv: LocalStorageService,
+    private route: ActivatedRoute,
     private router: Router,
     private kitEntrega: MatDialog,
+    private breakpoint: BreakpointObserver,
   ) {}
 
   ngOnInit(): void {
-    this.getEventoAtivo();
+    this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
+          this.isMobile = result.matches;
+        });
+    const data = this.route.snapshot.data['eventoAtivo'];
+    this.evento = data.length > 0 ? data[0] : new EventoModel();
+    if (this.evento.id == 0 && !this.isMobile) {
+      this.onHome();
+    }
   }
 
   ngOnDestroy(): void {
@@ -212,11 +225,15 @@ export class MobileKitComponent {
     this.router.navigate(['mobile/novoinscrito/']);
   }
 
-  onHome() {
+  onSair() {
     this.globalService.setLogado(false);
     this.globalService.setUsuario(new UsuarioModel());
     this.localStorageSrv.removeItem('Token');
     this.router.navigate(['/login']);
+  }
+
+  onHome(){
+    this.router.navigate(['/home']);
   }
 
   openKitDialog(dado: Participantev2Model): void {

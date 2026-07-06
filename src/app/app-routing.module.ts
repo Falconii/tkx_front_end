@@ -13,8 +13,10 @@ const routes: Routes = [
 
   { path: 'liberaevento', component: LiberaEventoComponent },
 
-  { path: 'home', component: HomeComponent },
-
+  { path: 'home',
+    loadChildren: () =>
+      import('./modules/home/home.module').then((m) => m.HomeModule),
+  },
   {
     path: 'mobile',
     loadChildren: () =>

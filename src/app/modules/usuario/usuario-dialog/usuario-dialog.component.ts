@@ -202,6 +202,7 @@ export class UsuarioDialogComponent {
     let par = new ParametroGrupousuario01();
 
     par.id_empresa = this.globalService.getEmpresa().id;
+    par.hierarquia = this.globalService.getUsuario().grupo;
 
     this.inscricaoGetUsuario = this.grupoUserService
       .getGruposusuariosParametro_01(par)

@@ -14,6 +14,7 @@ import { Importplanilhadata } from '../import-planilha-dialog/importplanilha-dat
 import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 import { ParametroCabplanilha01 } from '../../../parametros/parametro-cabplanilha01';
 import { messageError } from '../../../shared/classes/util';
+import { ProcessaPlanilhaModel } from '../../../models/processa-planilha-model';
 
 @Component({
   selector: 'app-processa-planilha-dialog',
@@ -34,17 +35,12 @@ export class ProcessaPlanilhaDialogComponent {
 
   lsPlanilhas: CabplanilhaModel[] = [];
 
-  progress: number = 0;
-
-  linhas_processadas: number = 0;
-
-  total_linhas: number = 0;
-
-  total_linhas_erro: number = 0;
 
   emProcessamento: boolean = false;
 
   foiProcessada: boolean = false;
+
+  processaPlanilha:ProcessaPlanilhaModel = new ProcessaPlanilhaModel();
 
   constructor(
     private planilhaSrv: CabplanilhaService,
@@ -86,16 +82,6 @@ export class ProcessaPlanilhaDialogComponent {
 
   onCancelar() {}
 
-  getMessageProgress(): string {
-    if (this.progress < 100) {
-      return `Processando... ${this.progress}%`;
-    } else if (this.foiProcessada) {
-      return `Processamento Concluído! Total de Linhas: ${this.total_linhas}, Total de Erros: ${this.total_linhas_erro}`;
-    } else {
-      return '';
-    }
-  }
-
 
   processarPlanilha() {
     const par = {
@@ -103,21 +89,29 @@ export class ProcessaPlanilhaDialogComponent {
       id_evento: this.data.planilha.id_evento,
       id_planilha: this.data.planilha.id,
     };
+
+    this.emProcessamento = true;
+
     this.inscricaoAcao = this.importacaoSrv.processaPlanilha(par).subscribe({
       next: (data: any) => {
+        this.processaPlanilha = data.cabec;
+        console.log('Processamento Iniciado Com Sucesso:', this.processaPlanilha.arquivo);
         this.appSnackBar.openSuccessSnackBar(
           `Processamento Iniciado Com Sucesso.`,
           'OK',
         );
+        this.emProcessamento = false;
         this.foiProcessada = true;
         this.data.processar = true;
       },
       error: (err) => {
+        this.emProcessamento = false;
+        this.foiProcessada = true;
         this.appSnackBar.openFailureSnackBar(
           `Falha No Processamento: ${messageError(err)}`,
           'OK',
         );
-        this.foiProcessada = false;
+
       },
     });
   }

@@ -103,6 +103,7 @@ tr:hover {
 /* Rótulos (Código, Início, Término) */
 
 .alinha_esquerda .rotulo {
+  color: #1976d2;
   font-weight: 500;
   margin: 0;
   padding: 0;
@@ -124,4 +125,15 @@ tr:hover {
 .tabela-fixa td {
   padding: 2px 8px;
   /* diminui altura da linha */
+}
+
+
+.titulo {
+  color: #1976d2;
+  /* azul padrão do Angular Material */
+  font-weight: 500;
+}
+
+.valor {
+  color: #000;
 }

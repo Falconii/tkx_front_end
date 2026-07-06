@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   catchError,
   interval,
+  map,
   Observable,
   of,
   switchMap,
@@ -36,9 +37,10 @@ export class CabplanilhaComplementarService {
     idEmpresa: number,
     idEvento: number,
     fileName: string,
-  ): Observable<any[]> {
-    const intervalo = 3000; // 3 segundos
-    const tentativas = 40; // 2 minutos
+  ): Observable<{ tentativa: number; lista: any[] }> {
+
+    const intervalo = 3000;
+    const tentativas = 40;
 
     const par: ParametroCabplanilha01 = {
       id_empresa: idEmpresa,
@@ -55,18 +57,17 @@ export class CabplanilhaComplementarService {
 
     return interval(intervalo).pipe(
       take(tentativas),
-      switchMap(() =>
+      switchMap((i) =>
         this.cabPlanilhaSrv.getCabplanilhasParametro_01(par).pipe(
-          catchError((err) => {
+          map(lista => ({ tentativa: i + 1, lista })),
+          catchError(err => {
             if (err.status === 409) {
-              // 409 = planilha ainda não encontrada → continuar polling
-              return of([]); // devolve array vazio
+              return of({ tentativa: i + 1, lista: [] });
             }
-            // Erros reais → interrompe o polling
             return throwError(() => err);
-          }),
-        ),
-      ),
+          })
+        )
+      )
     );
   }
 }

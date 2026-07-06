@@ -40,7 +40,6 @@ mat-dialog-actions {
 }
 
 /* Botões: deixam encolher e dividir espaço */
-
 mat-dialog-actions button {
   flex: 1 1 0;
   min-width: 0;
@@ -50,7 +49,6 @@ mat-dialog-actions button {
 }
 
 /* Botão crítico */
-
 button[color="warn"] {
   font-weight: 600;
 }
@@ -69,7 +67,6 @@ button:disabled {
 }
 
 /* Ajustes leves para telas menores */
-
 @media (max-width: 600px) {
   .dialog-title {
     font-size: 18px;
@@ -108,7 +105,6 @@ button:disabled {
   /* centraliza horizontal */
   gap: 5px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.8);
   /* opcional: deixa um véu */
   z-index: 10;
   /* fica acima da tabela */

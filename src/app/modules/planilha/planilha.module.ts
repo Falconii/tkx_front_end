@@ -9,9 +9,10 @@ import { MaterialModule } from '../../../material/material.module';
 import { SharedModule } from '../../shared/shared.module';
 import { ImportPlanilhaDialogComponent } from './import-planilha-dialog/import-planilha-dialog.component';
 import { ProcessaPlanilhaDialogComponent } from './processa-planilha-dialog/processa-planilha-dialog.component';
+import { EditDetalheDialogComponent } from './edit-detalhe-dialog/edit-detalhe-dialog.component';
 
 @NgModule({
-  declarations: [CrudPlanilhaComponent, ImportPlanilhaDialogComponent, ProcessaPlanilhaDialogComponent],
+  declarations: [CrudPlanilhaComponent, ImportPlanilhaDialogComponent, ProcessaPlanilhaDialogComponent EditDetalheDialogComponent],
   imports: [
     CommonModule,
     PlanilhaRoutingModule,

@@ -29,6 +29,7 @@ import { FormularioFiltroParticipantev2Component } from './components/formulario
 import { SpinsComponent } from './spins/spins.component';
 import { SituacaoPlanilhaPipe } from './pipes/situacao-planilha.pipe';
 import { SituacaoUsuarioPipe } from './pipes/ativo-inativo.pipe';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { SituacaoUsuarioPipe } from './pipes/ativo-inativo.pipe';
     CrudDisplayComponent,
     FormularioFiltroParticipantev2Component,
     SpinsComponent,
+    DashboardComponent
   ],
   imports: [
     CommonModule,
@@ -84,6 +86,7 @@ import { SituacaoUsuarioPipe } from './pipes/ativo-inativo.pipe';
     ConfirmDialogComponent,
     CrudDisplayComponent,
     SpinsComponent,
+    DashboardComponent
   ],
 })
 export class SharedModule {}

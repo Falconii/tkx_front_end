@@ -1,101 +1,124 @@
 :host {
-    display: block;
+  display: block;
 }
-
 
 /* Título com ícone */
 
 .dialog-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .dialog-title .warn-icon {
-    font-size: 28px;
-    height: 28px;
-    width: 28px;
+  font-size: 28px;
+  height: 28px;
+  width: 28px;
 }
-
 
 /* Conteúdo */
 
 mat-dialog-content {
-    font-size: 15px;
-    color: #444;
-    margin-bottom: 20px;
-    line-height: 1.4;
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 20px;
+  line-height: 1.4;
 }
-
 
 /* Ações: sempre em linha */
 
 mat-dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding-top: 10px;
-    flex-wrap: nowrap;
-    /* não deixa quebrar linha */
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  flex-wrap: nowrap;
+  /* não deixa quebrar linha */
 }
-
 
 /* Botões: deixam encolher e dividir espaço */
-
 mat-dialog-actions button {
-    flex: 1 1 0;
-    min-width: 0;
-    /* permite encolher bem */
-    max-width: 140px;
-    /* limite opcional */
+  flex: 1 1 0;
+  min-width: 0;
+  /* permite encolher bem */
+  max-width: 140px;
+  /* limite opcional */
 }
 
-
 /* Botão crítico */
-
 button[color="warn"] {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .button-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 1em;
-    border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 1em;
+  border-top: 1px solid #ccc;
 }
 
 button:disabled {
-    background-color: white;
-    cursor: not-allowed;
+  background-color: white;
+  cursor: not-allowed;
 }
 
-
 /* Ajustes leves para telas menores */
-
 @media (max-width: 600px) {
-    .dialog-title {
-        font-size: 18px;
-        gap: 8px;
-    }
-    .dialog-title .warn-icon {
-        font-size: 24px;
-        height: 24px;
-        width: 24px;
-    }
-    mat-dialog-content {
-        font-size: 14px;
-        margin-bottom: 16px;
-    }
-    mat-dialog-actions {
-        justify-content: space-between;
-        gap: 6px;
-    }
-    mat-dialog-actions button {
-        max-width: none;
-        /* deixa eles usarem a largura disponível */
-    }
+  .dialog-title {
+    font-size: 18px;
+    gap: 8px;
+  }
+
+  .dialog-title .warn-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+  }
+
+  mat-dialog-content {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  mat-dialog-actions {
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  mat-dialog-actions button {
+    max-width: none;
+    /* deixa eles usarem a largura disponível */
+  }
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* centraliza vertical */
+  align-items: center;
+  /* centraliza horizontal */
+  gap: 5px;
+  text-align: center;
+  /* opcional: deixa um véu */
+  z-index: 10;
+  /* fica acima da tabela */
+}
+
+mat-progress-bar {
+  width: 60%;
+}
+
+h3 {
+  color: #555;
+  font-size: large;
 }

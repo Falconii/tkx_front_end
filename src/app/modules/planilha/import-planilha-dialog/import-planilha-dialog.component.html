@@ -10,13 +10,13 @@
       </button>
       <button mat-raised-button color="accent" (click)="closeModal()">
         <mat-icon>cancel</mat-icon>
-        Cancelar
+        {{ this.foiProcessada == true ? 'Fechar' : 'Cancelar' }}
       </button>
     </div>
   </mat-toolbar>
 </div>
 <mat-dialog-content class="dialog-content">
-  <form [formGroup]="formulario" autocomplete="off" class="form-container">
+  <form [formGroup]="formulario" autocomplete="off" class="form-container" *ngIf="!foiProcessada" >
     <div class="col-med-2">
       <mat-form-field appearance="outline" class="col-max">
         <mat-label>Evento</mat-label>
@@ -55,11 +55,16 @@
     />
   </form>
   <div class="loading-container" *ngIf="showSpin">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <h3>Upload Da Planilha</h3>
+    <mat-progress-bar
+          mode=determinate
+          [value]="progress"
+          bufferValue=100>
+    </mat-progress-bar>
     <h3>{{ getMessageProgress() }}</h3>
   </div>
   <div class="resumo" *ngIf="foiProcessada">
-    <h2>{{ getMessageStatus() }}</h2>
+    <h3>{{ getMessageStatus() }}</h3>
   </div>
   <div class="resumo" *ngIf="total_linhas > 0">
     <h3>Total De Linhas.....: {{ total_linhas }}</h3>
