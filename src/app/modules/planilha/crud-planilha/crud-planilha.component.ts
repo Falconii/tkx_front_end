@@ -1,6 +1,5 @@
 import { ProcessaPlanilhaDialogData } from './../processa-planilha-dialog/processa-planilha-dialog-data';
 import { CabplanilhaModel } from './../../../models/cabplanilha-model';
-import { ParametroDeletaplanilha } from './../../../parametros/parametro-deletaplanilha';
 import { Component } from '@angular/core';
 import { ParametroCabplanilha01 } from '../../../parametros/parametro-cabplanilha01';
 import { ParametroModel } from '../../../models/parametro-model';
@@ -20,6 +19,9 @@ import { Importplanilhadata } from '../import-planilha-dialog/importplanilha-dat
 import { CabplanilhaComplementarService } from '../../../services/cabplanilhaComplementar.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ProcessaPlanilhaDialogComponent } from '../processa-planilha-dialog/processa-planilha-dialog.component';
+import { EditDetalheDialogData } from '../edit-detalhe-dialog/edit-detalhe-dialog-data';
+import { CrudDetalheDialogData } from '../crud-detalhe-dialog/crud-detalhe-dialog-data';
+import { CrudDetalheDialogComponent } from '../crud-detalhe-dialog/crud-detalhe-dialog.component';
 
 @Component({
   selector: 'app-crud-planilha',
@@ -49,6 +51,7 @@ export class CrudPlanilhaComponent {
     private appSnackBar: AppSnackbar,
     private uploadDialog: MatDialog,
     private deleteDialog: MatDialog,
+    private detalheDialog:MatDialog
   ) {}
 
   ngOnInit(): void {}
@@ -141,6 +144,9 @@ export class CrudPlanilhaComponent {
         this.openUloadLoadDialog();
       }
     } else {
+      if (opcao == CadastroAcoes.Consulta) {
+        this.openDetalheDialog(opcao,indice,planilha)
+      }
       if (opcao == CadastroAcoes.Exclusao) {
         this.openDeletePlanilha(planilha, indice);
       }
@@ -231,4 +237,46 @@ export class CrudPlanilhaComponent {
       }
     });
   }
+
+    openDetalheDialog(
+      opcao: CadastroAcoes = CadastroAcoes.Consulta,
+      i: number,
+      cabPlanilha: CabplanilhaModel,
+    ): void {
+      const data: CrudDetalheDialogData = {
+          idAcao : opcao,
+          result: false,
+          cabPlanilha: cabPlanilha,
+        };
+
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.id = 'CrudDetalheDialog';
+
+      dialogConfig.width = '100vw';
+      dialogConfig.height = '100dvh';
+      dialogConfig.maxWidth = '100vw';
+
+
+      // FULLSCREEN REAL
+      dialogConfig.width = '100vw';
+      dialogConfig.height = '100vh';
+      dialogConfig.maxWidth = '100vw';
+      //dialogConfig.panelClass = 'fullscreen-dialog';
+
+      dialogConfig.data = data;
+
+      this.detalheDialog
+        .open(CrudDetalheDialogComponent, dialogConfig)
+        .beforeClosed()
+        .subscribe((result: EditDetalheDialogData | null) => {
+          if (result?.result) {
+
+              this.appSnackBar.openSuccessSnackBar("RETORNO OK","ok");
+
+          }
+        });
+    }
+
 }

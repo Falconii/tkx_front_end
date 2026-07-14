@@ -1,0 +1,84 @@
+<div class="toolbar-alinhada dialog-header">
+  <mat-toolbar color="primary">
+    <span class="example-spacer">
+      <mat-label>Participantes Evento : {{data.cabPlanilha.evento_descricao}}</mat-label>
+    </span>
+    <div class="button-container">
+      <button mat-raised-button color="accent" (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+         Voltar
+      </button>
+    </div>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-detplanilha
+   PARAMNAME="detplanilha"
+  [HIDE]="hide"
+  [EMAIL]="true"
+  [DOWNLOAD]="true"
+  [CABPLANILHA]="data.cabPlanilha"
+  [CONTROLE_PAGINAS]="controlePaginas"
+  (changeParametro)="onChangeParametros($event)"
+  (changeHide)="onChangeHide($event)"
+/>
+
+<table class="Browse_Lanc">
+  <tr class="coluna-cabec">
+    <th style="width: 15%">Identificação</th>
+    <th style="width: 35%">Nome</th>
+    <th style="width: 35%">Situação</th>
+    <th style="width: 15%">AÇÕES</th>
+  </tr>
+  <tr *ngFor="let detalhe of lsDetalhes; let i = index">
+    <td>
+        <div class="linha-info">
+        <span class="titulo">Inscrição:</span>
+        <span class="valor">{{ detalhe.inscricao }}</span>
+        </div>
+         <div class="linha-info">
+        <span class="titulo">Nº Peito:</span>
+        <span class="valor">{{ detalhe.nro_peito}}</span>
+        </div>
+         <div class="linha-info">
+        <span class="titulo">CPF:</span>
+        <span class="valor">{{detalhe.cnpj_cpf | cnpjcpf}}</span>
+        </div>
+
+    </td>
+    <td>
+        <div class="linha-info">
+        <span class="titulo">Nome:</span>
+        <span class="valor">{{ detalhe.nome }}</span>
+      </div>
+      <div class="linha-info">
+        <span class="titulo">Sexo:</span>
+        <span class="valor">{{ detalhe.sexo | SexoPipe}}</span>
+      </div>
+      <div class="linha-info">
+        <span class="titulo">Categoria:</span>
+        <span class="valor">{{ detalhe.id_categoria }}</span>
+      </div>
+    </td>
+       <td>
+        <div class="linha-info">
+        <span class="titulo">Situação:</span>
+        <span class="valor">{{ detalhe.status | situacao_det_planilha}}</span>
+      </div>
+      <div class="linha-info">
+        <span class="titulo">Mensagem:</span>
+        <span class="valor">{{ detalhe.mensagem_erro }}</span>
+      </div>
+    </td>
+    <td class="acoes">
+      <barra-acoes
+        [CONSULTAR]="true"
+        (changeOpcao)="escolha($event, i, detalhe)"
+      >
+      </barra-acoes>
+    </td>
+  </tr>
+</table>
+
+
+
+

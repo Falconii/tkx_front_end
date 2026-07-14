@@ -1,1 +1,64 @@
-<p>edit-detalhe-dialog works!</p>
+<div class="toolbar-alinhada dialog-header">
+  <mat-toolbar color="primary">
+    <span class="example-spacer">
+      <mat-label>{{ labelCadastro }}</mat-label>
+    </span>
+    <div class="button-container">
+      <button mat-raised-button color="accent" (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+         Voltar
+      </button>
+    </div>
+  </mat-toolbar>
+</div>
+
+<app-formulario-filtro-detplanilha
+  PARAMNAME="detplanilha"
+  [HIDE]="hide"
+  [EMAIL]="true"
+  [DOWNLOAD]="true"
+  [CONTROLE_PAGINAS]="controlePaginas"
+  (changeParametro)="onChangeParametros($event)"
+  (changeHide)="onChangeHide($event)"
+/>
+<table class="Browse_Lanc tabela-fixa">
+  <tr class="coluna-cabec">
+    <th class="col-situacao">Inscrição</th>
+    <th class="col-evento">Nome</th>
+    <th class="col-acoes">AÇÕES</th>
+  </tr>
+
+  <tr *ngFor="let detalhe of lsDetalhes; let i = index">
+    <td class="col-situacao">
+      <div class="alinha_esquerda">
+
+        <mat-label class="rotulo">Nº Do Peito:</mat-label>
+        <mat-label class="valor"
+          >{{ detalhe.nro_peito | zeroFill }}
+        </mat-label>
+
+        <mat-label class="rotulo">Inscrição:</mat-label>
+        <mat-label class="valor">{{ detalhe.inscricao }}</mat-label>
+
+        <mat-label class="rotulo">Nº Peito:</mat-label>
+        <mat-label class="valor"
+          >{{ detalhe.nro_peito }}
+        </mat-label>
+      </div>
+    </td>
+
+    <td class="col-participante">
+      <div class="linha-info">
+        <span class="titulo">Nome:</span>
+        <span class="valor">{{ detalhe.nome }}</span>
+
+      </div>
+    </td>
+
+    <td class="col-acoes">
+      <barra-acoes
+        (changeOpcao)="escolha($event, i, detalhe)"
+      ></barra-acoes>
+    </td>
+  </tr>
+</table>

@@ -184,7 +184,7 @@ export class AppComponent {
     }
   }
 
-  getEmpresa(id_empresa: number = 1, id_usuario: number) {
+  getEmpresa(id_empresa: number, id_usuario: number) {
     this.inscricaoEmpresa = this.empresaService
       .getEmpresa(id_empresa)
       .subscribe({

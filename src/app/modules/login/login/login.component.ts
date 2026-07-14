@@ -4,7 +4,7 @@ import { Component, EventEmitter, numberAttribute } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import { GlobalService } from '../../../services/global.service';
 import { UsuarioService } from '../../../services/usuario.service';
@@ -18,6 +18,9 @@ import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 import { EventoModel } from '../../../models/evento-model';
 import { EventoService } from '../../../services/evento.service';
 import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
+import { UsuarioTrocaSenhaDialogComponent } from '../../usuario/usuario-troca-senha-dialog/usuario-troca-senha-dialog.component';
+import { Usuariotrocasenhadata } from '../../usuario/usuario-troca-senha-dialog/usuariotrocasenhadata';
+import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 
 @Component({
   selector: 'app-login',
@@ -50,6 +53,7 @@ export class LoginComponent {
     private appSnackBar: AppSnackbar,
     private breakpoint: BreakpointObserver,
     private confirmDialog: ConfirmDialogService,
+    private usuarioTrocaSenha: MatDialog,
   ) {
     this.formulario = this.formulario = formBuilder.group({
       id: [{ value: '' }],
@@ -106,7 +110,7 @@ export class LoginComponent {
     }
   }
 
-  getEmpresa(id_empresa: number = 1, id_usuario: number) {
+  getEmpresa(id_empresa: number , id_usuario: number) {
     this.inscricaoEmpresa = this.empresasServices
       .getEmpresa(id_empresa)
       .subscribe({
@@ -126,13 +130,16 @@ export class LoginComponent {
       });
   }
 
-  getUsuario(id_empresa: number, id_usuario: number) {
+  getUsuario(id_empresa:number, id_usuario: number) {
     this.inscricaoUsuario = this.usuariosService
       .getUsuario(id_empresa, id_usuario)
       .subscribe({
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
+          if (data.trocarsenha == "S"){
+            this.onAlterarSenha();
+          }
         },
         error: (error: any) => {
           this.globalService.setOnSubmit(false);
@@ -146,7 +153,7 @@ export class LoginComponent {
       });
   }
 
-  getLogin(id_empresa: number = 1, id_usuario: number, senha: string) {
+  getLogin(id_empresa: number, id_usuario: number, senha: string) {
     const par = {
       id_empresa: id_empresa,
       codigo: id_usuario,
@@ -157,7 +164,7 @@ export class LoginComponent {
       next: (data: any) => {
         console.log('Buscando Empresa');
         this.localStorageSrv.setString('Token', data.accessToken);
-        this.getEmpresa(data.id_empresa, data.id);
+        this.getEmpresa(id_empresa, data.id);
       },
       error: (error: any) => {
         this.globalService.setOnSubmit(false);
@@ -171,12 +178,10 @@ export class LoginComponent {
   }
 
   onValidar() {
-    if (this.globalService.getEmpresa().id <= 0) {
-      this.appSnackBar.openFailureSnackBar(
-        'Selecione Uma Empresa Para Logar!',
-        'OK'
-      );
-      return;
+   if (this.globalService.getEmpresa().id <= 0) {
+      const empresa = new EmpresaModel();
+      empresa.id = 1;
+      this.globalService.setEmpresa(empresa);
     }
     this.globalService.setOnSubmit(true);
     const id_usuario = this.formulario.value.id;
@@ -286,5 +291,53 @@ export class LoginComponent {
       },
     });
   }
+
+   onAlterarSenha() {
+      this.openTrocaSenhaDialog(
+        CadastroAcoes.Edicao,
+        this.globalService.getUsuario(),
+      );
+    }
+
+   openTrocaSenhaDialog(
+      opcao: CadastroAcoes = CadastroAcoes.Edicao,
+      usuario: UsuarioModel,
+    ): void {
+      const data: Usuariotrocasenhadata = new Usuariotrocasenhadata();
+
+      if (usuario == null) {
+        return;
+      }
+      data.opcao = opcao;
+      data.processar = false;
+      data.usuario = usuario;
+      console.log('Ação:', opcao, data.usuario);
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.id = 'crud-usuario';
+      dialogConfig.width = '60vw';
+      dialogConfig.height = '65vh';
+      dialogConfig.disableClose = true;
+      dialogConfig.data = data;
+      const modalDialog = this.usuarioTrocaSenha
+        .open(UsuarioTrocaSenhaDialogComponent, dialogConfig)
+        .beforeClosed()
+        .subscribe((data: Usuariotrocasenhadata | null) => {
+          if (data?.trocasenha) {
+            this.globalService.usuario.trocarsenha = 'N';
+            this.appSnackBar.openSuccessSnackBar(
+              `Senha Atualizada Com Sucesso !`,
+              'OK',
+            );
+          }
+          if (data?.cancelar) {
+            this.appSnackBar.openWarningnackBar(
+              `Operação Cancelada Pelo Usuário.`,
+              'OK',
+            );
+          }
+        });
+    }
 
 }

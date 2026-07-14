@@ -416,7 +416,6 @@ export class FormularioFiltroParticipantev2Component {
       this.formulario.value.pesquisa.toUpperCase() || '';
     Object(config).pesquisarPor = this.definirPesquisa();
     Object(config).id = this.formulario.value.id;
-    this.parametro.parametro = JSON.stringify(config);
     Object(config).id_evento = this.formulario.value.id_evento;
     Object(config).id_categoria = this.formulario.value.id_categoria;
 

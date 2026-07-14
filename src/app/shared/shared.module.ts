@@ -30,6 +30,9 @@ import { SpinsComponent } from './spins/spins.component';
 import { SituacaoPlanilhaPipe } from './pipes/situacao-planilha.pipe';
 import { SituacaoUsuarioPipe } from './pipes/ativo-inativo.pipe';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { FormularioFiltroDetplanilhaComponent } from './components/formulario-filtro-detplanilha/formulario-filtro-detplanilha.component';
+import { SituacaoDetPlanilhaPipe } from './pipes/situacao-det-planilha.pipe';
+import { SexoPipe } from './pipes/sexo.pipe';
 
 @NgModule({
   declarations: [
@@ -46,17 +49,20 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     SituacaoEventoPipe,
     SituacaoPlanilhaPipe,
     SituacaoUsuarioPipe,
+    SituacaoDetPlanilhaPipe,
+    SexoPipe,
     FormularioFiltroEmpresaComponent,
     FormularioFiltroGrupousuarioComponent,
     FormularioFiltroUsuarioComponent,
     FormularioFiltroEventoComponent,
     FormularioFiltroInscritoComponent,
     FormularioFiltroCabplanilhaComponent,
+    FormularioFiltroDetplanilhaComponent,
     ConfirmDialogComponent,
     CrudDisplayComponent,
     FormularioFiltroParticipantev2Component,
     SpinsComponent,
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -76,6 +82,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     SituacaoEventoPipe,
     SituacaoPlanilhaPipe,
     SituacaoUsuarioPipe,
+    SituacaoDetPlanilhaPipe,
+    SexoPipe,
     SharedNavegatorComponent,
     FormularioFiltroEmpresaComponent,
     FormularioFiltroGrupousuarioComponent,
@@ -83,6 +91,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     FormularioFiltroEventoComponent,
     FormularioFiltroCabplanilhaComponent,
     FormularioFiltroParticipantev2Component,
+    FormularioFiltroDetplanilhaComponent,
     ConfirmDialogComponent,
     CrudDisplayComponent,
     SpinsComponent,

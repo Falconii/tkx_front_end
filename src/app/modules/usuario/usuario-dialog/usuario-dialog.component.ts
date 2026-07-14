@@ -101,7 +101,7 @@ export class UsuarioDialogComponent {
       cep: [{ value: '' }, [ValidatorCep(false)]],
       tel1: [{ value: '' }, [ValidatorStringLen(1, 50, false)]],
       tel2: [{ value: '' }, [ValidatorStringLen(1, 50, false)]],
-      email: [{ value: '' }, [Validators.email]],
+      email: [{ value: '' }, [Validators.required,Validators.email]],
     });
     this.formulario.get('cnpj_cpf')?.valueChanges.subscribe((value) => {
       const digits = value?.replace(/\D/g, '') || '';

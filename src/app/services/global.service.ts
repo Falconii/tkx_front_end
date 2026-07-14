@@ -16,6 +16,7 @@ export class GlobalService {
   evento: EventoModel = new EventoModel();
   evento_situacoes: SimNao[] = [];
   planilha_situacoes: SimNao[] = [];
+  detalhe_situacoes:SimNao[] = [];
   lsSexos: SimNao[] = [];
   logado: boolean = false;
   showSpin: boolean = false;
@@ -54,6 +55,10 @@ export class GlobalService {
     this.planilha_situacoes = [
       new SimNao('1', 'Importada'),
       new SimNao('2', 'Processada'),
+    ];
+    this.detalhe_situacoes = [
+      new SimNao('0', 'OK'),
+      new SimNao('9', 'Erro'),
     ];
     this.lsSexos = [
       { sigla: 'M', descricao: 'MASCULINO' },
@@ -151,12 +156,28 @@ export class GlobalService {
     const idx = this.planilha_situacoes.findIndex(
       (plan) => plan.sigla === value,
     );
-    if (idx >= 0 && idx < this.lsSexos.length) {
+    if (idx >= 0 && idx < this.planilha_situacoes.length) {
       return this.planilha_situacoes[idx];
     } else {
       return new SimNao('', '');
     }
   }
+
+  getDetalhe_situacoes(): SimNao[] {
+    return this.detalhe_situacoes;
+  }
+  getDetalhe_situacoesBySigla(value: string): SimNao {
+    const idx = this.detalhe_situacoes.findIndex(
+      (plan) => plan.sigla === value,
+    );
+    if (idx >= 0 && idx < this.detalhe_situacoes.length) {
+      return this.detalhe_situacoes[idx];
+    } else {
+      return new SimNao('', '');
+    }
+  }
+
+
 
   setChangePassWord() {
     this.changePassWordEmitter.emit();

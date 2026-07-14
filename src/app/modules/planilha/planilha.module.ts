@@ -10,9 +10,10 @@ import { SharedModule } from '../../shared/shared.module';
 import { ImportPlanilhaDialogComponent } from './import-planilha-dialog/import-planilha-dialog.component';
 import { ProcessaPlanilhaDialogComponent } from './processa-planilha-dialog/processa-planilha-dialog.component';
 import { EditDetalheDialogComponent } from './edit-detalhe-dialog/edit-detalhe-dialog.component';
+import { CrudDetalheDialogComponent } from './crud-detalhe-dialog/crud-detalhe-dialog.component';
 
 @NgModule({
-  declarations: [CrudPlanilhaComponent, ImportPlanilhaDialogComponent, ProcessaPlanilhaDialogComponent EditDetalheDialogComponent],
+  declarations: [CrudPlanilhaComponent, ImportPlanilhaDialogComponent, ProcessaPlanilhaDialogComponent, EditDetalheDialogComponent, CrudDetalheDialogComponent],
   imports: [
     CommonModule,
     PlanilhaRoutingModule,

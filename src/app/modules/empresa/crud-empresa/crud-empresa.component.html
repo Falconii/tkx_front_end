@@ -19,29 +19,39 @@
 <app-formulario-filtro-empresa  PARAMNAME = "empresas" [HIDE]="hide" [EMAIL]="true" [DOWNLOAD]="true" [CONTROLE_PAGINAS]="controlePaginas" (changeParametro)="onChangeParametros($event)" (changeHide)="onChangeHide($event)"/>
 <table class="Browse_Lanc">
   <tr class="coluna-cabec">
-    <th>Código</th>
-    <th>Razao</th>
-    <th>CNPJ</th>
-    <th>AÇÕES</th>
+    <th style="width: 15%;">Código</th>
+    <th style="width: 35%;">Empresa</th>
+    <th style="width: 35%">Endereço</th>
+    <th style="width: 15%;">AÇÕES</th>
   </tr>
   <tr *ngFor="let empresa of empresas let i = index" >
     <td>
-      <div class="alinha_centro">
-        <mat-label class="Browse_Lanc_td ">{{empresa.id | zeroFill}}</mat-label>
+       <div class="alinha_esquerda">
+        <mat-label class="rotulo">Código:</mat-label>
+        <mat-label class="valor">{{ empresa.id | zeroFill }}</mat-label>
+        <mat-label class="rotulo">Cadastro:</mat-label>
+        <mat-label class="valor">{{ empresa.cadastr }}</mat-label>
       </div>
     </td>
     <td>
-      <div>
-        <mat-label class="Browse_Lanc_td"   [matTooltip]="empresa.razao"  matTooltipPosition="above" >{{empresa.razao | truncate:50}}</mat-label>
-      </div>
-      <div>
-        <mat-label class="Browse_Lanc_td" >{{empresa.email}}</mat-label>
-      </div>
+       <div class="alinha_esquerda">
+         <mat-label class="rotulo">Razão:</mat-label>
+         <mat-label class="valor">{{ empresa.razao}}</mat-label>
+         <mat-label class="rotulo">CNPJ:</mat-label>
+         <mat-label class="valor">{{ empresa.cnpj_cpf | cnpjcpf}}</mat-label>
+         <mat-label class="rotulo">E-Mail:</mat-label>
+         <mat-label class="valor">{{ empresa.email}}</mat-label>
+       </div>
     </td>
     <td>
-      <div>
-        <mat-label class="Browse_Lanc_td">{{empresa.cnpj_cpf | cnpjcpf}}</mat-label>
-      </div>
+       <div class="alinha_esquerda">
+         <mat-label class="rotulo">End:</mat-label>
+         <mat-label class="valor">{{ empresa.ruaf.trim()}},{{empresa.nrof}}</mat-label>
+         <mat-label class="rotulo">Bairro:</mat-label>
+         <mat-label class="valor">{{ empresa.bairrof}} CEP:{{empresa.cepf}}</mat-label>
+         <mat-label class="rotulo">Cidade:</mat-label>
+         <mat-label class="valor">{{ empresa.cidadef}}, UF:{{empresa.uff}}</mat-label>
+       </div>
     </td>
     <td class="acoes">
       <barra-acoes   (changeOpcao)="escolha($event,i,empresa)">

@@ -77,7 +77,6 @@ export class EmpresaDialogComponent {
         digits.length > 11 ? '00.000.000/0000-00' : '000.000.000-00';
     });
     this.ufs = this.estadoSrv.getEstados();
-    alert('teste');
   }
 
   ngOnInit(): void {

@@ -19,19 +19,19 @@
 <app-formulario-filtro-grupousuario  PARAMNAME = "grupousuario" [HIDE]="hide" [EMAIL]="true" [DOWNLOAD]="true" [CONTROLE_PAGINAS]="controlePaginas" (changeParametro)="onChangeParametros($event)" (changeHide)="onChangeHide($event)"/>
 <table class="Browse_Lanc">
   <tr class="coluna-cabec">
-    <th>Código</th>
-    <th>Descrição</th>
-    <th>AÇÕES</th>
+    <th style="width: 10%;">Código</th>
+    <th style="width: 80%">Descrição</th>
+    <th style="width: 10%;"> AÇÕES</th>
   </tr>
   <tr *ngFor="let grupo of gruposusuarios let i = index" >
     <td>
       <div class="alinha_centro">
-        <mat-label class="Browse_Lanc_td ">{{grupo.codigo| zeroFill}}</mat-label>
+        <mat-label class="valor">{{grupo.codigo| zeroFill}}</mat-label>
       </div>
     </td>
     <td>
       <div>
-        <mat-label class="Browse_Lanc_td"   [matTooltip]="grupo.descricao"  matTooltipPosition="above" >{{grupo.descricao | truncate:50}}</mat-label>
+        <mat-label class="valor"   [matTooltip]="grupo.descricao"  matTooltipPosition="above" >{{grupo.descricao | truncate:50}}</mat-label>
       </div>
     </td>
     <td class="acoes">

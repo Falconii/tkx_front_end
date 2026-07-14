@@ -46,43 +46,39 @@
 />
 <table class="Browse_Lanc">
   <tr class="coluna-cabec">
-    <th>Cód Usuário</th>
-    <th>Nome</th>
-    <th>Grupo</th>
-    <th>AÇÕES</th>
+    <th style="width: 20%;">Identificação</th>
+    <th style="width: 35%;">Usuário</th>
+    <th style="width: 35%;">Endereço</th>
+    <th style="width: 10%;">AÇÕES</th>
   </tr>
   <tr *ngFor="let usuario of usuarios; let i = index">
     <td>
-      <div class="alinha_centro">
-        <mat-label class="Browse_Lanc_td"
-          >{{ usuario.id | zeroFill }}
-        </mat-label>
-      </div>
-      <div class="alinha_centro">
-        <mat-label class="Browse_Lanc_td"
-          >{{ usuario.ativo | SituacaoUsuario }}
-        </mat-label>
+      <div class="alinha_esquerda">
+        <mat-label class="rotulo">Código:</mat-label>
+        <mat-label class="valor">{{ usuario.id | zeroFill }}</mat-label>
+        <mat-label class="rotulo">Cadastro:</mat-label>
+        <mat-label class="valor">{{ usuario.cadastr }}</mat-label>
+        <mat-label class="rotulo">Situação:</mat-label>
+        <mat-label class="valor">{{ usuario.ativo | SituacaoUsuario}}</mat-label>
       </div>
     </td>
+       <div class="alinha_esquerda">
+        <mat-label class="rotulo">Nome:</mat-label>
+        <mat-label class="valor">{{ usuario.razao | zeroFill }}</mat-label>
+        <mat-label class="rotulo">E-Mail:</mat-label>
+        <mat-label class="valor">{{ usuario.email }}</mat-label>
+        <mat-label class="rotulo">Telefone:</mat-label>
+        <mat-label class="valor">{{ usuario.tel1}}</mat-label>
+      </div>
     <td>
-      <div>
-        <mat-label
-          class="Browse_Lanc_td"
-          [matTooltip]="usuario.razao"
-          matTooltipPosition="above"
-          >{{ usuario.razao | truncate: 30 }}</mat-label
-        >
-      </div>
-      <div>
-        <mat-label class="Browse_Lanc_td">{{ usuario.email }}</mat-label>
-      </div>
-    </td>
-    <td>
-      <div>
-        <mat-label class="Browse_Lanc_td"
-          >Grupo:{{ usuario.grupo }}-{{ usuario.grupo_descricao }}</mat-label
-        >
-      </div>
+     <div class="alinha_esquerda">
+         <mat-label class="rotulo">End:</mat-label>
+         <mat-label class="valor">{{ usuario.rua.trim()}},{{usuario.nro}}</mat-label>
+         <mat-label class="rotulo">Bairro:</mat-label>
+         <mat-label class="valor">{{ usuario.bairro}} CEP:{{usuario.cep}}</mat-label>
+         <mat-label class="rotulo">Cidade:</mat-label>
+         <mat-label class="valor">{{ usuario.cidade}}, UF:{{usuario.uf}}</mat-label>
+       </div>
     </td>
     <td class="acoes">
       <barra-acoes

@@ -52,13 +52,8 @@ tr:hover {
 }
 
 .col-evento {
-  width: 65%;
+  width: 70%;
   /* descrição */
-}
-
-.col-participantes {
-  width: 15%;
-  /* qtd participantes */
 }
 
 .col-acoes {
@@ -86,6 +81,39 @@ tr:hover {
   text-align: center;
 }
 
+/* GRID para alinhar Código / Início / Término */
+
+.alinha_esquerda {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  /* rótulo | valor */
+  column-gap: 6px;
+  /* espaço horizontal */
+  row-gap: 2px;
+  /* espaço vertical entre linhas */
+  align-items: center;
+  /* alinha verticalmente */
+}
+
+/* Rótulos (Código, Início, Término) */
+
+.alinha_esquerda .rotulo {
+  color: #1976d2;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  /* deixa mais compacto */
+}
+
+/* Valores (datas e código) */
+
+.alinha_esquerda .valor {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  /* deixa mais compacto */
+}
 
 /* Compactar a linha da tabela */
 
@@ -94,3 +122,21 @@ tr:hover {
   /* diminui altura da linha */
 }
 
+.linha-info {
+  display: flex;
+  gap: 12px;
+  /* espaço entre os itens */
+  align-items: center;
+  flex-wrap: wrap;
+  /* quebra linha se ficar muito grande */
+}
+
+.titulo {
+  color: #1976d2;
+  /* azul padrão do Angular Material */
+  font-weight: 500;
+}
+
+.valor {
+  color: #000;
+}

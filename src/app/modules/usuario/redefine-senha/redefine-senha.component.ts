@@ -6,6 +6,10 @@ import { getPayloadData, isTokenExpired } from '../../../shared/classes/util';
 import { UsuarioModel } from '../../../models/usuario-model';
 import { loginService } from '../../../services/login.service';
 import { environment } from '../../../../environments/environment.development';
+import { GlobalService } from '../../../services/global.service';
+import { LocalStorageService } from '../../../services/localStorage.service';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-redefine-senha',
@@ -28,6 +32,8 @@ export class RedefineSenhaComponent {
     private router: Router,
     private appSnackBar: AppSnackbar,
     private loginSrv: loginService,
+    private globalService:GlobalService,
+    private localStorageSrv: LocalStorageService
   ) {
     this.token = this.route.snapshot.queryParams['token'];
 
@@ -70,5 +76,14 @@ export class RedefineSenhaComponent {
         );
       },
     });
+  }
+
+
+
+
+  onlimpar() {
+    this.globalService.setLogado(false);
+    this.globalService.setUsuario(new UsuarioModel());
+    this.localStorageSrv.removeItem('Token');
   }
 }
