@@ -8,6 +8,8 @@ import { MaterialModule } from '../../../material/material.module';
 import { SharedModule } from '../../shared/shared.module';
 import { LoginDesktopComponent } from './login-desktop/login-desktop.component';
 import { LoginMobileComponent } from './login-mobile/login-mobile.component';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { A11yModule } from '@angular/cdk/a11y';
 
 
 @NgModule({
@@ -22,7 +24,10 @@ import { LoginMobileComponent } from './login-mobile/login-mobile.component';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    A11yModule,
   ]
 })
 export class LoginModule { }

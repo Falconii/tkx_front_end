@@ -1,12 +1,12 @@
 <div class="quadro">
     <form [formGroup]="formulario" autocomplete="off" class="formulario">
-        <h2>Bem Vindo Ao Controle De Eventos TKX-Experience DeskTop</h2>
+        <h2>Bem Vindo Ao Controle De Eventos TKX-Experience</h2>
         <h3>Identifique-se Por Favor</h3>
 
         <div class="linha-login">
             <mat-form-field appearance="outline" class="controle">
-                <mat-label>USUÁRIO</mat-label>
-                <input matInput formControlName="id" />
+                <mat-label>Usuario</mat-label>
+                <input matInput formControlName="cnpj_cpf" mask= '000.000.000-00'  />
             </mat-form-field>
         </div>
 

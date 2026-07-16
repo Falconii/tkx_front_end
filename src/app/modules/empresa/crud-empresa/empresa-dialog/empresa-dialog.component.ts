@@ -40,8 +40,6 @@ export class EmpresaDialogComponent {
 
   estadoSrv: EstadoService = new EstadoService();
 
-  cpfOuCnpjMask: string = '000.000.000-00';
-
   constructor(
     private formBuilder: FormBuilder,
     private empresaService: EmpresaService,
@@ -70,11 +68,6 @@ export class EmpresaDialogComponent {
       tel2: [{ value: '' }, [ValidatorStringLen(0, 23)]],
       email: [{ value: '' }, [Validators.email, ValidatorStringLen(0, 100)]],
       obs: [{ value: '' }, [ValidatorStringLen(0, 200)]],
-    });
-    this.formulario.get('cnpj_cpf')?.valueChanges.subscribe((value) => {
-      const digits = value?.replace(/\D/g, '') || '';
-      this.cpfOuCnpjMask =
-        digits.length > 11 ? '00.000.000/0000-00' : '000.000.000-00';
     });
     this.ufs = this.estadoSrv.getEstados();
   }

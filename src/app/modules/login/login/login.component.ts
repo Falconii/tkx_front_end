@@ -21,6 +21,7 @@ import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
 import { UsuarioTrocaSenhaDialogComponent } from '../../usuario/usuario-troca-senha-dialog/usuario-troca-senha-dialog.component';
 import { Usuariotrocasenhadata } from '../../usuario/usuario-troca-senha-dialog/usuariotrocasenhadata';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
+import { ValidatorCnpjCpf } from '../../../shared/Validators/validator-Cnpj-Cpf';
 
 @Component({
   selector: 'app-login',
@@ -56,7 +57,7 @@ export class LoginComponent {
     private usuarioTrocaSenha: MatDialog,
   ) {
     this.formulario = this.formulario = formBuilder.group({
-      id: [{ value: '' }],
+      cnpj_cpf: [{ value: '' }, [ValidatorCnpjCpf(true)]],
       senha: [{ value: '' }],
     });
     // Detecta mobile automaticamente
@@ -81,17 +82,14 @@ export class LoginComponent {
 
   setValue() {
     this.formulario.setValue({
-      id:
-        this.globalService.getUsuario().id > 0
-          ? this.globalService.getUsuario().id
-          : '',
+      cnpj_cpf: this.globalService.getUsuario().cnpj_cpf ,
       senha: '',
     });
   }
 
   setValueNoParam() {
     this.formulario.setValue({
-      id: '',
+      cnpj_cpf: '',
       senha: '',
     });
   }
@@ -121,7 +119,6 @@ export class LoginComponent {
         },
         error: (error: any) => {
           this.globalService.setOnSubmit(false);
-          console.log('Login', error);
           this.appSnackBar.openFailureSnackBar(
             `Problemas Com A Empresa ${messageError(error)}`,
             'OK',
@@ -153,22 +150,19 @@ export class LoginComponent {
       });
   }
 
-  getLogin(id_empresa: number, id_usuario: number, senha: string) {
+  getLoginbycpf(id_empresa: number, cnpj_cpf: string, senha: string) {
     const par = {
       id_empresa: id_empresa,
-      codigo: id_usuario,
+      cnpj_cpf: cnpj_cpf,
       password: senha,
     };
-    console.log('Login', par);
-    this.inscricaoLogin = this.loginSrv.login(par).subscribe({
+    this.inscricaoLogin = this.loginSrv.loginByCnpjCpf(par).subscribe({
       next: (data: any) => {
-        console.log('Buscando Empresa');
         this.localStorageSrv.setString('Token', data.accessToken);
         this.getEmpresa(id_empresa, data.id);
       },
       error: (error: any) => {
         this.globalService.setOnSubmit(false);
-        console.log('error', error);
         this.appSnackBar.openFailureSnackBar(
           `Problemas Com O Login - GetLogin`,
           'OK',
@@ -178,15 +172,24 @@ export class LoginComponent {
   }
 
   onValidar() {
-   if (this.globalService.getEmpresa().id <= 0) {
-      const empresa = new EmpresaModel();
-      empresa.id = 1;
-      this.globalService.setEmpresa(empresa);
+    if (this.formulario.valid) {
+      if (this.globalService.getEmpresa().id <= 0) {
+        const empresa = new EmpresaModel();
+        empresa.id = 1;
+        this.globalService.setEmpresa(empresa);
+      }
+      this.globalService.setOnSubmit(true);
+      const cnpj_cpf = this.formulario.value.cnpj_cpf;
+      const senha = this.formulario.value.senha;
+      this.getLoginbycpf(this.globalService.getEmpresa().id, cnpj_cpf, senha);
+    } else {
+      this.formulario.markAllAsTouched();
+      this.appSnackBar.openSuccessSnackBar(
+        `Formulário Com Campos Inválidos.`,
+        'OK'
+      );
     }
-    this.globalService.setOnSubmit(true);
-    const id_usuario = this.formulario.value.id;
-    const senha = this.formulario.value.senha;
-    this.getLogin(this.globalService.getEmpresa().id, id_usuario, senha);
+
   }
 
   onCancelar() {
@@ -213,7 +216,6 @@ export class LoginComponent {
       .getEventosParametro_01(par)
       .subscribe({
         next: (data: EventoModel[]) => {
-          console.log(data);
         },
         error: (error: any) => {
           this.appSnackBar.openFailureSnackBar(
@@ -271,7 +273,6 @@ export class LoginComponent {
 
       return retorno;
     } catch (error) {
-      console.error('Erro ao decodificar o token:', error);
       return null;
     }
   }
@@ -286,7 +287,6 @@ export class LoginComponent {
         this.appSnackBar.openSuccessSnackBar(data.message, 'OK');
       },
       error: (error: any) => {
-        console.log('erro', error);
         this.appSnackBar.openFailureSnackBar(`Falha Na Geração Do Email`, 'OK');
       },
     });
@@ -311,7 +311,6 @@ export class LoginComponent {
       data.opcao = opcao;
       data.processar = false;
       data.usuario = usuario;
-      console.log('Ação:', opcao, data.usuario);
       const dialogConfig = new MatDialogConfig();
 
       dialogConfig.disableClose = true;

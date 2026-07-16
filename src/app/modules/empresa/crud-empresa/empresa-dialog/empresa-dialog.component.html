@@ -48,7 +48,7 @@
         <mat-form-field appearance="outline" class="col-max">
           <mat-label>CNPJ/CPF</mat-label>
           <input matInput formControlName="cnpj_cpf"
-                        [mask]="cpfOuCnpjMask" [readonly]="readOnly">
+                        mask="00.000.000/0000-00"  [readonly]="readOnly">
           <mat-error *ngIf="NoValidtouchedOrDirty('cnpj_cpf')">{{getMensafield('cnpj_cpf')}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="col-max">

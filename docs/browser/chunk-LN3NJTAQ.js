@@ -1,1 +1,0 @@
-import{qa as i}from"./chunk-TF2N7LKS.js";var n=class e{transform(r,t=6){return r==null?"":r.toString().padStart(t,"0")}static \u0275fac=function(t){return new(t||e)};static \u0275pipe=i({name:"zeroFill",type:e,pure:!0})};export{n as a};

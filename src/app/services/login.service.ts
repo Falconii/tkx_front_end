@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment.development';
 import { LoginModel } from '../models/login-model';
 import { ParametroLogin01 } from '../parametros/parametro-login01';
 import { UsuarioModel } from '../models/usuario-model';
+import { ParametroLogin02 } from '../parametros/parametro-login02';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,10 @@ export class loginService {
 
   login(params: ParametroLogin01): Observable<LoginModel> {
     return this.http.post<LoginModel>(`${this.apiURL}login`, params);
+  }
+
+  loginByCnpjCpf(params: ParametroLogin02): Observable<LoginModel> {
+    return this.http.post<LoginModel>(`${this.apiURL}login/loginbycpf`, params);
   }
 
   zerarSenha(params: any): Observable<UsuarioModel> {
