@@ -22,11 +22,24 @@ export function AtualizaParametroParticipantev201(
         break;
 
       case TipoPesquisa.Inscricao:
-        par.inscricao = Object(config).pesquisa;
+
+        key = parseInt(Object(config).pesquisa, 10);
+
+        if (isNaN(key)) {
+          par.inscricao = -1;
+        } else {
+          par.inscricao = key;
+        }
         break;
 
       case TipoPesquisa.Nro_Peito:
-        par.nro_peito = Object(config).pesquisa;
+        key = parseInt(Object(config).pesquisa, 10);
+        if (isNaN(key)) {
+          par.nro_peito = -1;
+        } else {
+          par.nro_peito = key;
+        }
+
         break;
     }
 

@@ -27,11 +27,25 @@ export function AtualizaParametroDetplanilha01(par: ParametroDetplanilha01, conf
             break;
 
           case TipoPesquisa.Inscricao:
-            par.inscricao = Object(config).pesquisa;
+
+            key = parseInt(Object(config).pesquisa, 10);
+            if (isNaN(key)) {
+              par.inscricao = -1;
+            } else {
+              par.inscricao = key;
+            }
             break;
 
           case TipoPesquisa.Nro_Peito:
-            par.nro_peito = Object(config).pesquisa;
+
+            key = parseInt(Object(config).pesquisa, 10);
+
+            if (isNaN(key)) {
+              par.nro_peito = -1;
+            } else {
+              par.nro_peito = key;
+            }
+
             break;
         }
 
@@ -39,7 +53,7 @@ export function AtualizaParametroDetplanilha01(par: ParametroDetplanilha01, conf
        key = parseInt(Object(config).status, 10);
 
         if (isNaN(key)) {
-          par.status = 0;
+          par.status = -1;
         } else {
           par.status = key;
         }

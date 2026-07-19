@@ -92,6 +92,16 @@
           {{ evento.descricao }}
         </mat-option>
       </mat-select>
+
+      <button
+        mat-icon-button
+        matSuffix
+        matTooltip="Limpar seleção"
+        (click)="clearValue('id_evento'); $event.stopPropagation()"
+        class="clear-button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
     </mat-form-field>
     <mat-form-field field appearance="outline" class="col-max">
       <mat-label>Categoria</mat-label>
@@ -103,6 +113,16 @@
           {{ categoria.descricao }}
         </mat-option>
       </mat-select>
+
+      <button
+        mat-icon-button
+        matSuffix
+        matTooltip="Limpar seleção"
+        (click)="clearValue('id_categoria'); $event.stopPropagation()"
+        class="clear-button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
     </mat-form-field>
   </div>
 </form>

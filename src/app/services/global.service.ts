@@ -57,8 +57,10 @@ export class GlobalService {
       new SimNao('2', 'Processada'),
     ];
     this.detalhe_situacoes = [
-      new SimNao('0', 'OK'),
-      new SimNao('9', 'Erro'),
+      new SimNao('0', 'Importado'),
+      new SimNao("2","Processado"),
+      new SimNao('3', 'Erro Na Planilha CVS'),
+      new SimNao('9', 'Erro De Informação'),
     ];
     this.lsSexos = [
       { sigla: 'M', descricao: 'MASCULINO' },

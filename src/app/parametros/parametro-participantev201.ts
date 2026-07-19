@@ -4,8 +4,8 @@ export class ParametroParticipantev201 {
   public id: number = 0;
   public id_entrega: number = 0;
   public kit: boolean = false;
-  public inscricao: number = 0;
-  public nro_peito: number = 0;
+  public inscricao: number = -1;
+  public nro_peito: number = -1;
   public id_categoria: number = 0;
   public nome: string = '';
   public cnpj_cpf: string = '';

@@ -31,3 +31,19 @@ tr:hover {
   color: red;
   line-height: 1.2;
 }
+
+.linha_vertical {
+  margin: 0 auto;
+  height: inherit;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  column-gap: 2px;
+}
+
+
+.area_util {
+  padding: 5pix;
+}

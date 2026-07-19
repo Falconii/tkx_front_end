@@ -1,3 +1,4 @@
+<div class="area_util">
 <div class="toolbar-alinhada dialog-header">
   <mat-toolbar color="primary">
     <span class="example-spacer">
@@ -9,6 +10,24 @@
          Voltar
       </button>
     </div>
+  </mat-toolbar>
+</div>
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Participantes Da Planilha: </span>
+    <app-navegator [controle]="controlePaginas" (changePage)="onChangePage()"></app-navegator>
+    <button mat-icon-button aria-label="Example icon-button with share icon " matTooltip="Retorno"
+      matTooltipPosition="above" (click)="onHome()">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon"
+      (click)="getDetalhes()" matTooltip="Atualizar" matTooltipPosition="above">
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()['Inclusao'], 1)" [matTooltip]="getTexto().incluir" matTooltipPosition="above">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
   </mat-toolbar>
 </div>
 <app-formulario-filtro-detplanilha
@@ -25,9 +44,9 @@
 <table class="Browse_Lanc">
   <tr class="coluna-cabec">
     <th style="width: 15%">Identificação</th>
-    <th style="width: 35%">Nome</th>
+    <th style="width: 40%">Nome</th>
     <th style="width: 35%">Situação</th>
-    <th style="width: 15%">AÇÕES</th>
+    <th style="width: 10%">AÇÕES</th>
   </tr>
   <tr *ngFor="let detalhe of lsDetalhes; let i = index">
     <td>
@@ -56,7 +75,9 @@
       </div>
       <div class="linha-info">
         <span class="titulo">Categoria:</span>
-        <span class="valor">{{ detalhe.id_categoria }}</span>
+        <span class="valor">{{ detalhe.cat_descricao}}</span>
+        <span class="titulo">Dt Nasc::</span>
+        <span class="valor">{{ detalhe.data_nasc }}</span>
       </div>
     </td>
        <td>
@@ -66,19 +87,22 @@
       </div>
       <div class="linha-info">
         <span class="titulo">Mensagem:</span>
-        <span class="valor">{{ detalhe.mensagem_erro }}</span>
+        <span class="valor">{{ detalhe.mensagem_erro }}{{data.cabPlanilha.status}}</span>
+
       </div>
     </td>
     <td class="acoes">
       <barra-acoes
         [CONSULTAR]="true"
+        [ALTERAR]="data.cabPlanilha.status !== '2'"
+        [EXCLUIR]="data.cabPlanilha.status !== '2'"
         (changeOpcao)="escolha($event, i, detalhe)"
       >
       </barra-acoes>
     </td>
   </tr>
 </table>
-
+</div>
 
 
 

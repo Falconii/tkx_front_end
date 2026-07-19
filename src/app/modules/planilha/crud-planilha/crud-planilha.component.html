@@ -53,41 +53,37 @@
   </tr>
   <tr *ngFor="let planilha of lsPlanilhas; let i = index">
     <td>
-      <div class="info-texto">
-        <mat-label>ID Planilha: {{ planilha.id }} </mat-label>
+       <div class="alinha_esquerda">
+
+        <mat-label class="rotulo">ID Planilha:</mat-label>
+        <mat-label class="valor">{{ planilha.id }}</mat-label>
+
+        <mat-label class="rotulo">Situação:</mat-label>
+        <mat-label class="valor">{{ planilha.status | situacao_planilha }}</mat-label>
       </div>
-      <div class="info-texto">
-        <mat-label
-          >Situação: {{ planilha.status | situacao_planilha }}
-        </mat-label>
+
+    </td>
+    <td>
+
+      <div class="linha_vertical">
+
+        <mat-label>{{planilha.evento_descricao}}</mat-label>
+        <mat-label>{{planilha.arquivo}} </mat-label>
+
       </div>
     </td>
     <td>
       <div class="alinha_esquerda">
-        <mat-label class="Browse_Lanc_td"
-          >{{ planilha.evento_descricao }}
-        </mat-label>
-      </div>
-      <div class="alinha_esquerda">
-        <mat-label class="Browse_Lanc_td">{{ planilha.arquivo }} </mat-label>
-      </div>
-    </td>
-    <td>
-      <div class="alinha_left">
-        <mat-label class="Browse_Lanc_td"
-          >Total De Linhas Geral : {{ planilha.total_linhas }}</mat-label
-        >
-      </div>
-      <div class="alinha_left">
-        <mat-label class="Browse_Lanc_td"
-          >Total De Linhas Processadas :
-          {{ planilha.linhas_processadas }}</mat-label
-        >
-      </div>
-      <div class="alinha_left">
-        <mat-label class="Browse_Lanc_td"
-          >Total De Linhas Com Erro: {{ planilha.total_linhas_erro }}</mat-label
-        >
+
+        <mat-label class="rotulo">Total De Linhas Geral:</mat-label>
+        <mat-label class="valor">{{planilha.total_linhas | zeroFill}}</mat-label>
+
+        <mat-label class="rotulo">Total De Linhas Processadas:</mat-label>
+        <mat-label class="valor">{{ planilha.linhas_processadas | zeroFill }}</mat-label>
+
+        <mat-label class="rotulo">Total De Linhas Com Erro:</mat-label>
+        <mat-label class="valor">{{  planilha.total_linhas_erro| zeroFill  }}</mat-label>
+
       </div>
     </td>
     <td class="acoes">
@@ -101,3 +97,4 @@
     </td>
   </tr>
 </table>
+

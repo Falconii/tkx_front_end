@@ -1,5 +1,5 @@
 <div color="white" class="toolbar-filtro">
-  <span class="filtro-com-icones">
+  <span class="form_padding filtro-com-icones">
     <span class="titulo">Filtro da Pesquisa</span>
     <mat-icon
       matTooltipPosition="above"
@@ -40,7 +40,7 @@
     >
   </span>
 </div>
-<form [formGroup]="formulario" autocomplete="off" *ngIf="!hide">
+<form class="form_padding" [formGroup]="formulario" autocomplete="off" *ngIf="!hide">
   <div class="col-med-3">
     <mat-form-field field appearance="outline" class="col-max">
       <mat-label>Ordernado Por</mat-label>
@@ -66,9 +66,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
-  </div>
-  <div class="col-med-2">
-    <mat-form-field field appearance="outline" class="col-max">
+       <mat-form-field field appearance="outline" class="col-max">
       <mat-label>Situação</mat-label>
       <mat-select
         formControlName="status"

@@ -454,6 +454,15 @@ export class FormularioFiltroParticipantev2Component {
         id: '',
       });
     }
+    if (campo == 'id_evento') {
+      this.formulario.patchValue({
+        id_evento: '',
+      });
+    } if (campo == 'id_categoria') {
+      this.formulario.patchValue({
+        id_categoria: '',
+      });
+    }
     this.onChangeParametros();
   }
 

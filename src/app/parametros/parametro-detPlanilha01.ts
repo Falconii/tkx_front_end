@@ -2,9 +2,9 @@ export class ParametroDetplanilha01{
 		public id_empresa:number = 0 ;
 		public id_evento:number = 0 ;
 		public id_cabec:number = 0 ;
-		public nro_peito:number = 0 ;
+		public nro_peito:number = -1 ;
 		public cnpj_cpf:string = '' ;
-		public inscricao:number = 0 ;
+		public inscricao:number = -1 ;
 		public nome:string = '' ;
 		public status:number = -1 ;
 		public pagina:number = 0 ;

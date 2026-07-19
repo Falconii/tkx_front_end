@@ -98,12 +98,11 @@
 
     <td class="col-acoes">
       <barra-acoes
-        [EXCLUIR]="evento.status == '0' || evento.status == '1'"
-        [BARRA_VERTICAL]="
-          evento.status == '0' || evento.status == '2' || evento.status == '3'
-        "
+        [EXCLUIR]="false"
+        [BARRA_VERTICAL]="true"
+        [BARRA_EXCLUIR]="evento.status == '0' || evento.status == '1'"
         [BARRA_ATIVAR]="evento.status == '2'"
-        [BARRA_LIBERAR]="evento.status == '0'"
+        [BARRA_LIBERAR]="evento.status == '0' || evento.status == '2' || evento.status == '3'"
         [BARRA_ENCERRAR]="evento.status == '3'"
         (changeOpcao)="escolha($event, i, evento)"
       ></barra-acoes>

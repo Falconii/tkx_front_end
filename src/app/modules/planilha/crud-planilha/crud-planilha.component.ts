@@ -203,11 +203,15 @@ export class CrudPlanilhaComponent {
   }
 
   openProcessaPlanilha(planilha: CabplanilhaModel, indice: number) {
+    if (planilha.total_linhas_erro > 0){
+      this.appSnackBar.openFailureSnackBar("Planilha Possui Erros. Não Pode Ser Processada!","OK");
+      return;
+    }
     const dialogRef = this.deleteDialog.open(ConfirmDialogComponent, {
       width: '380px',
       data: {
         title: 'Processar Planilha',
-        message: `${planilha.arquivo}`,
+        message: 'Processar Planilha',
         confirmText: 'Sim, Processar',
         cancelText: 'Cancelar',
         icone: 'play_circle_filled',
@@ -254,16 +258,11 @@ export class CrudPlanilhaComponent {
       dialogConfig.disableClose = true;
       dialogConfig.id = 'CrudDetalheDialog';
 
-      dialogConfig.width = '100vw';
-      dialogConfig.height = '100dvh';
-      dialogConfig.maxWidth = '100vw';
-
 
       // FULLSCREEN REAL
       dialogConfig.width = '100vw';
       dialogConfig.height = '100vh';
       dialogConfig.maxWidth = '100vw';
-      //dialogConfig.panelClass = 'fullscreen-dialog';
 
       dialogConfig.data = data;
 
