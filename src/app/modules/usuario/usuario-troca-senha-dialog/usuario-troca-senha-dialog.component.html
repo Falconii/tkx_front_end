@@ -2,46 +2,20 @@
   <mat-toolbar color="primary">
     <span class="example-spacer">
       <mat-label
-        >{{ labelCadastro }} - Trocar Senha
-        {{ data.usuario.trocarsenha }}</mat-label
+        >{{ labelCadastro }}</mat-label
       >
     </span>
-    <div class="button-container">
-      <button
-        mat-raised-button
-        color="#FFFFFF"
-        (click)="actionFunction()"
-        *ngIf="idAcao != 3"
-      >
-        <mat-icon>check</mat-icon>
-        {{ acao }}
-      </button>
-      <button
-        mat-raised-button
-        color="accent"
-        (click)="onCancel()"
-        [disabled]="data.usuario.trocarsenha == 'S'"
-      >
-        <mat-icon>cancel</mat-icon>
-        {{ getLabelCancel() }}
-      </button>
-    </div>
+
   </mat-toolbar>
 </div>
 <mat-dialog-content class="dialog-content">
   <form [formGroup]="formulario" autocomplete="off" class="form-container">
     <div class="moldura">
-      <div class="col-med-3">
-        <mat-form-field appearance="outline" class="col-max">
-          <mat-label>Código</mat-label>
-          <input matInput formControlName="id" readonly="true" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="column-span-2">
-          <mat-label>Razão Social</mat-label>
-          <input matInput formControlName="razao" readonly="true" />
-        </mat-form-field>
-      </div>
       <div class="col-med-1">
+        <mat-form-field appearance="outline" class="col-max">
+          <mat-label>Usuário</mat-label>
+          <input matInput formControlName="usuario" readonly="true" />
+        </mat-form-field>
         <mat-form-field appearance="outline" class="col-max">
           <mat-label>Senha Antiga</mat-label>
           <input
@@ -97,6 +71,26 @@
           </mat-error>
         </mat-form-field>
       </div>
+       <div class="button-container">
+      <button
+        mat-raised-button
+        color="#FFFFFF"
+        (click)="actionFunction()"
+        *ngIf="idAcao != 3"
+      >
+        <mat-icon>check</mat-icon>
+        {{ acao }}
+      </button>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="onCancel()"
+        [disabled]="data.usuario.trocarsenha == 'S'"
+      >
+        <mat-icon>cancel</mat-icon>
+        {{ getLabelCancel() }}
+      </button>
+    </div>
     </div>
   </form>
 </mat-dialog-content>

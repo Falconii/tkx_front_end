@@ -39,6 +39,11 @@ const routes: Routes = [
       import('./modules/usuario/usuario.module').then((m) => m.UsuarioModule),
   },
   {
+    path: 'usuarios_eventos',
+    loadChildren: () =>
+      import('./modules/usuario-evento/usuario-evento.module').then((m) => m.UsuarioEventoModule),
+  },
+  {
     path: 'grupos',
     loadChildren: () =>
       import('./modules/grupousuario/grupousuario.module').then(

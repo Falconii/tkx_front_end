@@ -33,6 +33,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormularioFiltroDetplanilhaComponent } from './components/formulario-filtro-detplanilha/formulario-filtro-detplanilha.component';
 import { SituacaoDetPlanilhaPipe } from './pipes/situacao-det-planilha.pipe';
 import { SexoPipe } from './pipes/sexo.pipe';
+import { FormularioFiltroUsuarioEventoComponent } from './components/formulario-filtro-usuario-evento/formulario-filtro-usuario-evento.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { SexoPipe } from './pipes/sexo.pipe';
     FormularioFiltroInscritoComponent,
     FormularioFiltroCabplanilhaComponent,
     FormularioFiltroDetplanilhaComponent,
+    FormularioFiltroUsuarioEventoComponent,
     ConfirmDialogComponent,
     CrudDisplayComponent,
     FormularioFiltroParticipantev2Component,
@@ -92,6 +94,7 @@ import { SexoPipe } from './pipes/sexo.pipe';
     FormularioFiltroCabplanilhaComponent,
     FormularioFiltroParticipantev2Component,
     FormularioFiltroDetplanilhaComponent,
+    FormularioFiltroUsuarioEventoComponent,
     ConfirmDialogComponent,
     CrudDisplayComponent,
     SpinsComponent,

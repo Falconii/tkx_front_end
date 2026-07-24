@@ -3,7 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { ParametroModel } from '../../../models/parametro-model';
 import { Subscription } from 'rxjs';
 import { ControlePaginas } from '../../../shared/classes/controle-paginas';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '../../../services/global.service';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
@@ -14,6 +14,9 @@ import { ParametroDetplanilha01 } from '../../../parametros/parametro-detPlanilh
 import { MensagensBotoes } from '../../../shared/classes/util';
 import { CrudDetalheDialogData } from './crud-detalhe-dialog-data';
 import { AtualizaParametroDetplanilha01 } from '../../../shared/classes/atualiza-parametro-detplanilha01';
+import { EditDetalheDialogData } from '../edit-detalhe-dialog/edit-detalhe-dialog-data';
+import { EditDetalheDialogComponent } from '../edit-detalhe-dialog/edit-detalhe-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-crud-detalhe-dialog',
@@ -44,6 +47,7 @@ export class CrudDetalheDialogComponent {
       private editDetalheDialog: MatDialog,
        @Inject(MAT_DIALOG_DATA) public data: CrudDetalheDialogData,
       private dialogRef: MatDialogRef<CrudDetalheDialogComponent>,
+      private deleteDialog: MatDialog,
     ) {}
 
       ngOnInit(): void {
@@ -56,7 +60,20 @@ export class CrudDetalheDialogComponent {
 
 
       escolha(opcao: number, i: number, detalhe?: DetplanilhaModel) {
-        //this.openParticipanteDialog(opcao, i, participante);
+         if (detalhe == null){
+          return
+         } else {
+           if (opcao == CadastroAcoes.Consulta) {
+             this.openDetalheDialog(opcao, i, detalhe);
+           }
+           if (opcao == CadastroAcoes.Edicao){
+            this.openDetalheDialog(opcao,i,detalhe);
+           }
+           if (opcao == CadastroAcoes.Exclusao) {
+             this.openDeletePlanilha(opcao, i, detalhe);
+           }
+
+         }
       }
 
       onHome() {
@@ -137,59 +154,62 @@ export class CrudDetalheDialogComponent {
         this.dialogRef.close(this.data);
       }
 
-      openEditDetalheDialog(
-        opcao: CadastroAcoes = CadastroAcoes.Consulta,
-        i: number,
-        detalhe?: DetplanilhaModel,
-      ): void {
 
-       /*  const data: ParticipanteV2DialogData = {
-          indice: i,
-          opcao,
-          processar: false,
-          participante: paticipante ?? {
-            ...new Participantev2Model(),
-            id_empresa: this.globalService.getEmpresa().id,
-          },
-        };
+  openDeletePlanilha(opcao: CadastroAcoes, indice: number, detalhe: DetplanilhaModel) {
+      const dialogRef = this.deleteDialog.open(ConfirmDialogComponent, {
+        width: '380px',
+        data: {
+          title: 'Excluir Planilha',
+          message: `${detalhe.nome}`,
+          confirmText: 'Sim, excluir',
+          cancelText: 'Cancelar',
+          icone: 'play_circle_filled',
+        },
+      });
 
-        const dialogConfig = new MatDialogConfig();
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+         // this.deletePlanilha(planilha, indice);
+        }
+      });
+    }
 
-        dialogConfig.disableClose = true;
-        dialogConfig.id = 'participantev2-dialog-fullscreen';
 
-        // FULLSCREEN REAL
-        dialogConfig.width = '100vw';
-        dialogConfig.height = '100vh';
-        dialogConfig.maxWidth = '100vw';
-        dialogConfig.panelClass = 'fullscreen-dialog';
+  openDetalheDialog(
+    opcao: CadastroAcoes = CadastroAcoes.Consulta,
+    i: number,
+    detPlanilha: DetplanilhaModel,
+  ): void {
+    const data: EditDetalheDialogData = {
+      idAcao: opcao,
+      result: false,
+      detPlanilha: detPlanilha,
+    };
 
-        dialogConfig.data = data;
+    const dialogConfig = new MatDialogConfig();
 
-        this.participanteDialog
-          .open(Participantev2DialogComponent, dialogConfig)
-          .beforeClosed()
-          .subscribe((result: ParticipanteV2DialogData | null) => {
-            if (result?.processar) {
-              switch (opcao) {
-                case CadastroAcoes.Inclusao:
-                  this.participantes.push(result.participante!);
-                  break;
+    dialogConfig.disableClose = true;
+    dialogConfig.id = 'EditDetalheDialogComponent';
 
-                case CadastroAcoes.Edicao:
-                  if (i >= 0)
-                    this.participantes[result.indice] = result.participante!;
-                  break;
 
-                case CadastroAcoes.Exclusao:
-                  this.participantes.splice(result.indice, 1);
-                  break;
-              }
-            }
-          });
-          */
-       }
+    // FULLSCREEN REAL
+    dialogConfig.width = '100vw';
+    dialogConfig.height = '100vh';
+    dialogConfig.maxWidth = '100vw';
 
+    dialogConfig.data = data;
+
+    this.editDetalheDialog
+      .open(EditDetalheDialogComponent, dialogConfig)
+      .beforeClosed()
+      .subscribe((result: EditDetalheDialogData | null) => {
+        if (result?.result) {
+
+          this.appSnackBar.openSuccessSnackBar("RETORNO OK", "ok");
+
+        }
+      });
+  }
 
 
 

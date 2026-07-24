@@ -40,4 +40,8 @@ export class loginService {
   esqueceuSenha(params: any): Observable<any> {
     return this.http.post<any>(`${this.apiURL}login/esqueceusenha`, params);
   }
+
+  esqueceuSenhaCpf(params: any): Observable<any> {
+    return this.http.post<any>(`${this.apiURL}login/esqueceusenhacpf`, params);
+  }
 }

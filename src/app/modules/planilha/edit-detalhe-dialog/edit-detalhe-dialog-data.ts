@@ -1,8 +1,8 @@
-import { CabplanilhaModel } from "../../../models/cabplanilha-model";
+import { DetplanilhaModel } from "../../../models/detPlanilha-model";
 
 export class EditDetalheDialogData {
   public idAcao:number = 0;
-  public cabPlanilha:CabplanilhaModel = new  CabplanilhaModel();
+  public detPlanilha: DetplanilhaModel = new DetplanilhaModel();
   public result:boolean = false;
 }
 

@@ -62,6 +62,7 @@ export class AppComponent {
         { label: 'Usuários', route: 'usuarios' },
         { label: 'Grupos de Usuários', route: 'grupos' },
         { label: 'Categorias', route: 'cadastro_padrao' },
+        { label: 'Operadores', route: 'usuarios_eventos' },
       ],
       children: [],
     },
@@ -298,13 +299,12 @@ export class AppComponent {
     data.opcao = opcao;
     data.processar = false;
     data.usuario = usuario;
-    console.log('Ação:', opcao, data.usuario);
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.id = 'crud-usuario';
-    dialogConfig.width = '60vw';
-    dialogConfig.height = '65vh';
+    dialogConfig.width = '45vw';
+    dialogConfig.height = '75vh';
     dialogConfig.disableClose = true;
     dialogConfig.data = data;
     const modalDialog = this.usuarioTrocaSenha

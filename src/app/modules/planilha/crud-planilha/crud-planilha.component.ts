@@ -144,9 +144,7 @@ export class CrudPlanilhaComponent {
         this.openUloadLoadDialog();
       }
     } else {
-      if (opcao == CadastroAcoes.Consulta) {
-        this.openDetalheDialog(opcao,indice,planilha)
-      }
+
       if (opcao == CadastroAcoes.Exclusao) {
         this.openDeletePlanilha(planilha, indice);
       }
@@ -242,40 +240,6 @@ export class CrudPlanilhaComponent {
     });
   }
 
-    openDetalheDialog(
-      opcao: CadastroAcoes = CadastroAcoes.Consulta,
-      i: number,
-      cabPlanilha: CabplanilhaModel,
-    ): void {
-      const data: CrudDetalheDialogData = {
-          idAcao : opcao,
-          result: false,
-          cabPlanilha: cabPlanilha,
-        };
 
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.id = 'CrudDetalheDialog';
-
-
-      // FULLSCREEN REAL
-      dialogConfig.width = '100vw';
-      dialogConfig.height = '100vh';
-      dialogConfig.maxWidth = '100vw';
-
-      dialogConfig.data = data;
-
-      this.detalheDialog
-        .open(CrudDetalheDialogComponent, dialogConfig)
-        .beforeClosed()
-        .subscribe((result: EditDetalheDialogData | null) => {
-          if (result?.result) {
-
-              this.appSnackBar.openSuccessSnackBar("RETORNO OK","ok");
-
-          }
-        });
-    }
 
 }

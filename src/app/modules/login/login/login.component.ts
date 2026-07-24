@@ -227,22 +227,8 @@ export class LoginComponent {
   }
 
   onEsqueceu(): void {
-    const key = parseInt(this.formulario.value.id, 10);
-    let id_usuario: number = 0;
 
-    if (isNaN(key)) {
-      id_usuario = 0;
-    } else {
-      id_usuario = key;
-    }
-
-    if (id_usuario <= 0) {
-      this.appSnackBar.openFailureSnackBar(
-        'Preciso De Um Código Válido!',
-        'OK',
-      );
-      return;
-    }
+    const cpf  = this.formulario.value.cnpj_cpf;
 
     this.confirmDialog
       .open({
@@ -255,7 +241,7 @@ export class LoginComponent {
       })
       .subscribe(async (result) => {
         if (result) {
-          this.resetar(1, id_usuario);
+          this.resetar(1, cpf);
         }
       });
   }
@@ -277,12 +263,12 @@ export class LoginComponent {
     }
   }
 
-  resetar(id_empresa: number, id_usuario: number) {
+  resetar(id_empresa: number, cpf: string) {
     const par = {
       id_empresa: id_empresa,
-      id_usuario: id_usuario,
+      cpf: cpf,
     };
-    this.inscricaoReset = this.loginSrv.esqueceuSenha(par).subscribe({
+    this.inscricaoReset = this.loginSrv.esqueceuSenhaCpf(par).subscribe({
       next: (data: any) => {
         this.appSnackBar.openSuccessSnackBar(data.message, 'OK');
       },

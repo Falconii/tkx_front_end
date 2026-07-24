@@ -1,0 +1,80 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Operadores Do Evento</span>
+    <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      matTooltip="Retorno"
+      matTooltipPosition="above"
+      (click)="onHome()"
+      *ngIf="!isMobile"
+    >
+      <mat-icon>home</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      matTooltip="Voltar"
+      matTooltipPosition="above"
+      (click)="onSair()"
+      *ngIf="isMobile"
+    >
+      <mat-icon>logout</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="example-icon"
+      aria-label="Example icon-button with share icon"
+      (click)="getUsuariosEventos()"
+      matTooltip="Atualizar"
+      matTooltipPosition="above"
+    >
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+      <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()['Inclusao'], -1)"
+      [matTooltip]="getTexto().incluir"
+      matTooltipPosition="above"
+    >
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-usuario-evento
+  PARAMNAME ="usuarios_eventos"
+  [EVENTOS]="lsEventos"
+  [HIDE]="false"
+  (changeParametro)="onChangeParametro($event)"
+  *ngIf="lsEventos.length > 0"
+></app-formulario-filtro-usuario-evento>
+
+<div class="lista-participantes">
+  <mat-card
+    class="card-participante"
+    *ngFor="let usuario of lsUsuariosEventos; let i = index"
+  >
+    <mat-card-header>
+      <mat-card-title>{{ usuario.razao }}</mat-card-title>
+      <mat-card-subtitle>{{ usuario.link}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="linha">
+        <span class="label">CPF:</span>
+        <span>{{ usuario.cnpj_cpf| cnpjcpf }}</span>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <barra-acoes
+        [CONSULTAR]="false"
+        [ALTERAR]="true"
+        [EXCLUIR]="true"
+        (changeOpcao)="escolha($event, i,usuario)"
+      ></barra-acoes>
+    </mat-card-actions>
+  </mat-card>
+</div>
+

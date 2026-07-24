@@ -38,6 +38,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   styleUrl: './mobile-kit.component.css',
 })
 export class MobileKitComponent {
+
   inscricaoParticipantes!: Subscription;
   inscricaoEventoAtivo!: Subscription;
 

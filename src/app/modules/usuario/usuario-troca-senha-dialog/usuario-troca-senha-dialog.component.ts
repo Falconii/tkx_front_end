@@ -46,8 +46,7 @@ export class UsuarioTrocaSenhaDialogComponent {
     private dialogRef: MatDialogRef<UsuarioTrocaSenhaDialogComponent>,
   ) {
     this.formulario = formBuilder.group({
-      id: [{ value: '' }],
-      razao: [{ value: '' }],
+      usuario: [{ value: '' }],
       senhaantiga: [{ value: '' }, [ValidatorStringLen(6, 20, true)]],
       senha: [{ value: '' }, [ValidatorStringLen(6, 20, true)]],
       senharepetida: [{ value: '' }, [ValidatorStringLen(6, 20, true)]],
@@ -81,8 +80,7 @@ export class UsuarioTrocaSenhaDialogComponent {
 
   setValue() {
     this.formulario.setValue({
-      id: this.data.usuario.id,
-      razao: this.data.usuario.razao,
+      usuario: `${this.data.usuario.id}-${this.data.usuario.razao} `,
       senhaantiga: '',
       senha: '',
       senharepetida: '',
