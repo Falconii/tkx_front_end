@@ -4,19 +4,19 @@
       >Rotina Para Importar Planilha De Participantes</span
     >
     <div class="button-container">
-      <button mat-raised-button color="#FFFFFF" (click)="onUpload()"  [disabled]="this.formulario.valid == false || this.emProcessamento == true || this.foiProcessada == true  ">
+      <button mat-raised-button color="#FFFFFF" (click)="onUpload()"  [disabled]="this.formulario.valid == false || status > 0  ">
         <mat-icon>check</mat-icon>
         Upload
       </button>
       <button mat-raised-button color="accent" (click)="closeModal()">
         <mat-icon>cancel</mat-icon>
-        {{ this.foiProcessada == true ? 'Fechar' : 'Cancelar' }}
+        {{ this.status == 3 ? 'Fechar' : 'Cancelar' }}
       </button>
     </div>
   </mat-toolbar>
 </div>
 <mat-dialog-content class="dialog-content">
-  <form [formGroup]="formulario" autocomplete="off" class="form-container" *ngIf="!foiProcessada" >
+  <form [formGroup]="formulario" autocomplete="off" class="form-container" *ngIf="status == 0" >
     <div class="col-med-2">
       <mat-form-field appearance="outline" class="col-max">
         <mat-label>Evento</mat-label>
@@ -54,7 +54,8 @@
       accept=".csv"
     />
   </form>
-  <div class="loading-container" *ngIf="showSpin">
+
+  <div class="loading-container" *ngIf="status == 1 || status == 2">
     <h3>Upload Da Planilha</h3>
     <mat-progress-bar
           mode=determinate
@@ -63,10 +64,7 @@
     </mat-progress-bar>
     <h3>{{ getMessageProgress() }}</h3>
   </div>
-  <div class="resumo" *ngIf="foiProcessada">
-    <h3>{{ getMessageStatus() }}</h3>
-  </div>
-  <div class="resumo" *ngIf="total_linhas > 0">
+  <div class="resumo" *ngIf="status == 3">
     <h3>Total De Linhas.....: {{ total_linhas }}</h3>
     <h3>Total De Linhas Erro: {{ total_linhas_erro }}</h3>
   </div>

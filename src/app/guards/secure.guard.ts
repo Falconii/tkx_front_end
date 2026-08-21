@@ -34,7 +34,6 @@ export class SecureGuard implements CanActivate, CanActivateChild {
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): boolean {
-    console.log('Estou na Child');
     return false;
   }
 }

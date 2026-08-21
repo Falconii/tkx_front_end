@@ -1,3 +1,5 @@
+import { DetplanilhaModel } from './../../../models/detPlanilha-model';
+import { Usuario_EventoModel } from './../../../models/usuario_evento-model';
 import { ProcessaPlanilhaDialogData } from './../processa-planilha-dialog/processa-planilha-dialog-data';
 import { CabplanilhaModel } from './../../../models/cabplanilha-model';
 import { Component } from '@angular/core';
@@ -22,6 +24,7 @@ import { ProcessaPlanilhaDialogComponent } from '../processa-planilha-dialog/pro
 import { EditDetalheDialogData } from '../edit-detalhe-dialog/edit-detalhe-dialog-data';
 import { CrudDetalheDialogData } from '../crud-detalhe-dialog/crud-detalhe-dialog-data';
 import { CrudDetalheDialogComponent } from '../crud-detalhe-dialog/crud-detalhe-dialog.component';
+import { EditDetalheDialogComponent } from '../edit-detalhe-dialog/edit-detalhe-dialog.component';
 
 @Component({
   selector: 'app-crud-planilha',
@@ -144,7 +147,9 @@ export class CrudPlanilhaComponent {
         this.openUloadLoadDialog();
       }
     } else {
-
+      if (opcao == CadastroAcoes.Consulta) {
+         this.openCrudDetalheDialog(opcao, indice, planilha);
+      }
       if (opcao == CadastroAcoes.Exclusao) {
         this.openDeletePlanilha(planilha, indice);
       }
@@ -239,6 +244,50 @@ export class CrudPlanilhaComponent {
       }
     });
   }
+
+  openCrudDetalheDialog(
+      opcao: CadastroAcoes = CadastroAcoes.Consulta,
+      i: number,
+      cabPlanilha: CabplanilhaModel,
+    ): void {
+      const data: CrudDetalheDialogData = {
+        idAcao: opcao,
+        cabPlanilha: this.lsPlanilhas[i],
+        result: false,
+        }
+
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.id = 'crud_detplanilha';
+
+      // FULLSCREEN REAL
+      dialogConfig.width = '100vw';
+      dialogConfig.height = '100vh';
+      dialogConfig.maxWidth = '100vw';
+      dialogConfig.panelClass = 'fullscreen-dialog';
+
+      dialogConfig.data = data;
+
+      this.detalheDialog
+        .open(CrudDetalheDialogComponent, dialogConfig)
+        .beforeClosed()
+        .subscribe((result: CrudDetalheDialogData | null) => {
+          if (result?.result) {
+            switch (opcao) {
+              case CadastroAcoes.Inclusao:
+                break;
+              case CadastroAcoes.Consulta:
+                break;
+              case CadastroAcoes.Edicao:
+                this.getPlanilhas();
+                break;
+              case CadastroAcoes.Exclusao:
+                break;
+            }
+          }
+        });
+    }
 
 
 

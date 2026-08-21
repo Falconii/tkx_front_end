@@ -1,0 +1,18 @@
+.container-form {
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 1em;
+  border-top: 1px solid #ccc;
+}
+
+button:disabled {
+  background-color: white;
+  cursor: not-allowed;
+}

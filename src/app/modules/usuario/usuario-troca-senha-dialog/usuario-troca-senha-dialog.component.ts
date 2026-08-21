@@ -99,7 +99,7 @@ export class UsuarioTrocaSenhaDialogComponent {
     switch (+op) {
       case CadastroAcoes.Edicao:
         this.acao = 'Gravar';
-        this.labelCadastro = 'Alteração de Senha do Usuário.';
+        this.labelCadastro = 'Alteração de Senha';
         this.readOnly = false;
         break;
       default:

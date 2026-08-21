@@ -33,6 +33,8 @@ export class CabplanilhaComplementarService {
     return this.http.post<any>(url, params);
   }
 
+
+
   verificarStatus(
     idEmpresa: number,
     idEvento: number,
@@ -40,7 +42,7 @@ export class CabplanilhaComplementarService {
   ): Observable<{ tentativa: number; lista: any[] }> {
 
     const intervalo = 3000;
-    const tentativas = 40;
+    const tentativas = 10;
 
     const par: ParametroCabplanilha01 = {
       id_empresa: idEmpresa,

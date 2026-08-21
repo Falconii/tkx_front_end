@@ -215,16 +215,16 @@ export class CrudEventoComponent {
     let config: any = {};
     let situacao: string = '0';
 
-    if (this.getAcoes().Liberar && !(this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 99 ))
+    if (this.getAcoes().Liberar && (this.globalService.getUsuario().grupo > 2 && this.globalService.getUsuario().grupo < 99 ))
     {
-      this.appSnackBar.openFailureSnackBar("Somente Master Pode Usar Esta Função!","OK");
+      this.appSnackBar.openFailureSnackBar("Somente Master/Adm Pode Usar Esta Função!","OK");
       return;
     }
     switch (opcao) {
       case this.getAcoes().Liberar:
         config = {
           title: 'Liberação De Evento',
-          message: `Deseja Realmente Liberar Este Evento ?` ,
+          message: `Deseja Realmente Liberar Para Importação Este Evento ?` ,
           icon: 'warning',
           iconColor: 'warn',
           confirmText: 'Liberar',

@@ -59,25 +59,24 @@ export class CrudDetalheDialogComponent {
       }
 
 
+
+
       escolha(opcao: number, i: number, detalhe?: DetplanilhaModel) {
          if (detalhe == null){
-          return
-         } else {
-           if (opcao == CadastroAcoes.Consulta) {
+             detalhe = new DetplanilhaModel();
+             detalhe.id_empresa = this.data.cabPlanilha.id_empresa;
+             detalhe.id_evento = this.data.cabPlanilha.id_evento;
+             detalhe.id_cabec = this.data.cabPlanilha.id;
              this.openDetalheDialog(opcao, i, detalhe);
-           }
-           if (opcao == CadastroAcoes.Edicao){
-            this.openDetalheDialog(opcao,i,detalhe);
+         } else {
+           if ((opcao == CadastroAcoes.Consulta) || (opcao == CadastroAcoes.Edicao)) {
+             this.openDetalheDialog(opcao, i, detalhe);
            }
            if (opcao == CadastroAcoes.Exclusao) {
              this.openDeletePlanilha(opcao, i, detalhe);
            }
 
          }
-      }
-
-      onHome() {
-        this.router.navigate(['']);
       }
 
       getAcoes() {

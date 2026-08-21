@@ -1,6 +1,7 @@
 <div class="toolbar-alinhada">
   <mat-toolbar>
-    <span class="example-spacer">Operadores Do Evento</span>
+    <span class="example-spacer">Operadores - {{lsUsuariosEventos.length | zeroFill}}</span>
+
     <button
       mat-icon-button
       aria-label="Example icon-button with share icon "
@@ -21,6 +22,17 @@
     >
       <mat-icon>logout</mat-icon>
     </button>
+
+    <button
+      mat-icon-button
+      aria-label="Example icon-button with share icon "
+      (click)="escolha(getAcoes()['Inclusao'], -1)"
+      [matTooltip]="getTexto().incluir"
+      matTooltipPosition="above"
+    >
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+
     <button
       mat-icon-button
       class="example-icon"
@@ -31,15 +43,7 @@
     >
       <mat-icon>rotate_right</mat-icon>
     </button>
-      <button
-      mat-icon-button
-      aria-label="Example icon-button with share icon "
-      (click)="escolha(getAcoes()['Inclusao'], -1)"
-      [matTooltip]="getTexto().incluir"
-      matTooltipPosition="above"
-    >
-      <mat-icon>add_circle_outline</mat-icon>
-    </button>
+
   </mat-toolbar>
 </div>
 <app-formulario-filtro-usuario-evento

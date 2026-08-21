@@ -1,0 +1,1 @@
+function o(e=!1){return t=>{let r=t.value;if(!e&&(r==null||r===""))return null;if(e&&(r==null||r===""))return{integerValidator:!0,message:"Dado obrigat\xF3rio"};let n=Number(r);return Number.isInteger(n)?e&&n===0?{integerValidator:!0,message:"Valor n\xE3o pode ser zero"}:null:{integerValidator:!0,message:"Informe um n\xFAmero inteiro v\xE1lido"}}}export{o as a};

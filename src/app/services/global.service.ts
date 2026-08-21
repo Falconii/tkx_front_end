@@ -55,6 +55,7 @@ export class GlobalService {
     this.planilha_situacoes = [
       new SimNao('1', 'Importada'),
       new SimNao('2', 'Processada'),
+      new SimNao('9', 'Processamento Não Finalizada')
     ];
     this.detalhe_situacoes = [
       new SimNao('0', 'Importado'),

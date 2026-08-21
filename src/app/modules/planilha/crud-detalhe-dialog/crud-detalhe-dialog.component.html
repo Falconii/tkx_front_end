@@ -16,11 +16,7 @@
   <mat-toolbar>
     <span class="example-spacer">Participantes Da Planilha: </span>
     <app-navegator [controle]="controlePaginas" (changePage)="onChangePage()"></app-navegator>
-    <button mat-icon-button aria-label="Example icon-button with share icon " matTooltip="Retorno"
-      matTooltipPosition="above" (click)="onHome()">
-      <mat-icon>home</mat-icon>
-    </button>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon"
+    <button mat-icon-button  aria-label="Example icon-button with share icon"
       (click)="getDetalhes()" matTooltip="Atualizar" matTooltipPosition="above">
       <mat-icon>rotate_right</mat-icon>
     </button>
@@ -87,7 +83,7 @@
       </div>
       <div class="linha-info">
         <span class="titulo">Mensagem:</span>
-        <span class="valor">{{ detalhe.mensagem_erro }}{{data.cabPlanilha.status}}</span>
+        <span class="valor">{{ detalhe.mensagem_erro }}</span>
 
       </div>
     </td>

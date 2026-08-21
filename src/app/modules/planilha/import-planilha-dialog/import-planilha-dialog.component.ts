@@ -14,6 +14,8 @@ import { CabplanilhaService } from '../../../services/cabplanilha.service';
 import { HttpEventType } from '@angular/common/http';
 import { ImportacaoService } from '../../../services/importacao.service';
 import { CabplanilhaComplementarService } from '../../../services/cabplanilhaComplementar.service';
+import { ParametroCheckFile01 } from '../../../parametros/parametro-check01';
+import { CheckFileModel } from '../../../models/check_file-model';
 
 @Component({
   selector: 'app-import-planilha-dialog',
@@ -42,13 +44,18 @@ export class ImportPlanilhaDialogComponent {
 
   total_linhas_erro: number = 0;
 
-  emProcessamento: boolean = false;
-
-  foiProcessada: boolean = false;
+  status:number = 0;
+  /*
+    1- Não iniciado
+    2- upload
+    3- Aguardndo processamnento
+    4- fim
+      */
 
   showSpin: boolean = false;
 
   tentativaAtual: number = 0;
+
 
   constructor(
     private eventoSrv: EventoService,
@@ -141,7 +148,7 @@ export class ImportPlanilhaDialogComponent {
   }
 
   closeModal() {
-    if (this.emProcessamento) {
+    if (this.status == 1 || this.status == 2) {
        this.appSnackBar.openWarningnackBar(
          'Processamento Em Andamento, Aguarde Terminar Para Fechar!',
          'OK',
@@ -165,7 +172,7 @@ export class ImportPlanilhaDialogComponent {
   upload() {
     if (!this.selectedFile) return;
 
-    this.foiProcessada = false;
+    this.status = 1;
 
     let key: number = 0;
 
@@ -180,9 +187,6 @@ export class ImportPlanilhaDialogComponent {
       id_evento = key;
     }
 
-    this.emProcessamento = true;
-
-
     this.importacaoSrv.uploadPlanilha(id_evento, this.selectedFile).subscribe({
       next: (event: any) => {
         if (event.type === HttpEventType.UploadProgress) {
@@ -194,8 +198,8 @@ export class ImportPlanilhaDialogComponent {
             'OK',
           );
           if (this.selectedFile?.name) {
-            this.verificaStatus(
-              this.globalService.getEmpresa().id,
+            this.status = 2;
+            this.checkPlanilha(
               id_evento,
               this.selectedFile.name,
             );
@@ -203,8 +207,7 @@ export class ImportPlanilhaDialogComponent {
         }
       },
       error: (error) => {
-        this.emProcessamento = false;
-        this.foiProcessada = true;
+        this.status = 3;
         this.appSnackBar.openFailureSnackBar(
           `Erro No UpLoad ${error.error?.tabela ?? ''} - ${error.error?.erro ?? ''} - ${error.error?.message ?? ''}`,
           'OK',
@@ -216,6 +219,7 @@ export class ImportPlanilhaDialogComponent {
     });
   }
 
+  /* rotina antiga
   verificaStatus(id_empresa: number, id_evento: number, fileName: string) {
     this.inscricaoStatus = this.cabPlanilhaSrv
       .verificarStatus(id_empresa, id_evento, fileName)
@@ -229,19 +233,16 @@ export class ImportPlanilhaDialogComponent {
             this.selectedFile = null;
             this.formulario.patchValue({ caminho: '' });
             this.inscricaoStatus.unsubscribe();
-            this.emProcessamento = false;
-            this.foiProcessada = true;
+            this.status = 3;
             this.data.processar = true;
           }
         },
 
         error: (err) => {
-          console.error('Erro no polling:', err);
           if (this.inscricaoStatus) {
             this.inscricaoStatus.unsubscribe();
           }
-          this.emProcessamento = false;
-          this.foiProcessada = false;
+          this.status = 3;
         },
 
         complete: () => {
@@ -249,11 +250,91 @@ export class ImportPlanilhaDialogComponent {
             'Processando Terminou Com Falha!',
             'OK',
           );
-          this.emProcessamento = false;
-          this.foiProcessada = true;
+          this.status = 3;
         },
       });
   }
+      */
+
+  checkPlanilha(id_evento: number, fileName: string) {
+
+    console.log("checkFile: ", fileName);
+
+    let par = new ParametroCheckFile01();
+
+    par.id_evento  = id_evento;
+
+    par.fileName   = fileName;
+
+    let tentativa  = 0;
+
+    par.maxTentativas = 40;
+
+    const interval = setInterval(() => {
+
+      tentativa++;
+
+      par.tentativa = tentativa;
+
+      this.tentativaAtual = tentativa;
+
+      this.tentativaAtual = par.tentativa;
+
+      try {
+        this.inscricaoStatus = this.importacaoSrv
+          .checkFile(par)
+          .subscribe({
+            next: (ret: CheckFileModel) => {
+              if (ret.status === 'ready') {
+                this.status = 2;
+                clearInterval(interval);
+                this.total_linhas = ret.total_linhas;
+                this.total_linhas_erro = ret.total_linhas_erro;
+                this.selectedFile = null;
+                this.formulario.patchValue({ caminho: '' });
+                this.inscricaoStatus.unsubscribe();
+                this.status = 3;
+                this.data.processar = true;
+              }
+              if (ret.status === 'failed') {
+                this.showSpin = false;
+                this.status = 2;
+                clearInterval(interval);
+                this.appSnackBar.openFailureSnackBar("Falha ao gerar o arquivo!", "OK");
+              }
+              if (ret.status === 'exceeded') {
+                this.showSpin = false;
+                this.status = 2;
+                clearInterval(interval);
+                this.appSnackBar.openFailureSnackBar("Excedido O Nro De Tentativas. Peças Novamente!", "OK");
+              }
+
+            },
+            error: (error: any) => {
+              this.showSpin = false;
+              this.status = 2;
+              this.appSnackBar.openFailureSnackBar(`Erro:${error.message}`, "OK");
+              clearInterval(interval);
+            },
+          });
+      }
+      catch (error) {
+        this.showSpin = false;
+        this.status = 2;
+        this.appSnackBar.openFailureSnackBar("Erro Na Validação Do Arquivo!", "OK");
+        clearInterval(interval);
+      }
+
+      if (tentativa >= par.maxTentativas) {
+        this.showSpin = false;
+        this.status = 2;
+        clearInterval(interval);
+        this.appSnackBar.openFailureSnackBar("Excedido O Nro De Tentativas. Peças Novamente!", "OK");
+      }
+
+    }, 5000);
+  }
+
 
   NoValidtouchedOrDirty(campo: string): boolean {
     if (
@@ -270,25 +351,25 @@ export class ImportPlanilhaDialogComponent {
   }
 
   getMessageProgress(): string {
-    if (this.progress < 100) {
+    if (this.status == 1) {
        return `Enviando... ${this.progress}%`;
     } else {
-      return `Planilha Enviada, Aguardando Processamento...(${this.tentativaAtual+1}/40) `;
+      return `UPLOAD Completo, Aguardando Processamento...(${this.tentativaAtual+1}/40) `;
     }
   }
 
 
   getMessageStatus(): string {
-    if (this.emProcessamento) {
-      return 'Processando...';
-    } else if (this.foiProcessada) {
-      return 'Processamento Concluído!';
+    if (this.status == 1) {
+      return 'Enviando Planilha';
+    } else if (this.status == 2) {
+      return 'Aguardando Processamento';
     } else {
       return '';
     }
   }
 
   showUploadButton(): boolean {
-    return !this.emProcessamento && !this.foiProcessada;
+    return(!(this.status == 1) && !(this.status == 2));
   }
 }

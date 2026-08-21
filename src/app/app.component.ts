@@ -303,8 +303,8 @@ export class AppComponent {
 
     dialogConfig.disableClose = true;
     dialogConfig.id = 'crud-usuario';
-    dialogConfig.width = '45vw';
-    dialogConfig.height = '75vh';
+    dialogConfig.width = '90vw';
+    dialogConfig.height = '80vh';
     dialogConfig.disableClose = true;
     dialogConfig.data = data;
     const modalDialog = this.usuarioTrocaSenha

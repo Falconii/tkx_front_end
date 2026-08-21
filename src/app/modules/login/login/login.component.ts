@@ -164,7 +164,7 @@ export class LoginComponent {
       error: (error: any) => {
         this.globalService.setOnSubmit(false);
         this.appSnackBar.openFailureSnackBar(
-          `Problemas Com O Login - GetLogin`,
+          `Acesso Não Autorizado`,
           'OK',
         );
       },
