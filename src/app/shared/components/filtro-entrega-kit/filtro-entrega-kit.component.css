@@ -1,3 +1,15 @@
+:host *:hover {
+  background-color: transparent !important;
+}
+
+:host ::ng-deep .mat-checkbox:hover .mat-checkbox-inner-container,
+:host ::ng-deep .mat-checkbox.cdk-focused .mat-checkbox-inner-container,
+:host ::ng-deep .mat-checkbox.cdk-mouse-focused .mat-checkbox-inner-container {
+  background-color: transparent !important;
+}
+
+
+
 .ckeck {
     display: flex;
     align-content: center;
@@ -15,4 +27,28 @@ H3 {
     color: white;
     font-size: medium;
     text-align: center;
+}
+
+
+.barra_mobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+}
+
+.botoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 10px;
+}
+
+.check-margem {
+  margin-right: 10px;
 }

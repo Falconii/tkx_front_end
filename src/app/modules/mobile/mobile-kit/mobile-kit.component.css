@@ -63,3 +63,34 @@
     }
   }
 }
+
+
+.linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+}
+
+.botoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 10px;
+}
+
+.check-margem {
+  margin-right: 10px;
+}
+
+
+.titulo {
+  text-align: center;
+  font-size: smaller;
+  font-weight: 600;
+}

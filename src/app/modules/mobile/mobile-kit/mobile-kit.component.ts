@@ -46,16 +46,14 @@ export class MobileKitComponent {
 
   parametroPesquisa: FiltroEntregaKitModel = new FiltroEntregaKitModel();
 
-  controlePaginas: ControlePaginas = new ControlePaginas(
-    this.tamPagina,
-    this.tamPagina,
-  );
-
   participantes: Participantev2Model[] = [];
 
   evento: EventoModel = new EventoModel();
 
   isMobile: boolean = false;
+
+
+  controlePaginas: ControlePaginas = new ControlePaginas(0, 0);
 
 
   constructor(
@@ -68,7 +66,9 @@ export class MobileKitComponent {
     private router: Router,
     private kitEntrega: MatDialog,
     private breakpoint: BreakpointObserver,
-  ) {}
+  ) {
+     this.controlePaginas = new ControlePaginas(this.tamPagina, 0);
+  }
 
   ngOnInit(): void {
     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
@@ -79,6 +79,7 @@ export class MobileKitComponent {
     if (this.evento.id == 0 && !this.isMobile) {
       this.onHome();
     }
+    this.getParticipantes(TipoOperacao.Contador);
   }
 
   ngOnDestroy(): void {
@@ -86,8 +87,8 @@ export class MobileKitComponent {
     this.inscricaoEventoAtivo?.unsubscribe();
   }
 
-  getParticipantes() {
-    if (!this.evento.id || this.evento.id == 0) {
+  getParticipantes(tipoOperacao: TipoOperacao = TipoOperacao.Pesquisa) {
+    if (!this.evento.id_empresa || this.evento.id == 0) {
       return;
     }
 
@@ -139,17 +140,29 @@ export class MobileKitComponent {
 
     par.orderby = '000003';
 
-    par.pagina = this.controlePaginas.getPaginalAtual();
-
-    par.tamPagina = 200;
-
+    if (tipoOperacao == TipoOperacao.Contador) {
+      par.contador = 'S';
+    } else {
+      par.pagina = this.controlePaginas.getPaginalAtual();
+      par.tamPagina = this.controlePaginas.getTamPagina();
+    }
     console.log('Parâmetros Enviados', par);
 
     this.inscricaoParticipantes = this.participanteSrv
       .getParticipantesv2Parametro_01(par)
       .subscribe({
-        next: (data: Participantev2Model[]) => {
-          this.participantes = data;
+        next: (data:any) => {
+          if (tipoOperacao == TipoOperacao.Pesquisa) {
+            this.participantes = data;
+            console.log('Participantes Encontrados:', this.participantes);
+          } else {
+            this.controlePaginas = new ControlePaginas(
+              this.tamPagina,
+              data.total == 0 ? 1 : data.total,
+            );
+            console.log('Controle de Páginas Atualizado:', this.controlePaginas);
+            this.getParticipantes();
+          }
         },
         error: (error: any) => {
           if (error.status && error.status == 401) {
@@ -213,6 +226,10 @@ export class MobileKitComponent {
 
   onChangeParametro(filtro: FiltroEntregaKitModel) {
     this.parametroPesquisa = filtro;
+    this.getParticipantes(TipoOperacao.Contador);
+  }
+
+  onChangePage() {
     this.getParticipantes();
   }
 

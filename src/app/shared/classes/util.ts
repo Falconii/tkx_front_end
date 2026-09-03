@@ -92,6 +92,7 @@ export class MensagensBotoes {
   static encerrar = 'Encerrar Evento';
   static zerar_senha = 'Zerar Senha';
   static ativar_inativar = 'Ativar/Inativar';
+  static standby = 'StandBy';
 }
 
 export function adicionaZero(numero: number) {

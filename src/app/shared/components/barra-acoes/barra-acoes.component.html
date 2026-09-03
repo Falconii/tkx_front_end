@@ -116,6 +116,14 @@
         <mat-icon>check_circle</mat-icon>
         <span>{{ getTexto().ativar_inativar }}</span>
       </button>
+        <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Standby)"
+        *ngIf="barra_standby"
+      >
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ getTexto().standby }}</span>
+      </button>
     </ng-template>
   </mat-menu>
 </div>

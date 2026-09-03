@@ -21,5 +21,6 @@ export enum CadastroAcoes {
   Encerrar = 29,
   Ativar_Inativar = 30,
   Zerar_Senha = 31,
+  Standby= 32,
   None = 99,
 }

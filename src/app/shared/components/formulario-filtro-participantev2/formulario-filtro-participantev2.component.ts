@@ -1,4 +1,3 @@
-import { InscritoComponent } from './../../../modules/mobile/inscrito/inscrito.component';
 import { TipoPesquisa } from './../../classes/tipo-pesquisa';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ControlePaginas } from '../../classes/controle-paginas';

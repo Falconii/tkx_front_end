@@ -1,0 +1,13 @@
+.alinhamento {
+   margin-top: 6px;
+}
+
+
+.pagination-container {
+  display: flex;
+  align-items: center; // alinha verticalmente ícones e texto
+  justify-content: center; // centraliza horizontalmente
+  gap: 4px;
+  padding: 0;
+}
+

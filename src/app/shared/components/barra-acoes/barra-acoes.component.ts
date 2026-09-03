@@ -20,6 +20,7 @@ export class BarraAcoesComponent implements OnInit {
   @Input('BARRA_ENCERRAR') barra_encerrar: boolean = false;
   @Input('BARRA_ZERAR_SENHA') barra_zerar_senha: boolean = false;
   @Input('BARRA_ATIVO_INATIVO') barra_ativo_inativo: boolean = false;
+  @Input('BARRA_STANDBY') barra_standby: boolean = false;
   @Output('changeOpcao') changeOpcao = new EventEmitter<number>();
 
   constructor() {}

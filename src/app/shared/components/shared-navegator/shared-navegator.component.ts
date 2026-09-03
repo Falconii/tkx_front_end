@@ -4,7 +4,7 @@ import { ControlePaginas } from '../../classes/controle-paginas';
 @Component({
   selector: 'app-navegator',
   templateUrl: './shared-navegator.component.html',
-  styleUrls: ['./shared-navegator.component.css'],
+  styleUrls: ['./shared-navegator.component.scss'],
 })
 export class SharedNavegatorComponent implements OnInit {
   @Input('controle') controlePaginas!: ControlePaginas;

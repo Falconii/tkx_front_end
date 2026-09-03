@@ -79,6 +79,10 @@ export class CrudEventoComponent {
           this.alteraSituacao(opcao, evento);
           break;
 
+        case this.getAcoes().Standby:
+          this.alteraSituacao(opcao, evento);
+          break;
+
         case this.getAcoes().Ativar:
           this.alteraSituacao(opcao, evento);
           break;
@@ -215,8 +219,9 @@ export class CrudEventoComponent {
     let config: any = {};
     let situacao: string = '0';
 
-    if (this.getAcoes().Liberar && (this.globalService.getUsuario().grupo > 2 && this.globalService.getUsuario().grupo < 99 ))
+   if ((this.getAcoes().Liberar == opcao) && (this.globalService.getUsuario().grupo > 3 && this.globalService.getUsuario().grupo < 99 ))
     {
+      alert(`opcao = ${opcao} Grupo = ${this.globalService.getUsuario().grupo}`);
       this.appSnackBar.openFailureSnackBar("Somente Master/Adm Pode Usar Esta Função!","OK");
       return;
     }
@@ -231,6 +236,18 @@ export class CrudEventoComponent {
           cancelText: 'Cancelar',
         };
         situacao = '1';
+        break;
+
+      case this.getAcoes().Standby:
+        config = {
+          title: 'StandBy',
+          message: `Deseja Realmente Colocar Evento Em StandBy ?`,
+          icon: 'warning',
+          iconColor: 'warn',
+          confirmText: 'StandBy',
+          cancelText: 'Cancelar',
+        };
+        situacao = '2';
         break;
 
       case this.getAcoes().Ativar:

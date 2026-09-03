@@ -418,9 +418,9 @@ body {
 .pagination-container {
   display: flex;
   align-items: center; // alinha verticalmente ícones e texto
-  justify-content: center;
-  gap: 2px;
-  padding: 8px;
+  justify-content: center; // centraliza horizontalmente
+  gap: 0px;
+  padding: 0;
 }
 
 .page-indicator {

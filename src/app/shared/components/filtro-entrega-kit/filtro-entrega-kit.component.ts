@@ -14,6 +14,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FiltroEntregaKitModel } from '../../../models/filtro-entrega-kit-model';
 import { hasNonNumeric } from '../../classes/util';
 import { TipoPesquisa } from '../../classes/tipo-pesquisa';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ControlePaginas } from '../../classes/controle-paginas';
 
 @Component({
   selector: 'app-filtro-entrega-kit',
@@ -22,7 +24,14 @@ import { TipoPesquisa } from '../../classes/tipo-pesquisa';
 })
 export class FiltroEntregaKitComponent implements OnInit {
   @Input('HIDE') hide: boolean = false;
+  @Input('controle') controlePaginas!: ControlePaginas;
   @Output('changeParametro') change = new EventEmitter<FiltroEntregaKitModel>();
+
+  @Output('onHome') onhome = new EventEmitter();
+  @Output('onSair') onsair = new EventEmitter();
+  @Output('onAtualizar') onatualizar = new EventEmitter();
+  @Output('changeHide') changeHide = new EventEmitter<boolean>();
+  @Output('changePage') changePage = new EventEmitter<boolean>();
 
   parametros: FormGroup;
 
@@ -30,9 +39,12 @@ export class FiltroEntregaKitComponent implements OnInit {
 
   enable_filter: boolean = true;
 
+  isMobile: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
+    private breakpoint: BreakpointObserver,
   ) {
     this.parametros = formBuilder.group({
       kit: [{ value: '' }],
@@ -44,6 +56,9 @@ export class FiltroEntregaKitComponent implements OnInit {
   }
 
   ngOnInit(): void {
+     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
+              this.isMobile = result.matches;
+            });
     this.parametros
       .get('pesquisa')
       ?.valueChanges.pipe(
@@ -233,5 +248,21 @@ export class FiltroEntregaKitComponent implements OnInit {
       });
     }
     this.onChangeParametros();
+  }
+
+  onHome() {
+    this.onhome.emit();
+  }
+
+  onSair() {
+    this.onsair.emit();
+  }
+
+  onAtualizar() {
+    this.onatualizar.emit();
+  }
+
+  onChangePage() {
+    this.changePage.emit();
   }
 }

@@ -14,6 +14,7 @@ import { httpInterceptorProviders } from './interceptor';
 import { SimNaoPipe } from './shared/pipes/sim-nao.pipe';
 import { SharedModule } from './shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { FirstNamePipe } from './shared/pipes/first-name.pipe';
 
 registerLocaleData(localePt);
 
@@ -42,6 +43,7 @@ registerLocaleData(localePt);
       decimalMarker: ',',
     }),
     SimNaoPipe,
+    FirstNamePipe
   ],
   bootstrap: [AppComponent],
 })

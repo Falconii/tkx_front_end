@@ -37,6 +37,9 @@ export class EntregaDialogComponent {
 
   acao: CadastroAcoes = CadastroAcoes.Consulta;
 
+  showSpin: boolean = false;
+
+
   constructor(
     private formBuilder: FormBuilder,
     private appSnackBar: AppSnackbar,
@@ -51,6 +54,9 @@ export class EntregaDialogComponent {
       nome_retirada: [{ value: '' }, [ValidatorStringLen(3, 60, true)]],
       rg_retirada: [{ value: '' }, [ValidatorStringLen(3, 11, true)]],
       tam_camisa: [{ value: '' }, [ValidatorStringLen(1, 10, true)]],
+    });
+    this.globalService.showSpin$.subscribe((show) => {
+      this.showSpin = show;
     });
   }
 
@@ -262,6 +268,9 @@ export class EntregaDialogComponent {
   }
 
   onProcessar() {
+    if (this.showSpin){
+      return;
+    }
     if (this.formulario.valid) {
       console.log('acao', this.acao);
       this.data.entrega.rg_retirada =
@@ -289,11 +298,17 @@ export class EntregaDialogComponent {
   }
 
   onCancelar() {
+    if (this.showSpin){
+      return;
+    }
     this.data.processar = false;
     this.closeModal();
   }
 
   onExcluir() {
+    if (this.showSpin) {
+      return;
+    }
     this.confirmDialog
       .open({
         title: 'Exclusão',

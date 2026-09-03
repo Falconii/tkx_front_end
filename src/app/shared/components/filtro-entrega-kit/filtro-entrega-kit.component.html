@@ -1,8 +1,40 @@
 <form [formGroup]="parametros" autocomplete="off" *ngIf="!hide">
+      <div class="col-med-1">
+      </div>
     <div class="col-med-1">
-        <div class="check">
-            <mat-checkbox class="check-margem" formControlName="kit" (change)="onKit($event)">Kits Já Entregues</mat-checkbox>
+        <div class="barra_mobile">
+          <div class="check">
+            <mat-checkbox
+              class="check-margem"
+              formControlName="kit"
+              (change)="onKit($event)"
+            >
+              Kits Já Entregues
+            </mat-checkbox>
+          </div>
+          <div class="botoes"  *ngIf="isMobile">
+
+          <button
+            mat-icon-button
+            matTooltip="Retorno"
+            matTooltipPosition="above"
+            (click)="onHome()"
+          >
+            <mat-icon>home</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            (click)="onAtualizar()"
+            matTooltip="Atualizar"
+            matTooltipPosition="above"
+          >
+            <mat-icon>rotate_right</mat-icon>
+          </button>
         </div>
+
+      </div>
+
     </div>
     <div class="col-med-1">
         <mat-form-field appearance="outline" class="uppercase-input col-max">

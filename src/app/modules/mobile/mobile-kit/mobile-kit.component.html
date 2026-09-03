@@ -1,41 +1,52 @@
 <div class="toolbar-alinhada">
   <mat-toolbar>
-    <span class="example-spacer">{{ evento.descricao }}</span>
-    <button
-      mat-icon-button
-      aria-label="Example icon-button with share icon "
-      matTooltip="Retorno"
-      matTooltipPosition="above"
-      (click)="onHome()"
-      *ngIf="!isMobile"
-    >
-      <mat-icon>home</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      aria-label="Example icon-button with share icon "
-      matTooltip="Voltar"
-      matTooltipPosition="above"
-      (click)="onSair()"
-      *ngIf="isMobile"
-    >
-      <mat-icon>logout</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      class="example-icon"
-      aria-label="Example icon-button with share icon"
-      (click)="getParticipantes()"
-      matTooltip="Atualizar"
-      matTooltipPosition="above"
-    >
-      <mat-icon>rotate_right</mat-icon>
-    </button>
+    <span class="titulo">{{ evento.descricao }}</span>
+    <div  class= "botoes"*ngIf="!isMobile">
+        <app-navegator
+          [controle]="controlePaginas"
+          (changePage)="getParticipantes()"
+        ></app-navegator>
+        <button
+          mat-icon-button
+          aria-label="Example icon-button with share icon "
+          matTooltip="Retorno"
+          matTooltipPosition="above"
+          (click)="onHome()"
+          *ngIf="!isMobile"
+        >
+          <mat-icon>home</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          aria-label="Example icon-button with share icon "
+          matTooltip="Voltar"
+          matTooltipPosition="above"
+          (click)="onSair()"
+          *ngIf="isMobile"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="example-icon"
+          aria-label="Example icon-button with share icon"
+          (click)="getParticipantes()"
+          matTooltip="Atualizar"
+          matTooltipPosition="above"
+        >
+          <mat-icon>rotate_right</mat-icon>
+        </button>
+    </div>
   </mat-toolbar>
 </div>
 <app-filtro-entrega-kit
   [HIDE]="false"
   (changeParametro)="onChangeParametro($event)"
+  [controle]="controlePaginas"
+  (onHome)="onHome()"
+  (onSair)="onSair()"
+  (onAtualizar)="getParticipantes()"
+  (changePage)="getParticipantes()"
   *ngIf="evento.id !== 0"
 ></app-filtro-entrega-kit>
 <div class="lista-participantes">

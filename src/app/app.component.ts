@@ -79,7 +79,6 @@ export class AppComponent {
           label: 'Processamento',
           links: [
             { label: 'Planilhas', route: 'planilhas' },
-            { label: 'Processar Planilha', route: 'planilhas_processamento' },
           ],
         },
       ],
@@ -144,7 +143,6 @@ export class AppComponent {
     });
     const token = this.localStorageSrv.getString('Token');
     if (!token) {
-      console.log('Indo Para O Login');
       this.globalService.setLogado(false);
       this.onLogin();
       return;
@@ -168,6 +166,9 @@ export class AppComponent {
     this.router.navigate(['/login']);
   }
 
+  onHome(){
+    this.router.navigate(['/home']);
+  }
 
   getUsuarioNome(): UsuarioModel {
     return this.globalService.getUsuario();
@@ -213,6 +214,7 @@ export class AppComponent {
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
+          this.onHome()
         },
         error: (error: any) => {
           if (error.status && error.status == 401) {
@@ -243,7 +245,7 @@ export class AppComponent {
 
       return retorno;
     } catch (error) {
-      console.error('Erro ao decodificar o token:', error);
+         console.error('Erro ao decodificar o token:', error);
       return null;
     }
   }
