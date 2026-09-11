@@ -1,5 +1,4 @@
-<p>dashboard works!</p>
-<div class="container" *ngIf="eventoPrincipal.id > 0">
+<div class="container" *ngIf="eventoPrincipal.id > 0 || eventoPrincipal.qtd_kits > 0">
    <div [ngClass]="isMobile ? 'col-med-1' : 'col-med-2'">
      <div class="col-max box">
         <div id="chart_categorias" ></div>

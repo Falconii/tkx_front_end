@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MaterialModule } from '../material/material.module';
-import { registerLocaleData } from '@angular/common';
+import { DecimalPipe, registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { GlobalService } from './services/global.service';
@@ -13,18 +13,20 @@ import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { httpInterceptorProviders } from './interceptor';
 import { SimNaoPipe } from './shared/pipes/sim-nao.pipe';
 import { SharedModule } from './shared/shared.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirstNamePipe } from './shared/pipes/first-name.pipe';
+import { HomeComponent } from './home/home.component';
 
 registerLocaleData(localePt);
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, HomeComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MaterialModule,
     HttpClientModule,
+    ReactiveFormsModule,
     FormsModule,
     NgxMaskDirective,
     NgxMaskPipe,
@@ -43,7 +45,8 @@ registerLocaleData(localePt);
       decimalMarker: ',',
     }),
     SimNaoPipe,
-    FirstNamePipe
+    FirstNamePipe,
+    DecimalPipe,
   ],
   bootstrap: [AppComponent],
 })

@@ -124,7 +124,7 @@ var MobileKitComponent = /** @class */ (function () {
             error: function (error) {
                 if (error.status && error.status == 401) {
                     _this.localStorageSrv.clear();
-                    _this.appSnackBar.openFailureSnackBar('Ação Não Autoizada', 'OK');
+                    _this.appSnackBar.openFailureSnackBar('Ação Não Autorizada', 'OK');
                     return;
                 }
                 if (error.status && error.status == 409) {
@@ -195,9 +195,9 @@ var MobileKitComponent = /** @class */ (function () {
     MobileKitComponent.prototype.onHome = function () {
         this.router.navigate(['/home']);
     };
-    MobileKitComponent.prototype.openKitDialog = function (dado) {
+    MobileKitComponent.prototype.openKitDialog = function (participantev2) {
         var data = new entrega_v2_dialog_data_1.EntregaV2DialogData();
-        data.dado = dado;
+        data.participantev2 = participantev2;
         var dialogConfig = new dialog_1.MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.id = 'trocar';
@@ -209,10 +209,11 @@ var MobileKitComponent = /** @class */ (function () {
             .beforeClosed()
             .subscribe(function (data) {
             if (data.processar) {
-                dado.entrega_nome_retirada = data.entrega.nome_retirada;
-                dado.entrega_rg_retirada = data.entrega.rg_retirada;
-                dado.entrega_tam_camisa = data.entrega.tam_camisa;
-                console.log('Dado Processado', dado);
+                participantev2.entrega_nome_retirada = data.participantev2.entrega_nome_retirada;
+                participantev2.entrega_rg_retirada = data.participantev2.entrega_rg_retirada;
+                participantev2.entrega_tam_camisa = data.participantev2.entrega_tam_camisa;
+                participantev2.id_entrega = data.participantev2.id_entrega;
+                console.log('Dado Processado', participantev2);
             }
         });
     };

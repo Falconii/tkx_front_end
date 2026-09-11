@@ -236,16 +236,19 @@ export class FormularioFiltroUsuarioComponent {
     param.modulo = this.paramName;
     param.assinatura = 'V1.00 06/11/2025';
     param.id_usuario = this.globalService.getUsuario().id;
-    param.parametro = `
-       {
-         "pesquisa":"",
-         "pesquisarPor":99,
-         "grupo":"",
-         "orderby":"000001",
-         "page": 1,
-         "sharp":false
-       }`;
 
+    param.parametro = JSON.stringify(
+         {
+            id_evento:'',
+            pesquisa:'',
+            pesquisarPor:'',
+            grupo:'',
+            tamPagina:50,
+            contador:'',
+            orderby:'000001',
+            page:0,
+            sharp:false
+          });
     return param;
   }
 
@@ -447,6 +450,7 @@ export class FormularioFiltroUsuarioComponent {
   }
 
   getTextoTipoPesquisa(): string {
+    try {
     const tipo = parseInt(
       Object(this.parametro.getParametro()).pesquisarPor,
       10,
@@ -465,5 +469,8 @@ export class FormularioFiltroUsuarioComponent {
       default:
         return '';
     }
+  } catch(err){
+     return '';
+  }
   }
 }

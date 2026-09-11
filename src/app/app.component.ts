@@ -214,7 +214,9 @@ export class AppComponent {
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
-          this.onHome()
+          console.log("indo para o home",this.globalService.getLogado());
+          this.onHome();
+          this.globalService.setLogadoTeste(true)
         },
         error: (error: any) => {
           if (error.status && error.status == 401) {

@@ -2,10 +2,10 @@ import { MobileModule } from './modules/mobile/mobile.module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MobileKitComponent } from './modules/mobile/mobile-kit/mobile-kit.component';
-import { HomeComponent } from './modules/home/home/home.component';
 import { SecureGuard } from './guards/secure.guard';
 import { LiberaEventoComponent } from './modules/evento/libera-evento/libera-evento.component';
 import { RedefineSenhaComponent } from './modules/usuario/redefine-senha/redefine-senha.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
 
@@ -13,10 +13,7 @@ const routes: Routes = [
 
   { path: 'liberaevento', component: LiberaEventoComponent },
 
-  { path: 'home',
-    loadChildren: () =>
-      import('./modules/home/home.module').then((m) => m.HomeModule),
-  },
+  { path: 'home', component: HomeComponent },
   {
     path: 'mobile',
     loadChildren: () =>

@@ -71,6 +71,8 @@
         <mat-label class="valor">{{ usuario.email }}</mat-label>
         <mat-label class="rotulo">Telefone:</mat-label>
         <mat-label class="valor">{{ usuario.tel1}}</mat-label>
+        <mat-label class="rotulo">CPF:</mat-label>
+        <mat-label class="valor">{{ usuario.cnpj_cpf | cnpjcpf}}</mat-label>
       </div>
     <td>
      <div class="alinha_esquerda">

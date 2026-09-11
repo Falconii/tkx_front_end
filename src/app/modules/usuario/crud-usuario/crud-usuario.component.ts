@@ -65,7 +65,9 @@ export class CrudUsuarioComponent {
     private localStorageSrv: LocalStorageService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.globalService.setLogadoTeste(true);
+  }
 
   ngOnDestroy() {
     this.inscricaoUsuario?.unsubscribe();

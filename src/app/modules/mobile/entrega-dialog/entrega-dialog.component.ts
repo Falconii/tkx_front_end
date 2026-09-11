@@ -1,3 +1,4 @@
+import { EventoComplementarService } from './../../../services/eventoComplementar.service';
 import { GlobalService } from './../../../services/global.service';
 import { Component, Inject, ViewChild } from '@angular/core';
 import { EntregaDialogData } from './entrega-dialog-data';
@@ -18,6 +19,8 @@ import { Entregav2Service } from '../../../services/entregav2.service';
 import { Entregav2Model } from '../../../models/entregav2-model';
 import { EntregaV2DialogData } from './entrega-v2-dialog-data';
 import { Participantev2Service } from '../../../services/participantev2.service';
+import { Entregasv2ComplementarService } from '../../../services/entregasv2Complementar.service';
+import { EntregaparticipanteModel } from '../../../models/entregaparticipante-model';
 
 @Component({
   selector: 'app-entrega-dialog',
@@ -39,12 +42,15 @@ export class EntregaDialogComponent {
 
   showSpin: boolean = false;
 
+  isAtualizado:boolean = false;
+
 
   constructor(
     private formBuilder: FormBuilder,
     private appSnackBar: AppSnackbar,
     private entregaSrv: Entregav2Service,
     private participanteSrv: Participantev2Service,
+    private entregaComplementarSrv: Entregasv2ComplementarService,
     private globalService: GlobalService,
     public dialogRef: MatDialogRef<EntregaDialogComponent>,
     private confirmDialog: ConfirmDialogService,
@@ -61,7 +67,6 @@ export class EntregaDialogComponent {
   }
 
   ngOnInit() {
-    console.log('data', this.data);
     this.setValueNoParam();
     this.getEntrega();
   }
@@ -75,15 +80,15 @@ export class EntregaDialogComponent {
   getEntrega() {
     this.inscricaoEntrega = this.entregaSrv
       .getEntregav2(
-        this.data.dado.id_empresa,
-        this.data.dado.id_evento,
-        this.data.dado.id_entrega,
+        this.data.participantev2.id_empresa,
+        this.data.participantev2.id_evento,
+        this.data.participantev2.id_entrega,
       )
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
         next: (data: Entregav2Model) => {
           this.botaoExcluir = true;
-          this.data.entrega = data;
+          this.data.entregav2 = data;
           this.acao = CadastroAcoes.Edicao;
           console.log('Edicao');
           this.setValue();
@@ -93,12 +98,12 @@ export class EntregaDialogComponent {
           if (error.status && error.status == 409) {
             this.botaoExcluir = false;
             const dataAtual: Date = new Date();
-            this.data.entrega = new Entregav2Model();
-            this.data.entrega.id_empresa = this.data.dado.id_empresa;
-            this.data.entrega.id_evento = this.data.dado.id_evento;
-            this.data.entrega.id = 0;
-            this.data.entrega.id_entrega = this.data.dado.id_entrega;
-            this.data.entrega.data_retirada = DataYYYYMMDD(dataAtual);
+            this.data.entregav2 = new Entregav2Model();
+            this.data.entregav2.id_empresa = this.data.participantev2.id_empresa;
+            this.data.entregav2.id_evento = this.data.participantev2.id_evento;
+            this.data.entregav2.id = 0;
+            this.data.entregav2.id_entrega = this.data.participantev2.id_entrega;
+            this.data.entregav2.data_retirada = DataYYYYMMDD(dataAtual);
             this.acao = CadastroAcoes.Inclusao;
             console.log('Inclusão');
             this.setValue();
@@ -113,6 +118,32 @@ export class EntregaDialogComponent {
       });
   }
 
+
+  gravar(){
+    if (this.data.entregav2.id == 0){
+      this.data.entregav2.user_insert = this.globalService.getUsuario().id;
+    }
+    this.data.entregav2.user_update = this.data.entregav2.id >  0 ?  this.globalService.getUsuario().id : 0 ;
+    this.inscricaoAcao = this.entregaComplementarSrv.insertentregaparticipante(this.data.participantev2.id,this.data.entregav2)
+      .subscribe({
+        next: (data: EntregaparticipanteModel) => {
+          this.data.participantev2 = data.Participantev2;
+          this.data.entregav2 = data.Entregav2;
+          this.data.processar = true;
+          this.closeModal();
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+            'OK',
+          );
+        },
+      });
+
+  }
+
+
+/*
   insertEntrega() {
     console.log('Fazendo Insert', this.data.entrega);
     this.inscricaoEntrega = this.entregaSrv
@@ -121,7 +152,7 @@ export class EntregaDialogComponent {
       .subscribe({
         next: (data: Entregav2Model) => {
           this.data.entrega = data;
-          this.data.dado.id_entrega = data.id;
+          this.data.participantev2.id_entrega = data.id;
           this.updateParticipante();
         },
         error: (error: any) => {
@@ -142,7 +173,7 @@ export class EntregaDialogComponent {
       .subscribe({
         next: (data: Entregav2Model) => {
           this.data.entrega = data;
-          this.data.dado.id_entrega = data.id;
+          this.data.participantev2.id_entrega = data.id;
           this.updateParticipante();
         },
         error: (error: any) => {
@@ -155,40 +186,37 @@ export class EntregaDialogComponent {
         },
       });
   }
+ */
 
   deleteEntrega() {
-    this.inscricaoEntrega = this.entregaSrv
-      .entregav2Delete(
-        this.data.dado.id_empresa,
-        this.data.dado.id_evento,
-        this.data.dado.id_entrega,
-      )
-      .pipe(finalize(() => this.globalService.setSpin(false)))
+   this.inscricaoAcao = this.entregaComplementarSrv.deleteentregaparticipante(this.data.participantev2.id,this.data.entregav2)
       .subscribe({
-        next: (data: any) => {
-          this.data.entrega = data;
-          this.data.dado.id_entrega = 0;
-          this.updateParticipante();
+        next: (data: EntregaparticipanteModel) => {
+          this.data.participantev2 = data.Participantev2;
+          this.data.processar = true;
+          this.closeModal();
         },
         error: (error: any) => {
-          console.log(error);
           this.appSnackBar.openFailureSnackBar(
-            `Falha Na Inclusão Da entrega Do Kit ${messageError(error)}`,
+            `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
             'OK',
           );
         },
       });
-  }
-  setValue() {
-    this.formulario.setValue({
-      rg_retirada: this.data.entrega.rg_retirada,
-      nome_retirada: this.data.entrega.nome_retirada,
-      tam_camisa: this.data.entrega.tam_camisa,
-    });
+
   }
 
-  updateParticipante() {
-    this.data.dado.user_update = this.globalService.getUsuario().id;
+  setValue() {
+    this.formulario.setValue({
+      rg_retirada: this.data.entregav2.rg_retirada,
+      nome_retirada: this.data.entregav2.nome_retirada,
+      tam_camisa: this.data.entregav2.tam_camisa,
+    });
+    this.isAtualizado = true;
+  }
+
+  /* updateParticipante() {
+    this.data.participantev2.user_update = this.globalService.getUsuario().id;
     this.inscricaoAcao = this.participanteSrv
       .participantev2Update(this.data.dado)
       .subscribe({
@@ -202,19 +230,19 @@ export class EntregaDialogComponent {
           );
         },
       });
-  }
+  } */
 
   getParticipante() {
-    this.data.dado.user_update = this.globalService.getUsuario().id;
+    this.data.participantev2.user_update = this.globalService.getUsuario().id;
     this.inscricaoParticipante = this.participanteSrv
       .getParticipantev2(
-        this.data.dado.id_empresa,
-        this.data.dado.id_evento,
-        this.data.dado.id,
+        this.data.participantev2.id_empresa,
+        this.data.participantev2.id_evento,
+        this.data.participantev2.id,
       )
       .subscribe({
         next: (data: any) => {
-          this.data.dado = data;
+          this.data.participantev2 = data;
           this.data.processar = true;
           this.closeModal();
         },
@@ -273,21 +301,13 @@ export class EntregaDialogComponent {
     }
     if (this.formulario.valid) {
       console.log('acao', this.acao);
-      this.data.entrega.rg_retirada =
+      this.data.entregav2.rg_retirada =
         this.formulario.value?.rg_retirada.toUpperCase();
-      this.data.entrega.nome_retirada =
+      this.data.entregav2.nome_retirada =
         this.formulario.value?.nome_retirada.toUpperCase();
-      this.data.entrega.tam_camisa =
+      this.data.entregav2.tam_camisa =
         this.formulario.value?.tam_camisa.toUpperCase();
-      if (this.acao == CadastroAcoes.Inclusao) {
-        this.data.entrega.user_insert = this.globalService.getUsuario().id;
-        this.insertEntrega();
-      } else {
-        const dataAtual: Date = new Date();
-        this.data.entrega.data_retirada = DataYYYYMMDD(dataAtual);
-        this.data.entrega.user_update = this.globalService.getUsuario().id;
-        this.updatetEntrega();
-      }
+      this.gravar();
     } else {
       this.formulario.markAllAsTouched();
       this.appSnackBar.openSuccessSnackBar(

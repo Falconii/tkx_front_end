@@ -329,20 +329,18 @@ export class FormularioFiltroParticipantev2Component {
     param.modulo = this.paramName;
     param.assinatura = 'V1.00 20/04/2026';
     param.id_usuario = this.globalService.getUsuario().id;
-    param.parametro = `
-         {
-            "id_evento":"",
-            "pesquisa":"",
-            "pesquisarPor":"",
-            "id":"",
-            "id_categoria":"",
-            "tamPagina":50,
-            "contador":"N",
-            "orderby":"000001",
-            "page":0,
-            "sharp":false
-        }`;
-
+    param.parametro = JSON.stringify({
+            id_evento:'',
+            pesquisa:'',
+            pesquisarPor:'',
+            id:'',
+            id_categoria:'',
+            tamPagina:50,
+            contador:'',
+            orderby:'000001',
+            page:0,
+            sharp:false
+          });
     return param;
   }
 

@@ -50,12 +50,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0; /* opcional */
+  min-height: 48px; /* opcional, para manter tamanho padrão */
 }
 
 .texto-pequeno {
   font-size: 10px;
   color: white;
   opacity: 0.85;
-  margin-top: -14px;
-  line-height: 8px;
+  line-height: 10px;
+  margin-top: 4px; /* agora funciona */
 }

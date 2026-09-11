@@ -1,0 +1,30 @@
+<div *ngIf="false" >
+    <div class="toolbar-alinhada">
+      <mat-toolbar color="blue">
+        <span class="example-spacer">Dashboard</span>
+        <button
+          mat-icon-button
+          class="example-icon"
+          aria-label="Example icon-button with share icon"
+          (click)="atualizar()"
+          matTooltip="Atualizar"
+          matTooltipPosition="above"
+        >
+          <mat-icon>rotate_right</mat-icon>
+        </button>
+      </mat-toolbar>
+    </div>
+    <form [formGroup]="formulario" autocomplete="off">
+      <div class="col-md-1">
+        <mat-form-field appearance="outline" class="col-max">
+          <mat-label>Evento</mat-label>
+          <mat-select formControlName="id_evento" (selectionChange)="onChangeParametros()">
+            <mat-option *ngFor="let evento of lsEventos" [value]="evento.id">
+              {{ evento.descricao }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+    <dashboard [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado"></dashboard>
+</div>

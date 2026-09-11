@@ -21,6 +21,11 @@ export class GlobalService {
   logado: boolean = false;
   showSpin: boolean = false;
 
+
+  private logadoSubject = new BehaviorSubject<boolean>(false);
+  logado$ = this.logadoSubject.asObservable();
+
+
   shomMenuEmitter = new EventEmitter<boolean>();
 
   showEmpresaEmitter = new EventEmitter<boolean>();
@@ -30,6 +35,10 @@ export class GlobalService {
   onSubmit = new EventEmitter<boolean>();
 
   changePassWordEmitter = new EventEmitter<boolean>();
+
+  changeData = new EventEmitter<EventoModel>();
+
+
 
   private showSpinSubject = new BehaviorSubject<boolean>(false);
 
@@ -103,11 +112,17 @@ export class GlobalService {
     this.showUsuarioEmitter.emit();
   }
 
-  setLogado(value: boolean) {
-    this.shomMenuEmitter.emit(value);
-    this.logado = value;
-    this.router.navigate(['/']);
-  }
+setLogado(value: boolean) {
+  this.shomMenuEmitter.emit(value);
+  this.logado = value;
+  this.router.navigate(['/']);
+}
+
+setLogadoTeste(value: boolean) {
+  console.log("enviando logado teste ",value);
+  this.logadoSubject.next(value);
+  this.logado = true;
+}
 
   getLogado(): boolean {
     if (this.usuario.id == 0) {
@@ -116,6 +131,11 @@ export class GlobalService {
       return true;
     }
   }
+
+  setChangeData(value:EventoModel) {
+    this.changeData.emit(value);
+  }
+
 
   setSpin(value: boolean) {
     Promise.resolve().then(() => {

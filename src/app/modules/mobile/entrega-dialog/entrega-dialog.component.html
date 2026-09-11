@@ -3,17 +3,16 @@
     <span class="example-spacer">
       <mat-label>Cadastro De Kit</mat-label>
     </span>
-    <div class="botao-com-legenda">
-      <button
-        mat-icon-button
-        (click)="onSetarOMesmo()"
-        matTooltip='Ajustar  P/ "O MESMO"'
-        matTooltipPosition="above"
-      >
-        <mat-icon>person</mat-icon>
-      </button>
+    <button
+      mat-button
+      matTooltip='Ajustar P/ "O MESMO"'
+      matTooltipPosition="above"
+      class="botao-com-legenda"
+      (click)="onSetarOMesmo()"
+    >
+      <mat-icon>person</mat-icon>
       <span class="texto-pequeno">o mesmo</span>
-    </div>
+   </button>
   </mat-toolbar>
 </div>
 

@@ -134,6 +134,7 @@ export class LoginComponent {
         next: (data: UsuarioModel) => {
           this.globalService.setUsuario(data);
           this.globalService.setLogado(true);
+          this.globalService.setLogadoTeste(true);
           if (data.trocarsenha == "S"){
             this.onAlterarSenha();
           }
@@ -146,6 +147,7 @@ export class LoginComponent {
           );
           this.globalService.setUsuario(new UsuarioModel());
           this.globalService.setLogado(false);
+          this.globalService.setLogadoTeste(false);
         },
       });
   }
