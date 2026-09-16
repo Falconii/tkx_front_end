@@ -8,10 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.HomeComponent = void 0;
 var core_1 = require("@angular/core");
+var layout_1 = require("@angular/cdk/layout");
 var evento_model_1 = require("../models/evento-model");
 var parametro_evento01_1 = require("../parametros/parametro-evento01");
 var HomeComponent = /** @class */ (function () {
     function HomeComponent(globalService, eventoComplementarSrv, eventoSrv, breakpoint, router, firstNamePipe, route, appSnackBar, formBuilder) {
+        var _this = this;
         this.globalService = globalService;
         this.eventoComplementarSrv = eventoComplementarSrv;
         this.eventoSrv = eventoSrv;
@@ -28,6 +30,9 @@ var HomeComponent = /** @class */ (function () {
         this.eventoPrincipal = new evento_model_1.EventoModel();
         this.isLogado = false;
         console.log("estou iniciando o home");
+        this.breakpoint.observe([layout_1.Breakpoints.Handset]).subscribe(function (result) {
+            _this.isMobile = result.matches;
+        });
         this.formulario = formBuilder.group({
             id_evento: [{ value: '' }]
         });
@@ -84,6 +89,9 @@ var HomeComponent = /** @class */ (function () {
     ;
     HomeComponent.prototype.getUsuario = function () {
         return this.globalService.getUsuario().razao;
+    };
+    HomeComponent.prototype.getUsuarioGrupo = function () {
+        return this.globalService.getUsuario().grupo;
     };
     HomeComponent = __decorate([
         core_1.Component({

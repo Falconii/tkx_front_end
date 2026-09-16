@@ -1,9 +1,27 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
 };
 exports.__esModule = true;
 exports.MobileKitComponent = void 0;
@@ -178,9 +196,9 @@ var MobileKitComponent = /** @class */ (function () {
     MobileKitComponent.prototype.onChangePage = function () {
         this.getParticipantes();
     };
-    MobileKitComponent.prototype.escolha = function (op, dado) {
+    MobileKitComponent.prototype.escolha = function (op, dado, index) {
         if (op == cadastro_acoes_1.CadastroAcoes.Kit) {
-            this.openKitDialog(dado);
+            this.openKitDialog(dado, index);
         }
     };
     MobileKitComponent.prototype.novoInscrito = function () {
@@ -195,9 +213,11 @@ var MobileKitComponent = /** @class */ (function () {
     MobileKitComponent.prototype.onHome = function () {
         this.router.navigate(['/home']);
     };
-    MobileKitComponent.prototype.openKitDialog = function (participantev2) {
+    MobileKitComponent.prototype.openKitDialog = function (participantev2, index) {
+        var _this = this;
         var data = new entrega_v2_dialog_data_1.EntregaV2DialogData();
-        data.participantev2 = participantev2;
+        data.participantev2 = __assign({}, participantev2); // ← cópia
+        data.index = index;
         var dialogConfig = new dialog_1.MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.id = 'trocar';
@@ -209,11 +229,8 @@ var MobileKitComponent = /** @class */ (function () {
             .beforeClosed()
             .subscribe(function (data) {
             if (data.processar) {
-                participantev2.entrega_nome_retirada = data.participantev2.entrega_nome_retirada;
-                participantev2.entrega_rg_retirada = data.participantev2.entrega_rg_retirada;
-                participantev2.entrega_tam_camisa = data.participantev2.entrega_tam_camisa;
-                participantev2.id_entrega = data.participantev2.id_entrega;
-                console.log('Dado Processado', participantev2);
+                _this.participantes = __spreadArrays(_this.participantes.slice(0, data.index), [__assign({}, data.participantev2)], _this.participantes.slice(data.index + 1));
+                alert(_this.participantes[data.index].entrega_tam_camisa);
             }
         });
     };

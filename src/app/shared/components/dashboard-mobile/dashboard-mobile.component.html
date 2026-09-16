@@ -1,0 +1,77 @@
+<div class="container" *ngIf="eventoPrincipal.id > 0 || eventoPrincipal.qtd_kits > 0">
+   <div class ="col-med-1">
+     <div class="col-max box" *ngIf="lsCategorias.length > 0">
+        <h3 class="alinha_centro">RESUMO EVENTO</h3>
+        <table class="Browse_Lanc">
+          <tr class="coluna-cabec">
+            <th>RESUMO</th>
+            <th>QTD</th>
+          </tr>
+          <tr *ngFor="let resumo of lsEventosResumos">
+            <td>
+              <div class="alinha_esquerda">
+                <mat-label class="Browse_Lanc_td">{{ resumo.texto }} </mat-label>
+              </div>
+            </td>
+            <td>
+              <div class="alinha_direita">
+                <mat-label class="Browse_Lanc_td_rigth"
+                  >{{ resumo.qtd | number: "1.0-0" }}
+                </mat-label>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+   </div>
+   <div class ="col-med-1">
+     <div class="col-max box" *ngIf="lsCategorias.length > 0">
+        <h3 class="alinha_centro">RESUMO CATEGORIAS</h3>
+        <table class="Browse_Lanc">
+          <tr class="coluna-cabec">
+            <th>Categoria</th>
+            <th>TOTAL</th>
+          </tr>
+          <tr *ngFor="let categoria of lsCategorias">
+            <td>
+              <div class="alinha_esquerda">
+                <mat-label class="Browse_Lanc_td">{{ categoria.categoria_descricao }} </mat-label>
+              </div>
+            </td>
+            <td>
+              <div class="alinha_direita">
+                <mat-label class="Browse_Lanc_td_rigth"
+                  >{{ categoria.total | number: "1.0-0" }}
+                </mat-label>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+   </div>
+   <div  class ="col-med-1">
+    <div class="col-max box" *ngIf="lsOperadores.length > 0">
+        <h3 class="alinha_centro">RESUMO OPERADORES</h3>
+        <table class="Browse_Lanc">
+          <tr class="coluna-cabec">
+            <th>Operador</th>
+            <th>TOTAL</th>
+          </tr>
+          <tr *ngFor="let operador of lsOperadores">
+            <td>
+              <div class="alinha_esquerda">
+                <mat-label class="Browse_Lanc_td">{{ operador.razao }} </mat-label>
+              </div>
+            </td>
+            <td>
+              <div class="alinha_direita">
+                <mat-label class="Browse_Lanc_td_rigth"
+                  >{{ operador.total | number: "1.0-0" }}
+                </mat-label>
+              </div>
+            </td>
+          </tr>
+        </table>
+    </div>
+   </div>
+</div>

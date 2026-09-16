@@ -29,6 +29,7 @@ export class HomeComponent {
   formulario: FormGroup;
 
   inscricaoEvento!: Subscription;
+
   isMobile: boolean = false;
 
   chartsLoaded:boolean = false;
@@ -52,6 +53,11 @@ export class HomeComponent {
     private formBuilder: FormBuilder
   ) {
     console.log("estou iniciando o home");
+
+    this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
+      this.isMobile = result.matches;
+    });
+
     this.formulario = formBuilder.group({
       id_evento: [{ value: '' }],
     });
@@ -120,9 +126,11 @@ setValue() {
     this.getEventos()
   };
 
-
-
   getUsuario():string{
     return this.globalService.getUsuario().razao;
+  }
+
+  getUsuarioGrupo():number{
+    return this.globalService.getUsuario().grupo;
   }
 }

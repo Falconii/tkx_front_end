@@ -6,6 +6,7 @@ var participantev2_model_1 = require("../../../models/participantev2-model");
 var EntregaV2DialogData = /** @class */ (function () {
     function EntregaV2DialogData() {
         this.processar = false;
+        this.index = 0;
         this.participantev2 = new participantev2_model_1.Participantev2Model();
         this.entregav2 = new entregav2_model_1.Entregav2Model();
     }

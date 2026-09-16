@@ -111,7 +111,6 @@ var EntregaDialogComponent = /** @class */ (function () {
                     _this.data.entregav2.id_empresa = _this.data.participantev2.id_empresa;
                     _this.data.entregav2.id_evento = _this.data.participantev2.id_evento;
                     _this.data.entregav2.id = 0;
-                    _this.data.entregav2.id_entrega = _this.data.participantev2.id_entrega;
                     _this.data.entregav2.data_retirada = util_1.DataYYYYMMDD(dataAtual);
                     _this.acao = cadastro_acoes_1.CadastroAcoes.Inclusao;
                     console.log('Inclusão');
@@ -133,6 +132,7 @@ var EntregaDialogComponent = /** @class */ (function () {
         this.inscricaoAcao = this.entregaComplementarSrv.insertentregaparticipante(this.data.participantev2.id, this.data.entregav2)
             .subscribe({
             next: function (data) {
+                alert(data.Participantev2.entrega_tam_camisa);
                 _this.data.participantev2 = data.Participantev2;
                 _this.data.entregav2 = data.Entregav2;
                 _this.data.processar = true;

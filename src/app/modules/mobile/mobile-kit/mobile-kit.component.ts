@@ -233,9 +233,9 @@ export class MobileKitComponent {
     this.getParticipantes();
   }
 
-  escolha(op: number, dado: Participantev2Model) {
+  escolha(op: number, dado: Participantev2Model,index:number) {
     if (op == CadastroAcoes.Kit) {
-      this.openKitDialog(dado);
+      this.openKitDialog(dado, index);
     }
   }
 
@@ -254,9 +254,10 @@ export class MobileKitComponent {
     this.router.navigate(['/home']);
   }
 
-  openKitDialog(participantev2: Participantev2Model): void {
+  openKitDialog(participantev2: Participantev2Model,index:number): void {
     const data: EntregaV2DialogData = new EntregaV2DialogData();
-    data.participantev2 = participantev2;
+    data.participantev2 = { ...participantev2 }; // ← cópia
+    data.index = index;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.id = 'trocar';
@@ -268,11 +269,11 @@ export class MobileKitComponent {
       .beforeClosed()
       .subscribe((data: EntregaV2DialogData) => {
         if (data.processar) {
-          participantev2.entrega_nome_retirada = data.participantev2.entrega_nome_retirada;
-          participantev2.entrega_rg_retirada   = data.participantev2.entrega_rg_retirada
-          participantev2.entrega_tam_camisa    = data.participantev2.entrega_tam_camisa;
-          participantev2.id_entrega            = data.participantev2.id_entrega;
-          console.log('Dado Processado', participantev2);
+            this.participantes = [...this.participantes.slice(0, data.index),
+            { ...data.participantev2 },
+              ...this.participantes.slice(data.index + 1)
+        ];
+        alert(this.participantes[data.index].entrega_tam_camisa);
         }
       });
   }

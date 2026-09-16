@@ -102,7 +102,6 @@ export class EntregaDialogComponent {
             this.data.entregav2.id_empresa = this.data.participantev2.id_empresa;
             this.data.entregav2.id_evento = this.data.participantev2.id_evento;
             this.data.entregav2.id = 0;
-            this.data.entregav2.id_entrega = this.data.participantev2.id_entrega;
             this.data.entregav2.data_retirada = DataYYYYMMDD(dataAtual);
             this.acao = CadastroAcoes.Inclusao;
             console.log('Inclusão');
@@ -127,6 +126,7 @@ export class EntregaDialogComponent {
     this.inscricaoAcao = this.entregaComplementarSrv.insertentregaparticipante(this.data.participantev2.id,this.data.entregav2)
       .subscribe({
         next: (data: EntregaparticipanteModel) => {
+          alert(data.Participantev2.entrega_tam_camisa);
           this.data.participantev2 = data.Participantev2;
           this.data.entregav2 = data.Entregav2;
           this.data.processar = true;

@@ -1,4 +1,4 @@
-<div *ngIf="false" >
+<div>
     <div class="toolbar-alinhada">
       <mat-toolbar color="blue">
         <span class="example-spacer">Dashboard</span>
@@ -26,5 +26,6 @@
         </mat-form-field>
       </div>
     </form>
-    <dashboard [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado"></dashboard>
+    <!--<dashboard [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado && !isMobile"></dashboard>-->
+    <dashboard-mobile [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado && isMobile && getUsuarioGrupo() !== 4"></dashboard-mobile>
 </div>

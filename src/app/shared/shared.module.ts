@@ -35,6 +35,7 @@ import { SituacaoDetPlanilhaPipe } from './pipes/situacao-det-planilha.pipe';
 import { SexoPipe } from './pipes/sexo.pipe';
 import { FormularioFiltroUsuarioEventoComponent } from './components/formulario-filtro-usuario-evento/formulario-filtro-usuario-evento.component';
 import { DashboardOperacionalComponent } from './components/dashboard-operacional/dashboard-operacional.component';
+import { DashboardMobileComponent } from './components/dashboard-mobile/dashboard-mobile.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { DashboardOperacionalComponent } from './components/dashboard-operaciona
     SpinsComponent,
     DashboardComponent,
     DashboardOperacionalComponent,
+    DashboardMobileComponent
   ],
   imports: [
     CommonModule,
@@ -101,7 +103,8 @@ import { DashboardOperacionalComponent } from './components/dashboard-operaciona
     CrudDisplayComponent,
     SpinsComponent,
     DashboardComponent,
-    DashboardOperacionalComponent
+    DashboardOperacionalComponent,
+    DashboardMobileComponent
   ],
 })
 export class SharedModule {}

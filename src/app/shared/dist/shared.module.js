@@ -41,6 +41,7 @@ var situacao_det_planilha_pipe_1 = require("./pipes/situacao-det-planilha.pipe")
 var sexo_pipe_1 = require("./pipes/sexo.pipe");
 var formulario_filtro_usuario_evento_component_1 = require("./components/formulario-filtro-usuario-evento/formulario-filtro-usuario-evento.component");
 var dashboard_operacional_component_1 = require("./components/dashboard-operacional/dashboard-operacional.component");
+var dashboard_mobile_component_1 = require("./components/dashboard-mobile/dashboard-mobile.component");
 var SharedModule = /** @class */ (function () {
     function SharedModule() {
     }
@@ -76,6 +77,7 @@ var SharedModule = /** @class */ (function () {
                 spins_component_1.SpinsComponent,
                 dashboard_component_1.DashboardComponent,
                 dashboard_operacional_component_1.DashboardOperacionalComponent,
+                dashboard_mobile_component_1.DashboardMobileComponent
             ],
             imports: [
                 common_1.CommonModule,
@@ -110,7 +112,8 @@ var SharedModule = /** @class */ (function () {
                 crud_display_component_1.CrudDisplayComponent,
                 spins_component_1.SpinsComponent,
                 dashboard_component_1.DashboardComponent,
-                dashboard_operacional_component_1.DashboardOperacionalComponent
+                dashboard_operacional_component_1.DashboardOperacionalComponent,
+                dashboard_mobile_component_1.DashboardMobileComponent
             ]
         })
     ], SharedModule);
