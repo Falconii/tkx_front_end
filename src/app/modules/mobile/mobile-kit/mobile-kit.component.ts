@@ -31,6 +31,11 @@ import { ParametroParticipantev201 } from '../../../parametros/parametro-partici
 import { Participantev2Model } from '../../../models/participantev2-model';
 import { EntregaV2DialogData } from '../entrega-dialog/entrega-v2-dialog-data';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
+import { Entregav2Service } from '../../../services/entregav2.service';
+import { Entregav2Model } from '../../../models/entregav2-model';
+import { EntregaparticipanteModel } from '../../../models/entregaparticipante-model';
+import { Entregasv2ComplementarService } from '../../../services/entregasv2Complementar.service';
 
 @Component({
   selector: 'app-mobile-kit',
@@ -41,6 +46,8 @@ export class MobileKitComponent {
 
   inscricaoParticipantes!: Subscription;
   inscricaoEventoAtivo!: Subscription;
+  inscricaoDelete!:Subscription;
+  inscricaoEntrega!:Subscription;
 
   tamPagina = 50;
 
@@ -52,6 +59,7 @@ export class MobileKitComponent {
 
   isMobile: boolean = false;
 
+  entregav2:Entregav2Model = new Entregav2Model();
 
   controlePaginas: ControlePaginas = new ControlePaginas(0, 0);
 
@@ -66,6 +74,9 @@ export class MobileKitComponent {
     private router: Router,
     private kitEntrega: MatDialog,
     private breakpoint: BreakpointObserver,
+    private confirmDialog: ConfirmDialogService,
+    private entregaComplementarSrv:Entregasv2ComplementarService,
+    private entregaSrv:Entregav2Service
   ) {
      this.controlePaginas = new ControlePaginas(this.tamPagina, 0);
   }
@@ -85,6 +96,8 @@ export class MobileKitComponent {
   ngOnDestroy(): void {
     this.inscricaoParticipantes?.unsubscribe();
     this.inscricaoEventoAtivo?.unsubscribe();
+    this.inscricaoDelete?.unsubscribe();
+    this.inscricaoEntrega?.unsubscribe();
   }
 
   getParticipantes(tipoOperacao: TipoOperacao = TipoOperacao.Pesquisa) {
@@ -234,6 +247,9 @@ export class MobileKitComponent {
   }
 
   escolha(op: number, dado: Participantev2Model,index:number) {
+    if (op == CadastroAcoes.Exclusao){
+       this.onExcluir(dado,index);
+    }
     if (op == CadastroAcoes.Kit) {
       this.openKitDialog(dado, index);
     }
@@ -273,8 +289,72 @@ export class MobileKitComponent {
             { ...data.participantev2 },
               ...this.participantes.slice(data.index + 1)
         ];
-        alert(this.participantes[data.index].entrega_tam_camisa);
         }
       });
   }
+
+
+  onExcluir(participantev2:Participantev2Model,index:number) {
+    this.confirmDialog
+      .open({
+        title: 'Exclusão',
+        message: `Deseja Realmente Excluir o Kit ?`,
+        icon: 'warning',
+        iconColor: 'warn',
+        confirmText: 'Excluir',
+        cancelText: 'Cancelar',
+      })
+      .subscribe(async (result) => {
+        if (result) {
+           this.getEntrega(participantev2,index);
+        }
+      });
+  }
+
+  deleteEntrega(participantev2:Participantev2Model,entregav2:Entregav2Model,index:number) {
+   this.inscricaoDelete = this.entregaComplementarSrv.deleteentregaparticipante(participantev2.id,entregav2)
+      .subscribe({
+        next: (data: EntregaparticipanteModel) => {
+          this.participantes[index] = data.Participantev2;
+        },
+        error: (error: any) => {
+          this.appSnackBar.openFailureSnackBar(
+            `Erro Na Exclusão Do Kit ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
+            'OK',
+          );
+        },
+      });
+
+  }
+
+  getEntrega(participantev2:Participantev2Model,index:number) {
+    this.inscricaoEntrega = this.entregaSrv
+      .getEntregav2(
+        participantev2.id_empresa,
+        participantev2.id_evento,
+        participantev2.id_entrega,
+      )
+      .pipe(finalize(() => this.globalService.setSpin(false)))
+      .subscribe({
+        next: (data: Entregav2Model) => {
+          this.deleteEntrega(participantev2,data,index);
+        },
+        error: (error: any) => {
+          console.log('Erro: ', error.status);
+          if (error.status && error.status == 409) {
+             this.appSnackBar.openFailureSnackBar(
+              `Kit Não Encontrado!`,
+              'OK',
+            );
+          } else {
+            this.appSnackBar.openFailureSnackBar(
+              `Erro Na Pesquisa Dos Kits ${messageError(error)}`,
+              'OK',
+            );
+          }
+        },
+      });
+  }
+
+
 }

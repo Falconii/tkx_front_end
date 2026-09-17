@@ -16,6 +16,8 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
     transform: translateY(-2px);
   }
+
+
   mat-card-header {
     margin-bottom: 10px;
     mat-card-title {
@@ -93,4 +95,9 @@
   text-align: center;
   font-size: smaller;
   font-weight: 600;
+}
+
+.barra {
+  padding: 2px;
+  background-color: #e5e5e5;
 }

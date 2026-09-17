@@ -36,8 +36,6 @@ export class EntregaDialogComponent {
   inscricaoAcao!: Subscription;
   inscricaoParticipante!: Subscription;
 
-  botaoExcluir: boolean = false;
-
   acao: CadastroAcoes = CadastroAcoes.Consulta;
 
   showSpin: boolean = false;
@@ -53,7 +51,6 @@ export class EntregaDialogComponent {
     private entregaComplementarSrv: Entregasv2ComplementarService,
     private globalService: GlobalService,
     public dialogRef: MatDialogRef<EntregaDialogComponent>,
-    private confirmDialog: ConfirmDialogService,
     @Inject(MAT_DIALOG_DATA) public data: EntregaV2DialogData,
   ) {
     this.formulario = formBuilder.group({
@@ -87,7 +84,6 @@ export class EntregaDialogComponent {
       .pipe(finalize(() => this.globalService.setSpin(false)))
       .subscribe({
         next: (data: Entregav2Model) => {
-          this.botaoExcluir = true;
           this.data.entregav2 = data;
           this.acao = CadastroAcoes.Edicao;
           console.log('Edicao');
@@ -96,7 +92,6 @@ export class EntregaDialogComponent {
         error: (error: any) => {
           console.log('Erro: ', error.status);
           if (error.status && error.status == 409) {
-            this.botaoExcluir = false;
             const dataAtual: Date = new Date();
             this.data.entregav2 = new Entregav2Model();
             this.data.entregav2.id_empresa = this.data.participantev2.id_empresa;
@@ -126,7 +121,6 @@ export class EntregaDialogComponent {
     this.inscricaoAcao = this.entregaComplementarSrv.insertentregaparticipante(this.data.participantev2.id,this.data.entregav2)
       .subscribe({
         next: (data: EntregaparticipanteModel) => {
-          alert(data.Participantev2.entrega_tam_camisa);
           this.data.participantev2 = data.Participantev2;
           this.data.entregav2 = data.Entregav2;
           this.data.processar = true;
@@ -143,68 +137,6 @@ export class EntregaDialogComponent {
   }
 
 
-/*
-  insertEntrega() {
-    console.log('Fazendo Insert', this.data.entrega);
-    this.inscricaoEntrega = this.entregaSrv
-      .entregav2Insert(this.data.entrega)
-      .pipe(finalize(() => this.globalService.setSpin(false)))
-      .subscribe({
-        next: (data: Entregav2Model) => {
-          this.data.entrega = data;
-          this.data.participantev2.id_entrega = data.id;
-          this.updateParticipante();
-        },
-        error: (error: any) => {
-          console.log(error);
-          this.appSnackBar.openFailureSnackBar(
-            `Falha Na Inclusão Da entrega Do Kit ${messageError(error)}`,
-            'OK',
-          );
-        },
-      });
-  }
-
-  updatetEntrega() {
-    console.log('Fazendo Update', this.data.entrega);
-    this.inscricaoEntrega = this.entregaSrv
-      .entregav2Update(this.data.entrega)
-      .pipe(finalize(() => this.globalService.setSpin(false)))
-      .subscribe({
-        next: (data: Entregav2Model) => {
-          this.data.entrega = data;
-          this.data.participantev2.id_entrega = data.id;
-          this.updateParticipante();
-        },
-        error: (error: any) => {
-          console.log(error);
-          this.data.entrega = new Entregav2Model();
-          this.appSnackBar.openFailureSnackBar(
-            `Falha Na Alteração Da entrega Do Kit ${messageError(error)}`,
-            'OK',
-          );
-        },
-      });
-  }
- */
-
-  deleteEntrega() {
-   this.inscricaoAcao = this.entregaComplementarSrv.deleteentregaparticipante(this.data.participantev2.id,this.data.entregav2)
-      .subscribe({
-        next: (data: EntregaparticipanteModel) => {
-          this.data.participantev2 = data.Participantev2;
-          this.data.processar = true;
-          this.closeModal();
-        },
-        error: (error: any) => {
-          this.appSnackBar.openFailureSnackBar(
-            `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-            'OK',
-          );
-        },
-      });
-
-  }
 
   setValue() {
     this.formulario.setValue({
@@ -215,22 +147,6 @@ export class EntregaDialogComponent {
     this.isAtualizado = true;
   }
 
-  /* updateParticipante() {
-    this.data.participantev2.user_update = this.globalService.getUsuario().id;
-    this.inscricaoAcao = this.participanteSrv
-      .participantev2Update(this.data.dado)
-      .subscribe({
-        next: (data: any) => {
-          this.getParticipante();
-        },
-        error: (error: any) => {
-          this.appSnackBar.openFailureSnackBar(
-            `Erro Na Alteração ${error.error.tabela} - ${error.error.erro} - ${error.error.message}`,
-            'OK',
-          );
-        },
-      });
-  } */
 
   getParticipante() {
     this.data.participantev2.user_update = this.globalService.getUsuario().id;
@@ -325,26 +241,6 @@ export class EntregaDialogComponent {
     this.closeModal();
   }
 
-  onExcluir() {
-    if (this.showSpin) {
-      return;
-    }
-    this.confirmDialog
-      .open({
-        title: 'Exclusão',
-        message: `Deseja Realmente Excluir o Kit ?`,
-        icon: 'warning',
-        iconColor: 'warn',
-        confirmText: 'Excluir',
-        cancelText: 'Cancelar',
-      })
-      .subscribe(async (result) => {
-        if (result) {
-          console.log('Vou deletar..');
-          this.deleteEntrega();
-        }
-      });
-  }
 
   scrollAte(event: FocusEvent) {
     const el = event.target as HTMLElement;

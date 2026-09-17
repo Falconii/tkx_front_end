@@ -33,16 +33,17 @@
     <mat-icon class="icon-size">delete</mat-icon>
   </button>
 
-  <button
-    mat-button
-    color="accent"
+ <button
+    mat-icon-button
+    class="botoes"
     [matTooltip]="getTexto().kit"
     *ngIf="kit"
     (click)="onChangeOpcao(getAcoes().Kit)"
     matTooltipPosition="above"
   >
-    KIT
+    <mat-icon class="icon-size">checkroom</mat-icon>
   </button>
+
   <button
     mat-icon-button
     class="botoes"
