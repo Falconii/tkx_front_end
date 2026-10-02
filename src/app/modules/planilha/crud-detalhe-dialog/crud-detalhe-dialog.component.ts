@@ -73,7 +73,7 @@ export class CrudDetalheDialogComponent {
              this.openDetalheDialog(opcao, i, detalhe);
            }
            if (opcao == CadastroAcoes.Exclusao) {
-             this.openDeletePlanilha(opcao, i, detalhe);
+             this.openDetalheDialog(opcao, i, detalhe);
            }
 
          }
@@ -154,7 +154,7 @@ export class CrudDetalheDialogComponent {
       }
 
 
-  openDeletePlanilha(opcao: CadastroAcoes, indice: number, detalhe: DetplanilhaModel) {
+ /*  openDeletePartipantePlanilha(opcao: CadastroAcoes, indice: number, detalhe: DetplanilhaModel) {
       const dialogRef = this.deleteDialog.open(ConfirmDialogComponent, {
         width: '380px',
         data: {
@@ -168,10 +168,10 @@ export class CrudDetalheDialogComponent {
 
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
-         // this.deletePlanilha(planilha, indice);
+           //this.deletePlanilha(planilha, indice);
         }
       });
-    }
+    } */
 
 
   openDetalheDialog(
@@ -203,8 +203,8 @@ export class CrudDetalheDialogComponent {
       .beforeClosed()
       .subscribe((result: EditDetalheDialogData | null) => {
         if (result?.result) {
-
-          this.appSnackBar.openSuccessSnackBar("RETORNO OK", "ok");
+          this.data.result = true;
+          this.getDetalhes(TipoOperacao.Contador);
 
         }
       });

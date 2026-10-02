@@ -56,8 +56,8 @@ var HomeComponent = /** @class */ (function () {
         var _this = this;
         var par = new parametro_evento01_1.ParametroEvento01();
         par.id_empresa = this.globalService.getEmpresa().id;
-        par.status = '3';
         par.pagina = 1;
+        par.tamPagina = 12;
         this.inscricaoEvento = this.eventoSrv
             .getEventosParametro_01(par)
             .subscribe({

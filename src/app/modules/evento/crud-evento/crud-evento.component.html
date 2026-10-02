@@ -71,8 +71,11 @@
         <mat-label class="rotulo">Desc:</mat-label>
         <mat-label class="valor">{{ evento.descricao }}</mat-label>
 
+        <mat-label class="rotulo">Endereço:</mat-label>
+        <mat-label class="valor">{{ evento.rua }},{{evento.nro}}</mat-label>
+
         <mat-label class="rotulo">Cidade:</mat-label>
-        <mat-label class="valor">{{ evento.cidade }}</mat-label>
+        <mat-label class="valor">{{ evento.cidade }},{{evento.uf}}-CEP:{{evento.cep}}</mat-label>
 
         <mat-label class="rotulo">Situação:</mat-label>
         <mat-label class="valor"

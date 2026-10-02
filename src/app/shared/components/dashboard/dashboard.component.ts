@@ -10,6 +10,7 @@ import { AppSnackbar } from '../../classes/app-snackbar';
 import { FirstNamePipe } from '../../pipes/first-name.pipe';
 import { Subscription } from 'rxjs';
 import { EventoComplementarService } from '../../../services/eventoComplementar.service';
+import { ResumoKitModel } from '../../../models/resumo-kit-model';
 
 
 declare var google: any;
@@ -31,10 +32,14 @@ export class DashboardComponent {
 
     inscricaoCategoria!: Subscription;
 
+    inscricaoKit!: Subscription;
+
 
     lsOperadores:ResumoOperadorModel[] = [];
 
     lsCategorias:ResumoCategoriaModel[] = [];
+
+    lsResumosKits:ResumoKitModel[] = [];
 
     isMobile: boolean = false;
 
@@ -86,6 +91,7 @@ export class DashboardComponent {
     ngOnDestroy() {
         this.inscricaoResumoOperador?.unsubscribe();
         this.inscricaoCategoria?.unsubscribe();
+        this.inscricaoKit?.unsubscribe();
       }
 
 
@@ -94,10 +100,11 @@ export class DashboardComponent {
       }
 
     atualizar(){
+        this.buidChartEvento();
         this.getResumoOperadores();
         this.getResumoCategorias();
+        //this.getResumoKits();
       }
-
 
 
     getColuna():string {
@@ -116,14 +123,20 @@ export class DashboardComponent {
           .subscribe({
             next: (data: any) => {
                 this.lsOperadores = data;
-                console.log("lsOperadores",this.lsOperadores);
+                const total = this.lsOperadores.reduce((acc, operador) => acc + operador.total, 0);
+                const operador = new ResumoOperadorModel();
+                operador.razao = 'Total Geral';
+                operador.total = total;
+                this.lsOperadores.push(operador);
                 if (this.chartsLoaded) {
-                  this.buidChartOperadores();
+                    this.buidChartEvento();
                 }
             },
             error: (error: any) => {
-              console.log(error);
               this.lsOperadores= [];
+                if (this.chartsLoaded) {
+                    this.buidChartEvento();
+                }
             },
           });
       }
@@ -139,10 +152,17 @@ export class DashboardComponent {
         .subscribe({
           next: (data: any) => {
             this.lsCategorias = data;
-            this.buidChartCategorias();
+                const total = this.lsCategorias.reduce((acc, categoria) => acc + categoria.total, 0);
+                const categoria = new ResumoCategoriaModel();
+                categoria.categoria_descricao = 'Total Geral';
+                categoria.total = total;
+                this.lsCategorias.push(categoria);
+                if (this.chartsLoaded) {
+                    this.buidChartEvento();
+                }
+
           },
           error: (error: any) => {
-            console.log(error);
             this.lsCategorias = [];
           },
         });
@@ -163,82 +183,25 @@ export class DashboardComponent {
 
 
 
-  buidChartCategorias() {
+
+  buidChartEvento() {
     const func = (chart: any) => {
 
       const data = new google.visualization.DataTable();
-      data.addColumn('string', 'Categoria');
+      data.addColumn('string', 'Participante');
       data.addColumn('number', 'Total');
 
-      const linhas = this.lsCategorias.map(x => [`${x.categoria_descricao} - ${x.total}`, x.total]);
-      data.addRows(linhas);
+      const linhas:any = [];
 
-      const totalParticipantes = this.lsCategorias
-        .reduce((acc, x) => acc + x.total, 0);
-
-      const cores = this.gerarCoresAleatorias(this.lsCategorias.length);
-
-      const options = {
-        title: `Resumo Por Categoria - Total: ${this.decimalPipe.transform(totalParticipantes, '1.0-0')}`,
-        width:  this.larguraGrafico,
-        height: 400,
-
-        titleTextStyle: {
-          fontSize: 14,        // título menor
-          bold: true,
-        },
-
-        colors: cores,
-
-        chartArea: {
-          width: '90%',
-          height: '80%',
-          top: 20,             // diminui espaço acima
-          left: 5,          // diminui espaço abaixo
-        },
-
-        legend: {
-          position: 'left',
-          alignment: 'end',
-          textStyle: {
-            fontSize: 10,
-          }
-        },
-
-        pieSliceTextStyle: {
-          fontSize: 11,        // texto dentro das fatias menor
-          color: '#fff',       // melhora contraste
-        },
-
-        is3D: true,
-      };
-      chart().draw(data, options);
-    };
-
-    const chart = () =>
-      new google.visualization.PieChart(document.getElementById('chart_categorias'));
-
-    google.charts.setOnLoadCallback(() => func(chart));
-  }
-
-  buidChartOperadores() {
-    const func = (chart: any) => {
-
-      const data = new google.visualization.DataTable();
-      data.addColumn('string', 'Operador');
-      data.addColumn('number', 'Total');
-
-      const linhas = this.lsOperadores.map(x => [`${this.firstNamePipe.transform(x.razao)} - ${x.total}`, x.total]);
+      linhas.push([`Sem Kits`,this.eventoPrincipal.qtd_participantes - this.eventoPrincipal.qtd_kits]);
+      linhas.push([`Com Kits`,this.eventoPrincipal.qtd_kits]);
 
       data.addRows(linhas);
 
-      const totalParticipantes = this.lsOperadores
-        .reduce((acc, x) => acc + x.total, 0);
-
-      const cores = this.gerarCoresAleatorias(this.lsOperadores.length);
+      const cores = this.gerarCoresAleatorias(2);
 
       const options = {
-        title: `Resumo Por Operador - Total: ${this.decimalPipe.transform(totalParticipantes, '1.0-0')}`,
+        title: `Total Participantes: ${this.decimalPipe.transform(this.eventoPrincipal.qtd_participantes, '1.0-0')}`,
         width: this.larguraGrafico,
         height: 350,
 
@@ -250,8 +213,8 @@ export class DashboardComponent {
         colors: cores,
 
         chartArea: {
-          width: '100%',
-          height: '100%',
+          width: '90%',
+          height: '90%',
           top: 20,             // diminui espaço acima
           bottom: 20,          // diminui espaço abaixo
         },
@@ -279,7 +242,7 @@ export class DashboardComponent {
     };
 
     const chart = () =>
-      new google.visualization.PieChart(document.getElementById('chart_operadores'));
+      new google.visualization.PieChart(document.getElementById('chart_evento'));
 
     google.charts.setOnLoadCallback(() => func(chart));
   }

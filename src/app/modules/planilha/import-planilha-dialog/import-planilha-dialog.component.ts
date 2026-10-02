@@ -105,7 +105,7 @@ export class ImportPlanilhaDialogComponent {
         },
         error: (error: any) => {
           if (error.status && error.status == 401) {
-            this.appSnackBar.openFailureSnackBar('Ação Não Autoizada', 'OK');
+            this.appSnackBar.openFailureSnackBar('Ação Não Autorizada', 'OK');
             return;
           }
           if (error.status && error.status == 409) {
@@ -167,7 +167,17 @@ export class ImportPlanilhaDialogComponent {
     this.onUpload();
   }
 
-  onCancelar() {}
+  onCancelar() {
+    if (this.status == 1 || this.status == 2) {
+       this.appSnackBar.openWarningnackBar(
+         'Processamento Em Andamento, Aguarde Terminar Para Cancelar!',
+         'OK',
+       );
+       return;
+    }
+    this.data.processar = false;
+    this.dialogRef.close(this.data);
+  }
 
   upload() {
     if (!this.selectedFile) return;
@@ -199,7 +209,7 @@ export class ImportPlanilhaDialogComponent {
           );
           if (this.selectedFile?.name) {
             this.status = 2;
-            this.checkPlanilha(
+           this.checkPlanilha(
               id_evento,
               this.selectedFile.name,
             );
@@ -352,7 +362,11 @@ export class ImportPlanilhaDialogComponent {
 
   getMessageProgress(): string {
     if (this.status == 1) {
+      if (this.progress < 100) {
        return `Enviando... ${this.progress}%`;
+      } else {
+       return `Preparando Tabela Para Processamento...Aguarde!`;
+      }
     } else {
       return `UPLOAD Completo, Aguardando Processamento...(${this.tentativaAtual+1}/40) `;
     }

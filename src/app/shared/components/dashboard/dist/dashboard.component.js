@@ -8,8 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.DashboardComponent = void 0;
 var core_1 = require("@angular/core");
+var resumo_operador_model_1 = require("../../../models/resumo-operador-model");
 var layout_1 = require("@angular/cdk/layout");
 var evento_model_1 = require("../../../models/evento-model");
+var resumo_categoria_model_1 = require("../../../models/resumo-categoria-model");
 var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(globalService, eventoComplementarSrv, breakpoint, decimalPipe, firstNamePipe, route, appSnackBar) {
         var _this = this;
@@ -23,6 +25,7 @@ var DashboardComponent = /** @class */ (function () {
         this.eventoPrincipal = new evento_model_1.EventoModel();
         this.lsOperadores = [];
         this.lsCategorias = [];
+        this.lsResumosKits = [];
         this.isMobile = false;
         this.chartsLoaded = false;
         this.lsEventos = [];
@@ -52,15 +55,18 @@ var DashboardComponent = /** @class */ (function () {
         this.atualizar();
     };
     DashboardComponent.prototype.ngOnDestroy = function () {
-        var _a, _b;
+        var _a, _b, _c;
         (_a = this.inscricaoResumoOperador) === null || _a === void 0 ? void 0 : _a.unsubscribe();
         (_b = this.inscricaoCategoria) === null || _b === void 0 ? void 0 : _b.unsubscribe();
+        (_c = this.inscricaoKit) === null || _c === void 0 ? void 0 : _c.unsubscribe();
     };
     DashboardComponent.prototype.onHome = function () {
     };
     DashboardComponent.prototype.atualizar = function () {
+        this.buidChartEvento();
         this.getResumoOperadores();
         this.getResumoCategorias();
+        //this.getResumoKits();
     };
     DashboardComponent.prototype.getColuna = function () {
         return this.isMobile ? '1' : '2';
@@ -74,14 +80,20 @@ var DashboardComponent = /** @class */ (function () {
             .subscribe({
             next: function (data) {
                 _this.lsOperadores = data;
-                console.log("lsOperadores", _this.lsOperadores);
+                var total = _this.lsOperadores.reduce(function (acc, operador) { return acc + operador.total; }, 0);
+                var operador = new resumo_operador_model_1.ResumoOperadorModel();
+                operador.razao = 'Total Geral';
+                operador.total = total;
+                _this.lsOperadores.push(operador);
                 if (_this.chartsLoaded) {
-                    _this.buidChartOperadores();
+                    _this.buidChartEvento();
                 }
             },
             error: function (error) {
-                console.log(error);
                 _this.lsOperadores = [];
+                if (_this.chartsLoaded) {
+                    _this.buidChartEvento();
+                }
             }
         });
     };
@@ -94,10 +106,16 @@ var DashboardComponent = /** @class */ (function () {
             .subscribe({
             next: function (data) {
                 _this.lsCategorias = data;
-                _this.buidChartCategorias();
+                var total = _this.lsCategorias.reduce(function (acc, categoria) { return acc + categoria.total; }, 0);
+                var categoria = new resumo_categoria_model_1.ResumoCategoriaModel();
+                categoria.categoria_descricao = 'Total Geral';
+                categoria.total = total;
+                _this.lsCategorias.push(categoria);
+                if (_this.chartsLoaded) {
+                    _this.buidChartEvento();
+                }
             },
             error: function (error) {
-                console.log(error);
                 _this.lsCategorias = [];
             }
         });
@@ -114,65 +132,19 @@ var DashboardComponent = /** @class */ (function () {
         this.getResumoCategorias();
         this.getResumoOperadores();
     };
-    DashboardComponent.prototype.buidChartCategorias = function () {
+    DashboardComponent.prototype.buidChartEvento = function () {
         var _this = this;
         var func = function (chart) {
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Categoria');
+            data.addColumn('string', 'Participante');
             data.addColumn('number', 'Total');
-            var linhas = _this.lsCategorias.map(function (x) { return [x.categoria_descricao + " - " + x.total, x.total]; });
+            var linhas = [];
+            linhas.push(["Sem Kits", _this.eventoPrincipal.qtd_participantes - _this.eventoPrincipal.qtd_kits]);
+            linhas.push(["Com Kits", _this.eventoPrincipal.qtd_kits]);
             data.addRows(linhas);
-            var totalParticipantes = _this.lsCategorias
-                .reduce(function (acc, x) { return acc + x.total; }, 0);
-            var cores = _this.gerarCoresAleatorias(_this.lsCategorias.length);
+            var cores = _this.gerarCoresAleatorias(2);
             var options = {
-                title: "Resumo Por Categoria - Total: " + _this.decimalPipe.transform(totalParticipantes, '1.0-0'),
-                width: _this.larguraGrafico,
-                height: 400,
-                titleTextStyle: {
-                    fontSize: 14,
-                    bold: true
-                },
-                colors: cores,
-                chartArea: {
-                    width: '90%',
-                    height: '80%',
-                    top: 20,
-                    left: 5
-                },
-                legend: {
-                    position: 'left',
-                    alignment: 'end',
-                    textStyle: {
-                        fontSize: 10
-                    }
-                },
-                pieSliceTextStyle: {
-                    fontSize: 11,
-                    color: '#fff'
-                },
-                is3D: true
-            };
-            chart().draw(data, options);
-        };
-        var chart = function () {
-            return new google.visualization.PieChart(document.getElementById('chart_categorias'));
-        };
-        google.charts.setOnLoadCallback(function () { return func(chart); });
-    };
-    DashboardComponent.prototype.buidChartOperadores = function () {
-        var _this = this;
-        var func = function (chart) {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Operador');
-            data.addColumn('number', 'Total');
-            var linhas = _this.lsOperadores.map(function (x) { return [_this.firstNamePipe.transform(x.razao) + " - " + x.total, x.total]; });
-            data.addRows(linhas);
-            var totalParticipantes = _this.lsOperadores
-                .reduce(function (acc, x) { return acc + x.total; }, 0);
-            var cores = _this.gerarCoresAleatorias(_this.lsOperadores.length);
-            var options = {
-                title: "Resumo Por Operador - Total: " + _this.decimalPipe.transform(totalParticipantes, '1.0-0'),
+                title: "Total Participantes: " + _this.decimalPipe.transform(_this.eventoPrincipal.qtd_participantes, '1.0-0'),
                 width: _this.larguraGrafico,
                 height: 350,
                 titleTextStyle: {
@@ -181,8 +153,8 @@ var DashboardComponent = /** @class */ (function () {
                 },
                 colors: cores,
                 chartArea: {
-                    width: '100%',
-                    height: '100%',
+                    width: '90%',
+                    height: '90%',
                     top: 20,
                     bottom: 20
                 },
@@ -203,7 +175,7 @@ var DashboardComponent = /** @class */ (function () {
             chart().draw(data, options);
         };
         var chart = function () {
-            return new google.visualization.PieChart(document.getElementById('chart_operadores'));
+            return new google.visualization.PieChart(document.getElementById('chart_evento'));
         };
         google.charts.setOnLoadCallback(function () { return func(chart); });
     };

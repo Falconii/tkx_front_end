@@ -89,9 +89,9 @@ export class HomeComponent {
 
     par.id_empresa = this.globalService.getEmpresa().id;
 
-    par.status = '3';
-
     par.pagina = 1;
+
+    par.tamPagina = 12
 
     this.inscricaoEvento = this.eventoSrv
       .getEventosParametro_01(par)

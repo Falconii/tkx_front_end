@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html,
 body {
   height: 100%;
@@ -75,7 +76,6 @@ body {
 }
 
 /* CSS FORMULÁRIO */
-
 .linha-login {
   display: flex;
   width: 100%;
@@ -84,7 +84,6 @@ body {
 }
 
 /* Browse do crud  */
-
 .Browse {
   margin-left: auto;
   margin-right: auto;
@@ -120,7 +119,6 @@ body {
   grid-template-columns: repeat(2, [col-start] 1fr);
   gap: 10px;
 }
-
 
 .col-med-3 {
   display: grid;
@@ -161,7 +159,6 @@ body {
 .col-max {
   width: 100%;
 }
-
 
 .col-70 {
   width: 70%;
@@ -350,77 +347,75 @@ body {
   height: 2px;
 }
 
-// styles.scss
 .uppercase-input {
   text-transform: uppercase;
-  // Garante que o estilo afete o matInput
-  input.mat-input-element {
-    text-transform: uppercase;
-  }
+}
+.uppercase-input input.mat-input-element {
+  text-transform: uppercase;
 }
 
 .toolbar-alinhada {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .titulo {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .icones {
-    display: flex;
-    gap: 12px;
-    mat-icon {
-      cursor: pointer;
-    }
-  }
+}
+.toolbar-alinhada .titulo {
+  font-size: 16px;
+  font-weight: 500;
+}
+.toolbar-alinhada .icones {
+  display: flex;
+  gap: 12px;
+}
+.toolbar-alinhada .icones mat-icon {
+  cursor: pointer;
 }
 
 .toolbar-exemplo {
   display: flex;
-  align-items: center; // <-- aqui alinha verticalmente o conteúdo da toolbar
-  .filtro-com-icones {
-    display: flex;
-    align-items: center; // <-- aqui alinha o texto e os ícones entre si
-    gap: 5px;
-    .titulo {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 3px;
-    }
-    mat-icon {
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
+  align-items: center;
+}
+.toolbar-exemplo .filtro-com-icones {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.toolbar-exemplo .filtro-com-icones .titulo {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.toolbar-exemplo .filtro-com-icones mat-icon {
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .toolbar-filtro {
   display: flex;
-  align-items: center; // Alinha verticalmente o conteúdo da toolbar
-  height: auto; // Altura ajustada ao conteúdo
+  align-items: center;
+  height: auto;
   margin-top: 4px;
-  margin-bottom: 8px; // Espaço de 4px abaixo
-  .filtro-com-icones {
-    display: flex;
-    align-items: center; // Alinha texto e ícones entre si
-    gap: 5px;
-    .titulo {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 3px;
-    }
-    mat-icon {
-      font-size: 24px;
-      cursor: pointer;
-    }
-  }
+  margin-bottom: 8px;
+}
+.toolbar-filtro .filtro-com-icones {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.toolbar-filtro .filtro-com-icones .titulo {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.toolbar-filtro .filtro-com-icones mat-icon {
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .pagination-container {
   display: flex;
-  align-items: center; // alinha verticalmente ícones e texto
-  justify-content: center; // centraliza horizontalmente
+  align-items: center;
+  justify-content: center;
   gap: 0px;
   padding: 0;
 }
@@ -430,9 +425,9 @@ body {
   font-size: 0.85rem;
   margin-bottom: 7px;
   white-space: nowrap;
-  line-height: 28px; // igual à altura dos botões
+  line-height: 28px;
   display: inline-flex;
-  align-items: center; // garante alinhamento vertical
+  align-items: center;
 }
 
 button[mat-icon-button] {
@@ -441,10 +436,10 @@ button[mat-icon-button] {
   min-width: 28px;
   padding: 0;
   font-size: 18px;
-  mat-icon {
-    font-size: 18px;
-    vertical-align: middle;
-  }
+}
+button[mat-icon-button] mat-icon {
+  font-size: 18px;
+  vertical-align: middle;
 }
 
 button[disabled] {
@@ -468,7 +463,6 @@ button[disabled] {
   font-size: 13px;
 }
 
-
 .linha-info {
   display: flex;
   gap: 12px;
@@ -488,9 +482,7 @@ button[disabled] {
   color: #000;
 }
 
-
 /* GRID para alinhar Código / Início / Término */
-
 .alinha_esquerda {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -504,7 +496,6 @@ button[disabled] {
 }
 
 /* Rótulos (Código, Início, Término) */
-
 .alinha_esquerda .rotulo {
   color: #1976d2;
   font-weight: 500;
@@ -515,7 +506,6 @@ button[disabled] {
 }
 
 /* Valores (datas e código) */
-
 .alinha_esquerda .valor {
   margin: 0;
   padding: 0;

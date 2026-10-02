@@ -276,13 +276,16 @@ export class CrudPlanilhaComponent {
           if (result?.result) {
             switch (opcao) {
               case CadastroAcoes.Inclusao:
+                this.getPlanilhas();
                 break;
               case CadastroAcoes.Consulta:
+                this.getPlanilhas();
                 break;
               case CadastroAcoes.Edicao:
                 this.getPlanilhas();
                 break;
               case CadastroAcoes.Exclusao:
+                this.getPlanilhas();
                 break;
             }
           }
