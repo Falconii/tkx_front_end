@@ -90,6 +90,16 @@ tr:hover {
     background-color: rgb(202, 169, 157);
 }
 
+tr:last-child {
+    background-color: #d4a574;
+    font-weight: bold;
+}
+
+.work tr:last-child {
+    background-color: #d4a574;
+    font-weight: bold;
+}
+
 .box {
     width: 90%;
     border: 2px solid black;
@@ -217,7 +227,7 @@ h4 {
 
 .container_table table {
   width: 100%;
-  border-collapse: collapse;
+  /*border-collapse: collapse;*/
   display: block;     /* necessário para scroll */
   table-layout: fixed; /* colunas ocupam toda a largura */
   min-height: 100%;

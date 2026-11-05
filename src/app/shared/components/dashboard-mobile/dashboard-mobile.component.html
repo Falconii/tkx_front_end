@@ -1,6 +1,95 @@
 <div class="container" *ngIf="eventoPrincipal.id > 0 || eventoPrincipal.qtd_kits > 0">
-   <div class ="col-med-1">
-     <div class="col-max box" *ngIf="lsCategorias.length > 0">
+
+  <div>
+      <div class="col-max box cinza" >
+        <h3 class="alinha_centro">DADOS DO EVENTO</h3>
+        <div class="linha">
+          <div class="campo">
+            <mat-label class="rotulo">Código:</mat-label>
+            <mat-label class="valor">{{ eventoPrincipal.id | zeroFill }}</mat-label>
+          </div>
+        </div>
+         <div class="linha">
+
+            <div class="campo">
+              <mat-label class="rotulo">Início:</mat-label>
+              <mat-label class="valor">{{ eventoPrincipal.inicio }}</mat-label>
+            </div>
+
+            <div class="campo">
+              <mat-label class="rotulo">Término:</mat-label>
+              <mat-label class="valor">{{ eventoPrincipal.final }}</mat-label>
+            </div>
+          </div>
+      <div class="linha">
+        <div class="campo">
+          <mat-label class="rotulo">Desc:</mat-label>
+          <mat-label class="valor ellipsis"
+                    matTooltip="{{ eventoPrincipal.descricao }}">
+            {{ eventoPrincipal.descricao }}
+          </mat-label>
+        </div>
+      </div>
+
+      <div class="linha">
+        <div class="campo">
+          <mat-label class="rotulo">Endereço:</mat-label>
+        </div>
+      </div>
+       <div class="linha">
+          <div class="campo">
+          <mat-label class="valor ellipsis"
+                    matTooltip="{{ eventoPrincipal.rua }}, {{ eventoPrincipal.nro }}">
+            {{ eventoPrincipal.rua }}, {{ eventoPrincipal.nro }}
+          </mat-label>
+        </div>
+      </div>
+
+      <div class="linha">
+        <div class="campo">
+          <mat-label class="rotulo">Cidade:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.cidade }} - {{ eventoPrincipal.uf }}</mat-label>
+        </div>
+
+        <div class="campo">
+          <mat-label class="rotulo">CEP:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.cep }}</mat-label>
+        </div>
+      </div>
+
+      <div class="linha">
+        <div class="campo">
+          <mat-label class="rotulo">Situação:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.status | situacao_evento }}</mat-label>
+        </div>
+      </div>
+       <div class="linha">
+        <div class="campo">
+          <mat-label class="rotulo">Resp:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.usuario_razao }}</mat-label>
+        </div>
+      </div>
+
+      <div class="linha">
+        <div class="campo">
+          <mat-label class="rotulo">Qtd Part.:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.qtd_participantes }}</mat-label>
+        </div>
+
+        <div class="campo">
+          <mat-label class="rotulo">Qtd Kits:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.qtd_kits }}</mat-label>
+        </div>
+
+        <div class="campo">
+          <mat-label class="rotulo">Qtd Saldo:</mat-label>
+          <mat-label class="valor">{{ eventoPrincipal.qtd_participantes - eventoPrincipal.qtd_kits }}</mat-label>
+        </div>
+      </div>
+      </div>
+
+
+     <div class = "box" *ngIf="lsCategorias.length > 0">
         <h3 class="alinha_centro">RESUMO EVENTO</h3>
         <table class="Browse_Lanc">
           <tr class="coluna-cabec">
@@ -23,7 +112,7 @@
           </tr>
         </table>
       </div>
-   </div>
+
    <div class ="col-med-1">
      <div class="col-max box" *ngIf="lsCategorias.length > 0">
         <h3 class="alinha_centro">RESUMO CATEGORIAS</h3>
@@ -74,4 +163,28 @@
         </table>
     </div>
    </div>
+    <div class = "box" *ngIf="lsResumosKits.length > 0">
+        <h3 class="alinha_centro">RESUMO KITS</h3>
+        <table class="Browse_Lanc">
+          <tr class="coluna-cabec">
+            <th>RESUMO</th>
+            <th>QTD</th>
+          </tr>
+          <tr *ngFor="let kit of lsResumosKits">
+            <td>
+              <div class="alinha_esquerda">
+                <mat-label class="Browse_Lanc_td">{{ kit.tam_camisa }} </mat-label>
+              </div>
+            </td>
+            <td>
+              <div class="alinha_direita">
+                <mat-label class="Browse_Lanc_td_rigth"
+                  >{{ kit.total | number: "1.0-0" }}
+                </mat-label>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
 </div>

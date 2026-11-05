@@ -15,8 +15,7 @@
       </mat-toolbar>
     </div>
     <form [formGroup]="formulario" autocomplete="off">
-      <div class="col-md-1">
-        <mat-form-field appearance="outline" class="col-max">
+        <mat-form-field appearance="outline" class="allline">
           <mat-label>Evento</mat-label>
           <mat-select formControlName="id_evento" (selectionChange)="onChangeParametros()">
             <mat-option *ngFor="let evento of lsEventos" [value]="evento.id">
@@ -24,8 +23,8 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-      </div>
     </form>
-    <dashboard [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado && !isMobile"></dashboard>
-    <!--<dashboard-mobile [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado && isMobile && getUsuarioGrupo() !== 4"></dashboard-mobile>-->
+    <dashboard [EVENTO_PRINCIPAL]="eventoPrincipal"        *ngIf="isLogado && !isMobile && isComum"></dashboard>
+    <dashboard-mobile [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado && isMobile && isComum"></dashboard-mobile>
+    <!-- <dashboard-mobile-operador [EVENTO_PRINCIPAL]="eventoPrincipal" *ngIf="isLogado && isMobile && isOperador"></dashboard-mobile-operador> -->
 </div>

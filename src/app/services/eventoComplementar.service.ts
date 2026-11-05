@@ -1,3 +1,4 @@
+import { ResumoKitModel } from './../models/resumo-kit-model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -51,4 +52,13 @@ export class EventoComplementarService {
     ).toString();
     return this.http.post<ResumoOperadorModel[]>(url, { id_evento });
   }
+
+    resumoKit(id_evento: number): Observable<ResumoKitModel[]> {
+    const url = new URL(
+      'evento_complementar/resumokit',
+      this.apiURL,
+    ).toString();
+    return this.http.post<ResumoKitModel[]>(url, { id_evento });
+  }
+
 }

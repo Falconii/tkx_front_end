@@ -53,7 +53,7 @@ export class DashboardComponent {
 
   constructor(
       private globalService: GlobalService,
-    private eventoComplementarSrv:EventoComplementarService,
+      private eventoComplementarSrv:EventoComplementarService,
       private breakpoint: BreakpointObserver,
       private decimalPipe: DecimalPipe,
       private firstNamePipe:FirstNamePipe,
@@ -157,9 +157,7 @@ export class DashboardComponent {
                 categoria.categoria_descricao = 'Total Geral';
                 categoria.total = total;
                 this.lsCategorias.push(categoria);
-                if (this.chartsLoaded) {
-                    this.buidChartEvento();
-                }
+                this.getResumoKits();
 
           },
           error: (error: any) => {
@@ -167,6 +165,33 @@ export class DashboardComponent {
           },
         });
     }
+
+    getResumoKits() {
+      if (this.eventoPrincipal.id == 0) {
+        return;
+      }
+
+
+      this.inscricaoKit = this.eventoComplementarSrv.resumoKit(this.eventoPrincipal.id)
+        .subscribe({
+          next: (data: any) => {
+            this.lsResumosKits = data;
+                const total = this.lsResumosKits.reduce((acc, kit) => acc + kit.total, 0);
+                const kit = new ResumoKitModel();
+                kit.tam_camisa = 'Total Geral';
+                kit.total = total;
+                this.lsResumosKits.push(kit);
+                if (this.chartsLoaded) {
+                    this.buidChartEvento();
+                }
+
+          },
+          error: (error: any) => {
+            this.lsResumosKits = [];
+          },
+        });
+    }
+
 
     private gerarCoresAleatorias(qtd: number): string[] {
       return Array.from({ length: qtd }, () =>
@@ -179,6 +204,7 @@ export class DashboardComponent {
   onChangeParametros(){
     this.getResumoCategorias();
     this.getResumoOperadores();
+    this.getResumoKits()
   }
 
 

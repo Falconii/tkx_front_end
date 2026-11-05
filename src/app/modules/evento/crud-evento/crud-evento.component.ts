@@ -277,6 +277,7 @@ export class CrudEventoComponent {
       default:
         break;
     }
+    
     this.confirmDialog.open(config).subscribe(async (result) => {
       if (result) {
         evento.user_update = this.globalService.getUsuario().id;

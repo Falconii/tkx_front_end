@@ -137,5 +137,32 @@
         </table>
       </div>
     </div>
-
-</div>
+   </div>
+   <div class="col-med-2">
+ <div class="col-max box" *ngIf="lsResumosKits.length > 0">
+        <h3 class="alinha_centro">RESUMO KITS</h3>
+        <div class="container_table">
+          <table>
+            <tr class="coluna-cabec">
+              <th>KIT</th>
+              <th>TOTAL</th>
+            </tr>
+            <tr *ngFor="let kit of lsResumosKits">
+              <td>
+                <div class="alinha_esquerda">
+                  <mat-label class="Browse_Lanc_td">{{ kit.tam_camisa }} </mat-label>
+                </div>
+              </td>
+              <td>
+                <div class="alinha_direita">
+                  <mat-label class="Browse_Lanc_td_rigth"
+                    >{{ kit.total | number: "1.0-0" }}
+                  </mat-label>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+    </div>
+   </div>
+  </div>

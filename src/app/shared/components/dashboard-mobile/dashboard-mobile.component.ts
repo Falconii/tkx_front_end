@@ -11,6 +11,7 @@ import { FirstNamePipe } from '../../pipes/first-name.pipe';
 import { Subscription } from 'rxjs';
 import { EventoComplementarService } from '../../../services/eventoComplementar.service';
 import { EventoResumoModel } from '../../../models/evento-resumo-model';
+import { ResumoKitModel } from '../../../models/resumo-kit-model';
 
 
 declare var google: any;
@@ -33,9 +34,17 @@ export class DashboardMobileComponent {
     inscricaoCategoria!: Subscription;
 
 
+    inscricaoKit!: Subscription;
+
+
+
     lsOperadores:ResumoOperadorModel[] = [];
 
     lsCategorias:ResumoCategoriaModel[] = [];
+
+    lsResumosKits:ResumoKitModel[] = [];
+
+
 
     isMobile: boolean = false;
 
@@ -85,6 +94,7 @@ export class DashboardMobileComponent {
     ngOnDestroy() {
         this.inscricaoResumoOperador?.unsubscribe();
         this.inscricaoCategoria?.unsubscribe();
+        this.inscricaoKit?.unsubscribe();
       }
 
 
@@ -99,6 +109,7 @@ export class DashboardMobileComponent {
         this.lsEventosResumos.push(new EventoResumoModel('Saldo:',this.eventoPrincipal.qtd_participantes-this.eventoPrincipal.qtd_kits));
         this.getResumoOperadores();
         this.getResumoCategorias();
+        this.getResumoKits();
       }
 
 
@@ -119,6 +130,12 @@ export class DashboardMobileComponent {
           .subscribe({
             next: (data: any) => {
                 this.lsOperadores = data;
+
+                const total = this.lsOperadores.reduce((acc, kit) => acc + kit.total, 0);
+                const operador = new ResumoOperadorModel();
+                operador.razao = 'Total Geral';
+                operador.total = total;
+                this.lsOperadores.push(operador);
             },
             error: (error: any) => {
               console.log(error);
@@ -138,6 +155,11 @@ export class DashboardMobileComponent {
         .subscribe({
           next: (data: any) => {
             this.lsCategorias = data;
+                const total = this.lsCategorias.reduce((acc, kit) => acc + kit.total, 0);
+                const categoria = new ResumoCategoriaModel();
+                categoria.categoria_descricao = 'Total Geral';
+                categoria.total = total;
+                this.lsCategorias.push(categoria);
           },
           error: (error: any) => {
             console.log(error);
@@ -145,6 +167,31 @@ export class DashboardMobileComponent {
           },
         });
     }
+
+
+        getResumoKits() {
+      if (this.eventoPrincipal.id == 0) {
+        return;
+      }
+
+
+      this.inscricaoKit = this.eventoComplementarSrv.resumoKit(this.eventoPrincipal.id)
+        .subscribe({
+          next: (data: any) => {
+              this.lsResumosKits = data;
+              const total = this.lsResumosKits.reduce((acc, kit) => acc + kit.total, 0);
+              const kit = new ResumoKitModel();
+              kit.tam_camisa = 'Total Geral';
+              kit.total = total;
+              this.lsResumosKits.push(kit);
+          },
+          error: (error: any) => {
+            this.lsResumosKits = [];
+          },
+        });
+    }
+
+
 
     private gerarCoresAleatorias(qtd: number): string[] {
       return Array.from({ length: qtd }, () =>

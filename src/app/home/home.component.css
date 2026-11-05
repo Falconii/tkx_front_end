@@ -157,3 +157,9 @@ h4 {
   border: 2px solid black;
   box-shadow: 5px 5px 5px 5px gray;
 }
+
+
+.allline{
+  width: 100%;
+  padding-left: 5px;
+}

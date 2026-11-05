@@ -12,6 +12,7 @@ var resumo_operador_model_1 = require("../../../models/resumo-operador-model");
 var layout_1 = require("@angular/cdk/layout");
 var evento_model_1 = require("../../../models/evento-model");
 var resumo_categoria_model_1 = require("../../../models/resumo-categoria-model");
+var resumo_kit_model_1 = require("../../../models/resumo-kit-model");
 var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(globalService, eventoComplementarSrv, breakpoint, decimalPipe, firstNamePipe, route, appSnackBar) {
         var _this = this;
@@ -111,12 +112,33 @@ var DashboardComponent = /** @class */ (function () {
                 categoria.categoria_descricao = 'Total Geral';
                 categoria.total = total;
                 _this.lsCategorias.push(categoria);
+                _this.getResumoKits();
+            },
+            error: function (error) {
+                _this.lsCategorias = [];
+            }
+        });
+    };
+    DashboardComponent.prototype.getResumoKits = function () {
+        var _this = this;
+        if (this.eventoPrincipal.id == 0) {
+            return;
+        }
+        this.inscricaoKit = this.eventoComplementarSrv.resumoKit(this.eventoPrincipal.id)
+            .subscribe({
+            next: function (data) {
+                _this.lsResumosKits = data;
+                var total = _this.lsResumosKits.reduce(function (acc, kit) { return acc + kit.total; }, 0);
+                var kit = new resumo_kit_model_1.ResumoKitModel();
+                kit.tam_camisa = 'Total Geral';
+                kit.total = total;
+                _this.lsResumosKits.push(kit);
                 if (_this.chartsLoaded) {
                     _this.buidChartEvento();
                 }
             },
             error: function (error) {
-                _this.lsCategorias = [];
+                _this.lsResumosKits = [];
             }
         });
     };
@@ -131,6 +153,7 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.onChangeParametros = function () {
         this.getResumoCategorias();
         this.getResumoOperadores();
+        this.getResumoKits();
     };
     DashboardComponent.prototype.buidChartEvento = function () {
         var _this = this;

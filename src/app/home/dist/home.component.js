@@ -37,6 +37,20 @@ var HomeComponent = /** @class */ (function () {
             id_evento: [{ value: '' }]
         });
     }
+    Object.defineProperty(HomeComponent.prototype, "isOperador", {
+        get: function () {
+            return this.globalService.getUsuario().grupo === 4;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(HomeComponent.prototype, "isComum", {
+        get: function () {
+            return this.globalService.getUsuario().grupo !== 4;
+        },
+        enumerable: false,
+        configurable: true
+    });
     HomeComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.globalService.logado$.subscribe(function (show) {

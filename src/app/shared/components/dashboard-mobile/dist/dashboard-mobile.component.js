@@ -8,9 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.DashboardMobileComponent = void 0;
 var core_1 = require("@angular/core");
+var resumo_operador_model_1 = require("../../../models/resumo-operador-model");
 var layout_1 = require("@angular/cdk/layout");
 var evento_model_1 = require("../../../models/evento-model");
+var resumo_categoria_model_1 = require("../../../models/resumo-categoria-model");
 var evento_resumo_model_1 = require("../../../models/evento-resumo-model");
+var resumo_kit_model_1 = require("../../../models/resumo-kit-model");
 var DashboardMobileComponent = /** @class */ (function () {
     function DashboardMobileComponent(globalService, eventoComplementarSrv, breakpoint, decimalPipe, firstNamePipe, route, appSnackBar) {
         var _this = this;
@@ -24,6 +27,7 @@ var DashboardMobileComponent = /** @class */ (function () {
         this.eventoPrincipal = new evento_model_1.EventoModel();
         this.lsOperadores = [];
         this.lsCategorias = [];
+        this.lsResumosKits = [];
         this.isMobile = false;
         this.chartsLoaded = false;
         this.lsEventos = [];
@@ -47,9 +51,10 @@ var DashboardMobileComponent = /** @class */ (function () {
         this.atualizar();
     };
     DashboardMobileComponent.prototype.ngOnDestroy = function () {
-        var _a, _b;
+        var _a, _b, _c;
         (_a = this.inscricaoResumoOperador) === null || _a === void 0 ? void 0 : _a.unsubscribe();
         (_b = this.inscricaoCategoria) === null || _b === void 0 ? void 0 : _b.unsubscribe();
+        (_c = this.inscricaoKit) === null || _c === void 0 ? void 0 : _c.unsubscribe();
     };
     DashboardMobileComponent.prototype.onHome = function () {
     };
@@ -60,6 +65,7 @@ var DashboardMobileComponent = /** @class */ (function () {
         this.lsEventosResumos.push(new evento_resumo_model_1.EventoResumoModel('Saldo:', this.eventoPrincipal.qtd_participantes - this.eventoPrincipal.qtd_kits));
         this.getResumoOperadores();
         this.getResumoCategorias();
+        this.getResumoKits();
     };
     DashboardMobileComponent.prototype.getColuna = function () {
         return this.isMobile ? '1' : '2';
@@ -73,6 +79,11 @@ var DashboardMobileComponent = /** @class */ (function () {
             .subscribe({
             next: function (data) {
                 _this.lsOperadores = data;
+                var total = _this.lsOperadores.reduce(function (acc, kit) { return acc + kit.total; }, 0);
+                var operador = new resumo_operador_model_1.ResumoOperadorModel();
+                operador.razao = 'Total Geral';
+                operador.total = total;
+                _this.lsOperadores.push(operador);
             },
             error: function (error) {
                 console.log(error);
@@ -89,10 +100,35 @@ var DashboardMobileComponent = /** @class */ (function () {
             .subscribe({
             next: function (data) {
                 _this.lsCategorias = data;
+                var total = _this.lsCategorias.reduce(function (acc, kit) { return acc + kit.total; }, 0);
+                var categoria = new resumo_categoria_model_1.ResumoCategoriaModel();
+                categoria.categoria_descricao = 'Total Geral';
+                categoria.total = total;
+                _this.lsCategorias.push(categoria);
             },
             error: function (error) {
                 console.log(error);
                 _this.lsCategorias = [];
+            }
+        });
+    };
+    DashboardMobileComponent.prototype.getResumoKits = function () {
+        var _this = this;
+        if (this.eventoPrincipal.id == 0) {
+            return;
+        }
+        this.inscricaoKit = this.eventoComplementarSrv.resumoKit(this.eventoPrincipal.id)
+            .subscribe({
+            next: function (data) {
+                _this.lsResumosKits = data;
+                var total = _this.lsResumosKits.reduce(function (acc, kit) { return acc + kit.total; }, 0);
+                var kit = new resumo_kit_model_1.ResumoKitModel();
+                kit.tam_camisa = 'Total Geral';
+                kit.total = total;
+                _this.lsResumosKits.push(kit);
+            },
+            error: function (error) {
+                _this.lsResumosKits = [];
             }
         });
     };

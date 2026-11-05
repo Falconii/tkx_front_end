@@ -41,6 +41,7 @@ export class HomeComponent {
   isLogado:boolean = false;
 
 
+
   constructor(
     private globalService: GlobalService,
     private eventoComplementarSrv:EventoComplementarService,
@@ -62,6 +63,17 @@ export class HomeComponent {
       id_evento: [{ value: '' }],
     });
   }
+
+
+  get isOperador(): boolean {
+  return this.globalService.getUsuario().grupo === 4;
+}
+
+get isComum(): boolean {
+  return this.globalService.getUsuario().grupo !== 4;
+}
+
+
 
   ngOnInit() {
   this.globalService.logado$.subscribe(show => {

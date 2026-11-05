@@ -1,4 +1,4 @@
 export class ResumoKitModel {
-  public descricao: string = "";
+  public tam_camisa: string = "";
   public total: number = 0;
 }
