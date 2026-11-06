@@ -1,13 +1,22 @@
 <h1 mat-dialog-title>{{data.titulo}}</h1>
 <div mat-dialog-content>
   <form [formGroup]="formulario" autocomplete="off">
-    <div class="col-med-1" *ngIf="data.finalizacao === 'email'">
+    <div class="col-med-1" *ngIf="data.escolherFinalizacao">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Entrega</mat-label>
+        <mat-select formControlName="finalizacao" [disabled]="estado !== 'form'">
+          <mat-option value="download">Download</mat-option>
+          <mat-option value="email">Enviar Por E-Mail</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-med-1" *ngIf="finalizacaoAtual === 'email'">
       <mat-form-field appearance="outline" class="col-max">
         <mat-label>Destinatário</mat-label>
         <textarea matInput formControlName="destinatario" readonly></textarea>
       </mat-form-field>
     </div>
-    <div class="col-med-1">
+    <div class="col-med-1" *ngIf="data.mostrarEscopo">
       <mat-form-field appearance="outline" class="col-max">
         <mat-label>Situação</mat-label>
         <mat-select formControlName="escopo" [disabled]="estado !== 'form'">
@@ -18,6 +27,8 @@
       </mat-form-field>
     </div>
   </form>
+
+  <p class="texto-confirmacao" *ngIf="data.texto && estado === 'form'">{{ data.texto }}</p>
 
   <div class="status" *ngIf="estado !== 'form'" aria-live="polite">
     <mat-label [class.erro]="estado === 'erro'">{{mensagem}}</mat-label>

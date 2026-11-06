@@ -1,3 +1,4 @@
+import { TipoPesquisa } from './tipo-pesquisa';
 import { ParametroCategoria01 } from '../../parametros/parametro-categoria01';
 
 /**
@@ -9,12 +10,17 @@ export function AtualizaParametroCategoria01(
   config: JSON,
 ): ParametroCategoria01 {
   try {
-    const key = parseInt(Object(config).id, 10);
-    par.id = isNaN(key) ? 0 : key;
-
-    const descricao = Object(config).descricao;
-    if (typeof descricao === 'string' && descricao.trim() !== '') {
-      par.descricao = descricao.trim();
+    // campo coringa "pesquisa": o filtro decide o tipo (so digitos = codigo; texto = descricao)
+    const pesquisa = String(Object(config).pesquisa ?? '').trim();
+    switch (parseInt(Object(config).pesquisarPor, 10)) {
+      case TipoPesquisa.Codigo: {
+        const key = parseInt(pesquisa, 10);
+        par.id = isNaN(key) ? 0 : key;
+        break;
+      }
+      case TipoPesquisa.Descricao:
+        par.descricao = pesquisa;
+        break;
     }
 
     const orderby = Object(config).orderby;

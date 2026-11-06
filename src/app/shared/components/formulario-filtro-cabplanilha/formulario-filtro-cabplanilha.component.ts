@@ -65,6 +65,7 @@ export class FormularioFiltroCabplanilhaComponent {
   orderby: Orderby[] = [
     { sigla: '000000', descricao: 'Código' },
     { sigla: '000001', descricao: 'Arquivo' },
+    { sigla: '000002', descricao: 'Evento' },
   ];
 
   parametro: ParametroModel = new ParametroModel();
@@ -237,8 +238,7 @@ export class FormularioFiltroCabplanilhaComponent {
     let par = new ParametroEvento01();
 
     par.id_empresa = this.globalService.getEmpresa().id;
-
-    console.log('Parametro:', par);
+    par.orderby = '000001'; // ordem alfabética pela descrição
 
     this.inscricaoEvento = this.eventoSrv
       .getEventosParametro_01(par)

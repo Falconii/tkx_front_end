@@ -103,12 +103,14 @@
       <barra-acoes
         [ALTERAR] = "evento.status == '0' || evento.status == '1' || evento.status == '2' || evento.status == '3'"
         [EXCLUIR]=  "false"
-        [BARRA_VERTICAL]="evento.status == '0' || evento.status == '1' || evento.status == '2' ||  evento.status == '3'"
+        [BARRA_VERTICAL]= "true"
         [BARRA_EXCLUIR]="evento.status == '0' || evento.status == '1' "
         [BARRA_ATIVAR]="evento.status == '2' "
         [BARRA_STANDBY]="evento.status == '3' "
         [BARRA_LIBERAR]="evento.status == '0' "
         [BARRA_ENCERRAR]="evento.status == '3'"
+        [BARRA_RESUMO_EVENTO]="true"
+        [BARRA_ZERAR_SENHA]="false"
         (changeOpcao)="escolha($event, i, evento)"
       ></barra-acoes>
     </td>

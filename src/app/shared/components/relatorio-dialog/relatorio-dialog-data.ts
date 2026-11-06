@@ -19,4 +19,10 @@ export class RelatorioDialogData {
    * escopo: pagina = 0 (toda a consulta) ou a página atual.
    */
   public parametros: object = {};
+  /** false = esconde o escopo (relatórios que não são listagem paginada, ex.: Resumo Do Evento) */
+  public mostrarEscopo: boolean = true;
+  /** true = o usuário escolhe na confirmação entre Download e E-mail (para o e-mail do próprio usuário) */
+  public escolherFinalizacao: boolean = false;
+  /** texto de confirmação exibido acima dos botões (opcional) */
+  public texto: string = '';
 }

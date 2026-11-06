@@ -22,6 +22,8 @@ import { AtualizaParametroEvento01 } from '../../../shared/classes/atualiza-para
 import { UsuarioService } from '../../../services/usuario.service';
 import { UsuarioModule } from '../../usuario/usuario.module';
 import { EmpresaModel } from '../../../models/empresa-model';
+import { RelatorioDialogComponent } from '../../../shared/components/relatorio-dialog/relatorio-dialog.component';
+import { RelatorioDialogData } from '../../../shared/components/relatorio-dialog/relatorio-dialog-data';
 import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
 
 @Component({
@@ -90,6 +92,10 @@ export class CrudEventoComponent {
         case this.getAcoes().Encerrar:
           this.alteraSituacao(opcao, evento);
           break;
+
+        case this.getAcoes().Resumo_Evento:
+          this.openResumoEvento(evento);
+          break;
         default:
           this.openEventooDialog(opcao, i, evento);
           break;
@@ -97,6 +103,29 @@ export class CrudEventoComponent {
     } else {
       this.openEventooDialog(opcao, i, evento);
     }
+  }
+
+  openResumoEvento(evento: EventoModel) {
+    // Resumo Do Evento: Excel (participantes + resumos) gerado por tarefa; entrega por download ou e-mail
+    const data = new RelatorioDialogData();
+    data.titulo = 'RESUMO DO EVENTO';
+    data.texto = `Gerar o Excel com o resumo do evento "${evento.descricao}"? Escolha como receber o arquivo.`;
+    data.sigla = 'resumoevento01';
+    data.finalizacao = 'download';
+    data.escolherFinalizacao = true; // Download ou e-mail do próprio usuário
+    data.destinatario = this.globalService.usuario.email;
+    data.mostrarEscopo = false;
+    data.parametros = {
+      id_empresa: this.globalService.getEmpresa().id,
+      id_evento: evento.id,
+    };
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.id = 'resumo-evento';
+    dialogConfig.width = '800px';
+    dialogConfig.data = data;
+    this.eventoDialog.open(RelatorioDialogComponent, dialogConfig);
   }
 
   onHome() {
@@ -277,7 +306,7 @@ export class CrudEventoComponent {
       default:
         break;
     }
-    
+
     this.confirmDialog.open(config).subscribe(async (result) => {
       if (result) {
         evento.user_update = this.globalService.getUsuario().id;

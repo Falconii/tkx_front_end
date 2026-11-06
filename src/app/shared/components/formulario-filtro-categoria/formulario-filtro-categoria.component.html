@@ -48,29 +48,15 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="col-max">
-      <mat-label>Código</mat-label>
-      <input matInput formControlName="id" />
+    <mat-form-field appearance="outline" class="uppercase-input column-span-2">
+      <mat-label>Pesquisa {{ getTextoTipoPesquisa() }}</mat-label>
+      <input matInput formControlName="pesquisa" />
       <button
-        *ngIf="hasValue('id')"
+        *ngIf="hasValue('pesquisa')"
         matSuffix
         mat-icon-button
         aria-label="Clear"
-        (click)="clearValue('id')"
-        class="clear-button"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="uppercase-input col-max">
-      <mat-label>Descrição</mat-label>
-      <input matInput formControlName="descricao" />
-      <button
-        *ngIf="hasValue('descricao')"
-        matSuffix
-        mat-icon-button
-        aria-label="Clear"
-        (click)="clearValue('descricao')"
+        (click)="clearValue('pesquisa')"
         class="clear-button"
       >
         <mat-icon>close</mat-icon>

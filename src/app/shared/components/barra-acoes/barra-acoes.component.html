@@ -109,6 +109,26 @@
         <mat-icon>lock_reset </mat-icon>
         <span>{{ getTexto().zerar_senha }}</span>
       </button>
+
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Resumo_Evento)"
+        *ngIf="barra_resumo_evento"
+      >
+        <mat-icon>summarize</mat-icon>
+        <span>{{ getTexto().resumo_evento }}</span>
+      </button>
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Resumo_Evento)"
+        *ngIf="barra_resumo_evento"
+      >
+        <mat-icon>lock_reset </mat-icon>
+        <span>{{ getTexto().zerar_senha }}</span>
+      </button>
+
+
+
       <button
         mat-menu-item
         (click)="onChangeOpcao(getAcoes().Ativar_Inativar)"

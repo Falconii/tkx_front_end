@@ -4,5 +4,6 @@ export enum TipoPesquisa {
   Nome = 2,
   Inscricao = 3,
   Nro_Peito = 4,
+  Descricao = 5,
   None = 99,
 }

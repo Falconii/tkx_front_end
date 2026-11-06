@@ -8,7 +8,7 @@ import { messageError } from '../../classes/util';
 import { salvarArquivo } from '../../classes/salvar-arquivo';
 import { TarefaModel, TarefaStatus } from '../../../models/tarefa-model';
 import { TarefaService } from '../../../services/tarefa.service';
-import { RelatorioDialogData } from './relatorio-dialog-data';
+import { FinalizacaoRelatorio, RelatorioDialogData } from './relatorio-dialog-data';
 
 /** Acompanhamento curto: o diálogo espera pouco; depois disso o usuário segue a tarefa pela tela de tarefas. */
 const POLLING_INICIO_MS = 800; // o backend começa a tarefa na hora, então a 1ª consulta já pode ter resultado
@@ -49,6 +49,7 @@ export class RelatorioDialogComponent implements OnInit, OnDestroy {
     this.formulario = formBuilder.group({
       destinatario: [{ value: '', disabled: true }],
       escopo: [''],
+      finalizacao: ['download'],
     });
   }
 
@@ -56,7 +57,15 @@ export class RelatorioDialogComponent implements OnInit, OnDestroy {
     this.formulario.patchValue({
       destinatario: this.data.destinatario,
       escopo: this.data.escopo,
+      finalizacao: this.data.finalizacao,
     });
+  }
+
+  /** forma de entrega em vigor: a escolhida na tela (se permitido) ou a definida por quem abriu o diálogo */
+  get finalizacaoAtual(): FinalizacaoRelatorio {
+    return this.data.escolherFinalizacao
+      ? this.formulario.value.finalizacao
+      : this.data.finalizacao;
   }
 
   ngOnDestroy(): void {
@@ -155,7 +164,7 @@ export class RelatorioDialogComponent implements OnInit, OnDestroy {
   private finalizar(t: TarefaModel) {
     this.estado = 'finalizando';
 
-    if (this.data.finalizacao === 'email') {
+    if (this.finalizacaoAtual === 'email') {
       this.mensagem = 'Enviando o e-mail...';
       this.inscricaoFinal = this.tarefaSrv.enviarEmail(t.id).subscribe({
         next: (resp) => {

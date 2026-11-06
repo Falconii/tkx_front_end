@@ -66,7 +66,7 @@ export class EditDetalheDialogComponent {
           nome:      [{ value: '' }, [ValidatorStringLen(3, 60, true)]],
           sexo: [{ value: '' }, [ValidatorStringLen(1, 1, true)] ],
           data_nasc: [{ value: '' }, [ValidatorDate(true)]],
-          inscricao: [{ value: '' },[ValidadorInterger(true)]],
+          inscricao: [{ value: '' }, [ValidadorInterger(true)]],
           nro_peito: [{ value: '' },[ValidadorInterger(true)]],
           id_categoria: [{ value: '' }, [ValidatorCheckBox(1, 6, true)]],
           status: [{ value: '' }],
@@ -118,7 +118,8 @@ export class EditDetalheDialogComponent {
       }
 
   onSubmit() {
-    if (this.formulario.valid) {
+    // exclusão não depende da validação dos campos
+    if (+this.idAcao === CadastroAcoes.Exclusao || this.formulario.valid) {
       this.executaAcao();
     } else {
       this.formulario.markAllAsTouched();
@@ -371,7 +372,7 @@ export class EditDetalheDialogComponent {
     if (this.idAcao == this.getAcoes().Consulta) {
       return true;
     } else {
-      return !this.formulario.valid;
+      return false; // não bloqueia: ao clicar, onSubmit marca os campos inválidos e mostra o motivo
     }
   }
 

@@ -13,6 +13,7 @@ export class BarraAcoesComponent implements OnInit {
   @Input('EXCLUIR') excluir: boolean = true;
   @Input('KIT') kit: boolean = false;
   @Input('PROCESSAR') processar: boolean = false;
+  @Input('BARRA_RESUMO_EVENTO') barra_resumo_evento: boolean = false;
   @Input('BARRA_VERTICAL') barra: boolean = false;
   @Input('BARRA_EXCLUIR') barra_excluir: boolean = false;
   @Input('BARRA_LIBERAR') barra_liberar: boolean = false;

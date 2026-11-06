@@ -12,7 +12,8 @@ import { AppSnackbar } from '../../classes/app-snackbar';
 import { AtualizaParametroCategoria01 } from '../../classes/atualiza-parametro-categoria01';
 import { ControlePaginas } from '../../classes/controle-paginas';
 import { Orderby } from '../../classes/orderby';
-import { GetValueJsonString, messageError } from '../../classes/util';
+import { GetValueJsonString, hasNonNumeric, messageError } from '../../classes/util';
+import { TipoPesquisa } from '../../classes/tipo-pesquisa';
 import {
   FinalizacaoRelatorio,
   RelatorioDialogData,
@@ -59,8 +60,7 @@ export class FormularioFiltroCategoriaComponent implements OnInit, OnDestroy {
   ) {
     this.formulario = formBuilder.group({
       orderby: [''],
-      id: [''],
-      descricao: [''],
+      pesquisa: [''],
     });
     this.setHide();
   }
@@ -82,18 +82,16 @@ export class FormularioFiltroCategoriaComponent implements OnInit, OnDestroy {
     this.valueChangeSubs = [];
     if (!value) return;
 
-    for (const campo of ['id', 'descricao']) {
-      const sub = this.formulario
-        .get(campo)
-        ?.valueChanges.pipe(
-          map((v) => String(v ?? '').trim()),
-          filter((v) => v.length >= 0),
-          debounceTime(350),
-          distinctUntilChanged(),
-        )
-        .subscribe(() => this.onChangeParametros());
-      if (sub) this.valueChangeSubs.push(sub);
-    }
+    const sub = this.formulario
+      .get('pesquisa')
+      ?.valueChanges.pipe(
+        map((v) => String(v ?? '').trim()),
+        filter((v) => v.length >= 0),
+        debounceTime(350),
+        distinctUntilChanged(),
+      )
+      .subscribe(() => this.onChangeParametros());
+    if (sub) this.valueChangeSubs.push(sub);
   }
 
   /* ---------- parâmetros salvos por usuário/módulo ---------- */
@@ -104,8 +102,8 @@ export class FormularioFiltroCategoriaComponent implements OnInit, OnDestroy {
     param.assinatura = 'V1.00 05/11/2026';
     param.id_usuario = this.globalService.getUsuario().id;
     param.parametro = JSON.stringify({
-      id: '',
-      descricao: '',
+      pesquisa: '',
+      pesquisarPor: '',
       orderby: '000001',
       sharp: false,
     });
@@ -154,8 +152,7 @@ export class FormularioFiltroCategoriaComponent implements OnInit, OnDestroy {
     const config = this.parametro.getParametro();
     this.formulario.setValue({
       orderby: GetValueJsonString(config, 'orderby') ?? '000001',
-      id: GetValueJsonString(config, 'id') ?? '',
-      descricao: GetValueJsonString(config, 'descricao') ?? '',
+      pesquisa: (GetValueJsonString(config, 'pesquisa') ?? '').toUpperCase(),
     });
   }
 
@@ -163,8 +160,8 @@ export class FormularioFiltroCategoriaComponent implements OnInit, OnDestroy {
     const config = this.parametro.getParametro();
     const form = this.formulario.value;
     Object(config).orderby = form.orderby;
-    Object(config).id = String(form.id ?? '').trim();
-    Object(config).descricao = String(form.descricao ?? '').toUpperCase();
+    Object(config).pesquisa = String(form.pesquisa ?? '').toUpperCase();
+    Object(config).pesquisarPor = this.definirPesquisa();
     this.parametro.parametro = JSON.stringify(config);
   }
 
@@ -214,6 +211,24 @@ export class FormularioFiltroCategoriaComponent implements OnInit, OnDestroy {
 
   hasValue(campo: string): boolean {
     return this.formulario.get(campo)?.value !== '';
+  }
+
+  /* Campo coringa: so digitos = Codigo da categoria; qualquer outro texto = Descricao. */
+  definirPesquisa(): TipoPesquisa {
+    const texto = String(this.formulario.get('pesquisa')?.value ?? '').trim();
+    if (texto.length == 0) return TipoPesquisa.None;
+    return hasNonNumeric(texto) ? TipoPesquisa.Descricao : TipoPesquisa.Codigo;
+  }
+
+  getTextoTipoPesquisa(): string {
+    switch (parseInt(Object(this.parametro.getParametro()).pesquisarPor, 10)) {
+      case TipoPesquisa.Codigo:
+        return 'Pelo Código';
+      case TipoPesquisa.Descricao:
+        return 'Pela Descrição';
+      default:
+        return '';
+    }
   }
 
   clearValue(campo: string) {

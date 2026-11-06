@@ -14,3 +14,13 @@ h1 {
 .status .erro {
   color: #b00020;
 }
+
+.texto-confirmacao {
+  margin: 4px 0 16px;
+}
+
+/* o rótulo flutuante do 1º campo fica acima da caixa e era cortado pela área rolável do diálogo */
+form {
+  display: block;
+  padding-top: 10px;
+}

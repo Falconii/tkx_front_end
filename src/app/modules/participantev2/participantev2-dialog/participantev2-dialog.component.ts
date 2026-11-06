@@ -220,12 +220,13 @@ export class Participantev2DialogComponent {
     if (this.idAcao == this.getAcoes().Consulta) {
       return true;
     } else {
-      return !this.formulario.valid;
+      return false; // não bloqueia: ao clicar, onSubmit marca os campos inválidos e mostra o motivo
     }
   }
 
   onSubmit() {
-    if (this.formulario.valid) {
+    // exclusão não depende da validação dos campos
+    if (+this.idAcao === CadastroAcoes.Exclusao || this.formulario.valid) {
       this.executaAcao();
     } else {
       this.formulario.markAllAsTouched();

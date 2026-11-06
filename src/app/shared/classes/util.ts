@@ -93,6 +93,7 @@ export class MensagensBotoes {
   static zerar_senha = 'Zerar Senha';
   static ativar_inativar = 'Ativar/Inativar';
   static standby = 'StandBy';
+  static resumo_evento = 'Resumo Do Evento';
 }
 
 export function adicionaZero(numero: number) {
