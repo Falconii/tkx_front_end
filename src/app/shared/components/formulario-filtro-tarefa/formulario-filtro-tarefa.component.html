@@ -1,0 +1,78 @@
+<div color="white" class="toolbar-filtro">
+  <span class="filtro-com-icones">
+    <span class="titulo">Filtro da Pesquisa</span>
+    <mat-icon
+      (click)="onlimparParametros()"
+      matTooltip="Limpar Parâmetros"
+      matTooltipPosition="above"
+      >clear</mat-icon
+    >
+    <mat-icon
+      (click)="onSaveConfig()"
+      matTooltip="Salvar Parâmetros"
+      matTooltipPosition="above"
+      >save</mat-icon
+    >
+    <mat-icon
+      (click)="onHide()"
+      matTooltip="Mostrar/Esconder"
+      matTooltipPosition="above"
+      >visibility</mat-icon
+    >
+  </span>
+</div>
+<form [formGroup]="formulario" autocomplete="off" *ngIf="!hide">
+  <div class="col-med-3">
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Ordernado Por</mat-label>
+      <mat-select
+        formControlName="orderby"
+        (selectionChange)="onChangeParametros()"
+      >
+        <mat-option *ngFor="let ordem of orderby" [value]="ordem.sigla">
+          {{ ordem.descricao }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Situação</mat-label>
+      <mat-select
+        formControlName="status"
+        (selectionChange)="onChangeParametros()"
+      >
+        <mat-option *ngFor="let situacao of situacoes" [value]="situacao.sigla">
+          {{ situacao.descricao }}
+        </mat-option>
+      </mat-select>
+      <button
+        mat-icon-button
+        matSuffix
+        matTooltip="Limpar seleção"
+        (click)="clearValue('status'); $event.stopPropagation()"
+        class="clear-button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="col-max">
+      <mat-label>Relatório</mat-label>
+      <mat-select
+        formControlName="sigla"
+        (selectionChange)="onChangeParametros()"
+      >
+        <mat-option *ngFor="let relatorio of relatorios" [value]="relatorio.sigla">
+          {{ relatorio.titulo }}
+        </mat-option>
+      </mat-select>
+      <button
+        mat-icon-button
+        matSuffix
+        matTooltip="Limpar seleção"
+        (click)="clearValue('sigla'); $event.stopPropagation()"
+        class="clear-button"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</form>

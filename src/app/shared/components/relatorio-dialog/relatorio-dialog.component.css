@@ -1,0 +1,16 @@
+h1 {
+  text-align: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-large;
+  color: blue;
+}
+
+.status {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: small;
+}
+
+.status .erro {
+  color: #b00020;
+}

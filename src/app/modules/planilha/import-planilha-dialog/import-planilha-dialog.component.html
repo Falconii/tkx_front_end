@@ -4,13 +4,13 @@
       >Rotina Para Importar Planilha De Participantes</span
     >
     <div class="button-container">
-      <button mat-raised-button color="#FFFFFF" (click)="onUpload()"  [disabled]="this.formulario.valid == false || status > 0  ">
+      <button mat-raised-button color="#FFFFFF" (click)="onUpload()" [disabled]="formulario.valid == false || status != 0">
         <mat-icon>check</mat-icon>
         Upload
       </button>
-      <button mat-raised-button color="accent" (click)="closeModal()">
+      <button mat-raised-button color="accent" (click)="closeModal()" [disabled]="enviando">
         <mat-icon>cancel</mat-icon>
-        {{ this.status == 3 ? 'Fechar' : 'Cancelar' }}
+        {{ concluido ? 'Fechar' : 'Cancelar' }}
       </button>
     </div>
   </mat-toolbar>
@@ -35,7 +35,7 @@
         <button
           mat-icon-button
           matSuffix
-          matTooltip="Limpar seleção"
+          matTooltip="Escolher arquivo"
           (click)="fileInput.click(); $event.stopPropagation()"
           class="clear-buttoncd abs"
         >
@@ -44,6 +44,7 @@
         <mat-error *ngIf="NoValidtouchedOrDirty('caminho')"
           >{{ getMensafield("caminho") }}
         </mat-error>
+        <mat-hint>Coluna do Nº do peito em branco = gerado automaticamente.</mat-hint>
       </mat-form-field>
     </div>
     <input
@@ -55,17 +56,40 @@
     />
   </form>
 
-  <div class="loading-container" *ngIf="status == 1 || status == 2">
+  <div class="loading-container" *ngIf="enviando">
     <h3>Upload Da Planilha</h3>
     <mat-progress-bar
-          mode=determinate
+          [mode]="progress < 100 ? 'determinate' : 'indeterminate'"
           [value]="progress"
           bufferValue=100>
     </mat-progress-bar>
     <h3>{{ getMessageProgress() }}</h3>
   </div>
-  <div class="resumo" *ngIf="status == 3">
-    <h3>Total De Linhas.....: {{ total_linhas }}</h3>
-    <h3>Total De Linhas Erro: {{ total_linhas_erro }}</h3>
+
+  <div class="resumo" *ngIf="concluido">
+    <h3>Total De Linhas.....: {{ resumo.total_linhas }}</h3>
+    <h3>Linhas Corretas.....: {{ resumo.linhas_ok }}</h3>
+    <h3>Linhas Com Erro.....: {{ resumo.total_linhas_erro }}</h3>
+    <h3 *ngIf="resumo.linhas_com_aviso > 0" class="aviso">Linhas Com Aviso.......: {{ resumo.linhas_com_aviso }}</h3>
+    <h3 *ngIf="resumo.peitos_gerados > 0">Nºs De Peito Gerados: {{ resumo.peitos_gerados }}</h3>
+    <h3 *ngIf="resumo.linhas_ignoradas > 0">Linhas Em Branco Ignoradas: {{ resumo.linhas_ignoradas }}</h3>
+    <p *ngIf="resumo.linhas_com_aviso > 0" class="aviso">
+      Aviso: CPF/CNPJ com dígito verificador inválido foi mantido como veio no arquivo (não impede o processamento). Confira na tela de detalhes.
+    </p>
+    <p *ngIf="resumo.total_linhas_erro > 0">
+      Corrija ou exclua as linhas com erro na tela de detalhes da planilha antes de processá-la.
+    </p>
+  </div>
+
+  <div class="resumo" *ngIf="falhou">
+    <h3>A planilha não foi importada.</h3>
+    <p>{{ mensagemErro }}</p>
+    <ul *ngIf="detalhesErro.length > 0">
+      <li *ngFor="let d of detalhesErro">{{ d }}</li>
+    </ul>
+    <button mat-raised-button color="primary" (click)="tentarNovamente()">
+      <mat-icon>replay</mat-icon>
+      Tentar Novamente
+    </button>
   </div>
 </mat-dialog-content>

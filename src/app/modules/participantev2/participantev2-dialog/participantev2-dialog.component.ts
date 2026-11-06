@@ -83,8 +83,17 @@ export class Participantev2DialogComponent {
     this.lsSexos = this.globalService.getLsSexo();
     this.idAcao = this.data.opcao;
     this.setAcao(this.data.opcao);
+    // Nº do peito: em branco na INCLUSÃO = gerado automaticamente (contador da categoria); nas demais ações é obrigatório
+    this.formulario
+      .get('nro_peito')
+      ?.setValidators([ValidadorInterger(!this.peitoAutomatico)]);
+    this.formulario.get('nro_peito')?.updateValueAndValidity();
     this.setValueNoParam();
     this.getEventos();
+  }
+
+  get peitoAutomatico(): boolean {
+    return +this.idAcao === CadastroAcoes.Inclusao;
   }
 
   ngOnDestroy(): void {
@@ -248,12 +257,14 @@ export class Participantev2DialogComponent {
     switch (+this.idAcao) {
       case CadastroAcoes.Inclusao:
         this.data.participante.user_insert = this.globalService.getUsuario().id;
+        const peitoEmBranco =
+          String(this.data.participante.nro_peito ?? '').trim() === '';
         this.inscricaoAcao = this.participanteSrv
           .participantev2Insert(this.data.participante)
           .subscribe({
             next: (data: any) => {
               this.appSnackBar.openSuccessSnackBar(
-                `Participante Incluido Com Sucesso !`,
+                `Participante Incluido Com Sucesso !${peitoEmBranco ? ` Nº do peito gerado: ${data.nro_peito}` : ''}`,
                 'OK',
               );
               this.data.participante = data;

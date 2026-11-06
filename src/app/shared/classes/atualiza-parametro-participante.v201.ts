@@ -1,5 +1,4 @@
 import { Pesquisa } from './Pesquisa';
-import { ParametroParticipante01 } from '../../parametros/parametro-participante01';
 import { ParametroParticipantev201 } from '../../parametros/parametro-participantev201';
 import { TipoPesquisa } from './tipo-pesquisa';
 

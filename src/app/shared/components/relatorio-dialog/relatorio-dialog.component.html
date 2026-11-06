@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>{{data.titulo}}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="formulario" autocomplete="off">
+    <div class="col-med-1" *ngIf="data.finalizacao === 'email'">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Destinatário</mat-label>
+        <textarea matInput formControlName="destinatario" readonly></textarea>
+      </mat-form-field>
+    </div>
+    <div class="col-med-1">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Situação</mat-label>
+        <mat-select formControlName="escopo" [disabled]="estado !== 'form'">
+          <mat-option *ngFor="let escopo of escopos" [value]="escopo.sigla">
+            {{escopo.descricao}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <div class="status" *ngIf="estado !== 'form'" aria-live="polite">
+    <mat-label [class.erro]="estado === 'erro'">{{mensagem}}</mat-label>
+    <mat-progress-bar *ngIf="ocupado" mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <div class="button-container-right">
+    <button mat-raised-button color="accent" cdkFocusInitial (click)="closeModal()">
+      <mat-icon>cancel</mat-icon>
+      {{textoFechar}}
+    </button>
+    <button mat-raised-button color="primary" (click)="onProcessar()" [disabled]="estado !== 'form'">
+      <mat-icon>check</mat-icon>
+      {{data.labelBottonSim}}
+    </button>
+  </div>
+</div>

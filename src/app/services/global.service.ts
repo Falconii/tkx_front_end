@@ -68,6 +68,7 @@ export class GlobalService {
     ];
     this.detalhe_situacoes = [
       new SimNao('0', 'Importado'),
+      new SimNao('1', 'Importado Com Aviso'),
       new SimNao("2","Processado"),
       new SimNao('3', 'Erro Na Planilha CVS'),
       new SimNao('9', 'Erro De Informação'),

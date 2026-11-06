@@ -1,6 +1,6 @@
 
 
-/*
+
 export const environment = {
   versao: 'V 01.00 - Beta',
   data: '09/11/2023',
@@ -11,9 +11,9 @@ export const environment = {
   wsURL: 'http://192.168.15.9:3000/api/',
   appURL: 'http://localhost:4200/',
 };
-*/
 
-export const environment = {
+
+/* export const environment = {
   versao: 'V 01.00 - Beta',
   data: '09/11/2023',
   production: false,
@@ -23,7 +23,7 @@ export const environment = {
   wsURL: 'http://192.168.15.9:3000/api/',
   appURL: 'http://192.168.15.9:4200/',
 };
-
+ */
 
 
 

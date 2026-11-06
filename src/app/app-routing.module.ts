@@ -48,6 +48,18 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'tarefas',
+    loadChildren: () =>
+      import('./modules/tarefa/tarefa.module').then((m) => m.TarefaModule),
+  },
+  {
+    path: 'categorias',
+    loadChildren: () =>
+      import('./modules/categoria/categoria.module').then(
+        (m) => m.CategoriaModule,
+      ),
+  },
+  {
     path: 'eventos',
     loadChildren: () =>
       import('./modules/evento/evento.module').then((m) => m.EventoModule),

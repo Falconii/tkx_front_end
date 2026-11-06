@@ -61,7 +61,7 @@ export class AppComponent {
         { label: 'Empresas', route: 'empresas' },
         { label: 'Usuários', route: 'usuarios' },
         { label: 'Grupos de Usuários', route: 'grupos' },
-        { label: 'Categorias', route: 'cadastro_padrao' },
+        { label: 'Categorias', route: 'categorias' },
         { label: 'Operadores', route: 'usuarios_eventos' },
       ],
       children: [],
@@ -79,6 +79,7 @@ export class AppComponent {
           label: 'Processamento',
           links: [
             { label: 'Planilhas', route: 'planilhas' },
+            { label: 'Tarefas / Relatórios', route: 'tarefas' },
           ],
         },
       ],

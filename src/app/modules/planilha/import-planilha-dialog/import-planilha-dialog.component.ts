@@ -1,34 +1,31 @@
 import { EventoService } from './../../../services/evento.service';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Importplanilhadata } from './importplanilha-data';
-import { finalize, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GlobalService } from '../../../services/global.service';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { EventoModel } from '../../../models/evento-model';
 import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 import { messageError } from '../../../shared/classes/util';
-import { CabplanilhaService } from '../../../services/cabplanilha.service';
 import { HttpEventType } from '@angular/common/http';
 import { ImportacaoService } from '../../../services/importacao.service';
-import { CabplanilhaComplementarService } from '../../../services/cabplanilhaComplementar.service';
-import { ParametroCheckFile01 } from '../../../parametros/parametro-check01';
-import { CheckFileModel } from '../../../models/check_file-model';
+
+/** estados do diálogo */
+const ESCOLHENDO = 0;
+const ENVIANDO = 1;
+const CONCLUIDO = 2;
+const FALHOU = 3;
 
 @Component({
   selector: 'app-import-planilha-dialog',
   templateUrl: './import-planilha-dialog.component.html',
   styleUrl: './import-planilha-dialog.component.css',
 })
-export class ImportPlanilhaDialogComponent {
-  acao: string = 'Sem Definição';
+export class ImportPlanilhaDialogComponent implements OnInit, OnDestroy {
   inscricaoEventos!: Subscription;
   inscricaoAcao!: Subscription;
-  inscricaoStatus!: Subscription;
-
-  labelCadastro: string = '';
 
   formulario: FormGroup;
 
@@ -36,41 +33,33 @@ export class ImportPlanilhaDialogComponent {
 
   lsEventos: EventoModel[] = [];
 
+  /** 0 = escolhendo o arquivo | 1 = enviando/gravando | 2 = concluído | 3 = falhou */
+  status: number = ESCOLHENDO;
+
   progress: number = 0;
 
-  linhas_processadas: number = 0;
+  /** resultado devolvido pelo servidor ao final da carga */
+  resumo = {
+    total_linhas: 0,
+    linhas_ok: 0,
+    total_linhas_erro: 0,
+    peitos_gerados: 0,
+    linhas_ignoradas: 0,
+    linhas_com_aviso: 0,
+  };
 
-  total_linhas: number = 0;
-
-  total_linhas_erro: number = 0;
-
-  status:number = 0;
-  /*
-    1- Não iniciado
-    2- upload
-    3- Aguardndo processamnento
-    4- fim
-      */
-
-  showSpin: boolean = false;
-
-  tentativaAtual: number = 0;
-
+  mensagemErro: string = '';
+  detalhesErro: string[] = [];
 
   constructor(
     private eventoSrv: EventoService,
     private globalService: GlobalService,
     private importacaoSrv: ImportacaoService,
-    private cabPlanilhaSrv: CabplanilhaComplementarService,
     @Inject(MAT_DIALOG_DATA) public data: Importplanilhadata,
     private dialogRef: MatDialogRef<ImportPlanilhaDialogComponent>,
     private formBuilder: FormBuilder,
-    private router: Router,
     private appSnackBar: AppSnackbar,
   ) {
-    this.globalService.showSpin$.subscribe((show) => {
-      this.showSpin = show;
-    });
     this.formulario = formBuilder.group({
       id_evento: [{ value: '' }, [Validators.required]],
       caminho: [{ value: '' }, [Validators.required]],
@@ -85,9 +74,9 @@ export class ImportPlanilhaDialogComponent {
   ngOnDestroy(): void {
     this.inscricaoEventos?.unsubscribe();
     this.inscricaoAcao?.unsubscribe();
-    this.inscricaoStatus?.unsubscribe();
   }
 
+  /** só eventos liberados para importação (situação 1) */
   getEventos() {
     let par: ParametroEvento01 = new ParametroEvento01();
 
@@ -95,7 +84,8 @@ export class ImportPlanilhaDialogComponent {
 
     par.status = '1';
 
-    ((par.contador = 'N'), (par.tamPagina = 0));
+    par.contador = 'N';
+    par.tamPagina = 0;
 
     this.inscricaoEventos = this.eventoSrv
       .getEventosParametro_01(par)
@@ -108,24 +98,15 @@ export class ImportPlanilhaDialogComponent {
             this.appSnackBar.openFailureSnackBar('Ação Não Autorizada', 'OK');
             return;
           }
-          if (error.status && error.status == 409) {
-            this.lsEventos = [];
-          } else {
-            this.lsEventos = [];
+          this.lsEventos = [];
+          if (!(error.status && error.status == 409)) {
             this.appSnackBar.openFailureSnackBar(
-              `Pesquisa Nos Participantes ${messageError(error)}`,
+              `Pesquisa Nos Eventos ${messageError(error)}`,
               'OK',
             );
           }
         },
       });
-  }
-
-  setValue(path: string = '') {
-    this.formulario.setValue({
-      id_evento: this.lsEventos[0].id,
-      caminho: path,
-    });
   }
 
   setNoParam() {
@@ -135,27 +116,44 @@ export class ImportPlanilhaDialogComponent {
     });
   }
 
+  get enviando(): boolean {
+    return this.status === ENVIANDO;
+  }
+
+  get concluido(): boolean {
+    return this.status === CONCLUIDO;
+  }
+
+  get falhou(): boolean {
+    return this.status === FALHOU;
+  }
+
   onUpload() {
     if (this.formulario.valid) {
       this.upload();
     } else {
       this.formulario.markAllAsTouched();
-      this.appSnackBar.openSuccessSnackBar(
+      this.appSnackBar.openFailureSnackBar(
         `Formulário Com Campos Inválidos.`,
         'OK',
       );
     }
   }
 
+  /** só não deixa fechar enquanto o envio está em andamento */
   closeModal() {
-    if (this.status == 1 || this.status == 2) {
-       this.appSnackBar.openWarningnackBar(
-         'Processamento Em Andamento, Aguarde Terminar Para Fechar!',
-         'OK',
-       );
-       return;
+    if (this.enviando) {
+      this.appSnackBar.openWarningnackBar(
+        'Importação Em Andamento, Aguarde Terminar Para Fechar!',
+        'OK',
+      );
+      return;
     }
     this.dialogRef.close(this.data);
+  }
+
+  onCancelar() {
+    this.closeModal();
   }
 
   onFileSelected(event: any) {
@@ -163,188 +161,67 @@ export class ImportPlanilhaDialogComponent {
     this.formulario.patchValue({ caminho: this.selectedFile?.name });
   }
 
-  onExecucao() {
-    this.onUpload();
-  }
-
-  onCancelar() {
-    if (this.status == 1 || this.status == 2) {
-       this.appSnackBar.openWarningnackBar(
-         'Processamento Em Andamento, Aguarde Terminar Para Cancelar!',
-         'OK',
-       );
-       return;
-    }
-    this.data.processar = false;
-    this.dialogRef.close(this.data);
+  /** volta para a escolha do arquivo depois de uma falha */
+  tentarNovamente() {
+    this.status = ESCOLHENDO;
+    this.mensagemErro = '';
+    this.detalhesErro = [];
+    this.progress = 0;
+    this.selectedFile = null;
+    this.formulario.patchValue({ caminho: '' });
   }
 
   upload() {
     if (!this.selectedFile) return;
 
-    this.status = 1;
-
-    let key: number = 0;
-
-    let id_evento = 0;
-
-    key = parseInt(this.formulario.value.id_evento);
-
-    if (isNaN(key)) {
+    const id_evento = parseInt(this.formulario.value.id_evento, 10);
+    if (isNaN(id_evento)) {
       this.appSnackBar.openFailureSnackBar('Código Do Evento Inválido!', 'OK');
       return;
-    } else {
-      id_evento = key;
     }
 
-    this.importacaoSrv.uploadPlanilha(id_evento, this.selectedFile).subscribe({
-      next: (event: any) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          this.progress = Math.round((100 * event.loaded) / event.total);
-        } else if (event.type === HttpEventType.Response) {
-          this.progress = 0;
-          this.appSnackBar.openSuccessSnackBar(
-            'Planilha Importada com Sucesso!',
-            'OK',
-          );
-          if (this.selectedFile?.name) {
-            this.status = 2;
-           this.checkPlanilha(
-              id_evento,
-              this.selectedFile.name,
+    this.status = ENVIANDO;
+    this.progress = 0;
+
+    // A carga termina na própria resposta do upload (ou não grava nada): não há mais o que consultar depois.
+    this.inscricaoAcao = this.importacaoSrv
+      .uploadPlanilha(id_evento, this.selectedFile)
+      .subscribe({
+        next: (event: any) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            this.progress = Math.round((100 * event.loaded) / (event.total || 1));
+          } else if (event.type === HttpEventType.Response) {
+            const r = event.body ?? {};
+            this.resumo = {
+              total_linhas: r.total_linhas ?? 0,
+              linhas_ok: r.linhas_ok ?? 0,
+              total_linhas_erro: r.total_linhas_erro ?? 0,
+              peitos_gerados: r.peitos_gerados ?? 0,
+              linhas_ignoradas: r.linhas_ignoradas ?? 0,
+              linhas_com_aviso: r.linhas_com_aviso ?? 0,
+            };
+            this.status = CONCLUIDO;
+            this.data.processar = true;
+            this.appSnackBar.openSuccessSnackBar(
+              'Planilha Importada com Sucesso!',
+              'OK',
             );
           }
-        }
-      },
-      error: (error) => {
-        this.status = 3;
-        this.appSnackBar.openFailureSnackBar(
-          `Erro No UpLoad ${error.error?.tabela ?? ''} - ${error.error?.erro ?? ''} - ${error.error?.message ?? ''}`,
-          'OK',
-        );
-        this.progress = 0;
-        this.selectedFile = null;
-        this.formulario.patchValue({ caminho: '' });
-      },
-    });
-  }
-
-  /* rotina antiga
-  verificaStatus(id_empresa: number, id_evento: number, fileName: string) {
-    this.inscricaoStatus = this.cabPlanilhaSrv
-      .verificarStatus(id_empresa, id_evento, fileName)
-      .subscribe({
-        next: (ret) => {
-
-          this.tentativaAtual = ret.tentativa;
-          if (ret.lista.length > 0) {
-            this.total_linhas = ret.lista[0].total_linhas;
-            this.total_linhas_erro = ret.lista[0].total_linhas_erro;
-            this.selectedFile = null;
-            this.formulario.patchValue({ caminho: '' });
-            this.inscricaoStatus.unsubscribe();
-            this.status = 3;
-            this.data.processar = true;
-          }
         },
-
-        error: (err) => {
-          if (this.inscricaoStatus) {
-            this.inscricaoStatus.unsubscribe();
-          }
-          this.status = 3;
-        },
-
-        complete: () => {
-          this.appSnackBar.openFailureSnackBar(
-            'Processando Terminou Com Falha!',
-            'OK',
-          );
-          this.status = 3;
+        error: (error: any) => {
+          this.status = FALHOU;
+          this.mensagemErro = error.error?.message ?? error.message ?? 'Erro desconhecido.';
+          this.detalhesErro = Array.isArray(error.error?.detalhes) ? error.error.detalhes : [];
+          this.appSnackBar.openFailureSnackBar(`Erro No UpLoad: ${this.mensagemErro}`, 'OK');
         },
       });
   }
-      */
 
-  checkPlanilha(id_evento: number, fileName: string) {
-
-    console.log("checkFile: ", fileName);
-
-    let par = new ParametroCheckFile01();
-
-    par.id_evento  = id_evento;
-
-    par.fileName   = fileName;
-
-    let tentativa  = 0;
-
-    par.maxTentativas = 40;
-
-    const interval = setInterval(() => {
-
-      tentativa++;
-
-      par.tentativa = tentativa;
-
-      this.tentativaAtual = tentativa;
-
-      this.tentativaAtual = par.tentativa;
-
-      try {
-        this.inscricaoStatus = this.importacaoSrv
-          .checkFile(par)
-          .subscribe({
-            next: (ret: CheckFileModel) => {
-              if (ret.status === 'ready') {
-                this.status = 2;
-                clearInterval(interval);
-                this.total_linhas = ret.total_linhas;
-                this.total_linhas_erro = ret.total_linhas_erro;
-                this.selectedFile = null;
-                this.formulario.patchValue({ caminho: '' });
-                this.inscricaoStatus.unsubscribe();
-                this.status = 3;
-                this.data.processar = true;
-              }
-              if (ret.status === 'failed') {
-                this.showSpin = false;
-                this.status = 2;
-                clearInterval(interval);
-                this.appSnackBar.openFailureSnackBar("Falha ao gerar o arquivo!", "OK");
-              }
-              if (ret.status === 'exceeded') {
-                this.showSpin = false;
-                this.status = 2;
-                clearInterval(interval);
-                this.appSnackBar.openFailureSnackBar("Excedido O Nro De Tentativas. Peças Novamente!", "OK");
-              }
-
-            },
-            error: (error: any) => {
-              this.showSpin = false;
-              this.status = 2;
-              this.appSnackBar.openFailureSnackBar(`Erro:${error.message}`, "OK");
-              clearInterval(interval);
-            },
-          });
-      }
-      catch (error) {
-        this.showSpin = false;
-        this.status = 2;
-        this.appSnackBar.openFailureSnackBar("Erro Na Validação Do Arquivo!", "OK");
-        clearInterval(interval);
-      }
-
-      if (tentativa >= par.maxTentativas) {
-        this.showSpin = false;
-        this.status = 2;
-        clearInterval(interval);
-        this.appSnackBar.openFailureSnackBar("Excedido O Nro De Tentativas. Peças Novamente!", "OK");
-      }
-
-    }, 5000);
+  getMessageProgress(): string {
+    return this.progress < 100
+      ? `Enviando... ${this.progress}%`
+      : `Gravando as linhas da planilha...Aguarde!`;
   }
-
 
   NoValidtouchedOrDirty(campo: string): boolean {
     if (
@@ -358,32 +235,5 @@ export class ImportPlanilhaDialogComponent {
 
   getMensafield(field: string): string {
     return this.formulario.get(field)?.errors?.['message'];
-  }
-
-  getMessageProgress(): string {
-    if (this.status == 1) {
-      if (this.progress < 100) {
-       return `Enviando... ${this.progress}%`;
-      } else {
-       return `Preparando Tabela Para Processamento...Aguarde!`;
-      }
-    } else {
-      return `UPLOAD Completo, Aguardando Processamento...(${this.tentativaAtual+1}/40) `;
-    }
-  }
-
-
-  getMessageStatus(): string {
-    if (this.status == 1) {
-      return 'Enviando Planilha';
-    } else if (this.status == 2) {
-      return 'Aguardando Processamento';
-    } else {
-      return '';
-    }
-  }
-
-  showUploadButton(): boolean {
-    return(!(this.status == 1) && !(this.status == 2));
   }
 }

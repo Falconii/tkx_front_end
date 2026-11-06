@@ -23,10 +23,13 @@ import {
   GetValueJsonNumber,
 } from '../../classes/util';
 import { ParametroModel } from '../../../models/parametro-model';
-import { EmailDialogData } from '../email-dialog/email-dialog-data';
-import { EmailDialogComponent } from '../email-dialog/email-dialog.component';
-import { DownloadDialogData } from '../download-dialog/download-dialog-data';
-import { DownloadDialogComponent } from '../download-dialog/download-dialog.component';
+import {
+  FinalizacaoRelatorio,
+  RelatorioDialogData,
+} from '../relatorio-dialog/relatorio-dialog-data';
+import { RelatorioDialogComponent } from '../relatorio-dialog/relatorio-dialog.component';
+import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
+import { AtualizaParametroEvento01 } from '../../classes/atualiza-parametro-evento01';
 import { ParametroSendemailv2 } from '../../../parametros/parametro-sendemailv2';
 import { ParametroUsuario01 } from '../../../parametros/parametro-usuario01';
 import { UsuarioModel } from '../../../models/usuario-model';
@@ -83,8 +86,7 @@ export class FormularioFiltroEventoComponent {
     private parametroService: ParametroService,
     private emailService: EmailService,
     private appSnackBar: AppSnackbar,
-    private EmailDialog: MatDialog,
-    private DownLoadDialog: MatDialog,
+    private dialog: MatDialog,
   ) {
     this.formulario = formBuilder.group({
       orderby: [{ value: '' }],
@@ -166,11 +168,9 @@ export class FormularioFiltroEventoComponent {
   }
 
   onGetExcelToEmailOrDownLoad(destino: string) {
-    if (destino.toUpperCase() == 'E-MAIL') {
-      this.openEmailDialog();
-    } else {
-      this.openDownLoadDialog();
-    }
+    this.openRelatorioDialog(
+      destino.toUpperCase() == 'E-MAIL' ? 'email' : 'download',
+    );
   }
 
   sendMail(fileName: string) {
@@ -394,56 +394,35 @@ export class FormularioFiltroEventoComponent {
       });
   }
 
-  openEmailDialog(): void {
-    const data: EmailDialogData = new EmailDialogData();
-    data.titulo = 'ENVIAR CONSULTA VIA E-MAIL';
+  /**
+   * Relatório assíncrono (Excel): cria uma tarefa no backend e acompanha por polling curto.
+   * Os parâmetros seguem o mesmo caminho da listagem: configuração do filtro ->
+   * ParametroEvento01 tipado. O diálogo só decide a paginação (pagina 0 = toda a consulta).
+   */
+  openRelatorioDialog(finalizacao: FinalizacaoRelatorio): void {
+    let par = new ParametroEvento01();
+    par.id_empresa = this.globalService.getEmpresa().id;
+    par = AtualizaParametroEvento01(par, this.parametro.getParametro());
+
+    const data: RelatorioDialogData = new RelatorioDialogData();
+    data.titulo =
+      finalizacao === 'email'
+        ? 'ENVIAR CONSULTA VIA E-MAIL'
+        : 'DOWNLOAD DE CONSULTA';
+    data.sigla = 'evento01';
+    data.finalizacao = finalizacao;
     data.destinatario = this.globalService.usuario.email;
     data.escopo = 'T';
-    data.labelBottomNao = 'Cancelar';
-    data.labelBottonSim = 'Processar';
-    data.id_empresa = this.globalService.empresa.id;
     data.pagina = this.controle_paginas.getPaginalAtual();
-    data.parametro = this.parametro;
+    data.tamPagina = this.controle_paginas.getTamPagina();
+    data.parametros = par;
 
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.disableClose = true;
-    dialogConfig.id = 'consulta-email';
+    dialogConfig.id = 'consulta-relatorio';
     dialogConfig.width = '800px';
     dialogConfig.data = data;
-    const modalDialog = this.EmailDialog.open(
-      EmailDialogComponent,
-      dialogConfig,
-    )
-      .beforeClosed()
-      .subscribe((data: EmailDialogData) => {});
-  }
-
-  openDownLoadDialog(): void {
-    console.log('Pagina: ', this.controle_paginas.getPaginalAtual());
-
-    const data: DownloadDialogData = new DownloadDialogData();
-    data.titulo = 'DOWNLOAD DE CONSULTA';
-    data.escopo = 'T';
-    data.labelBottomNao = 'Cancelar';
-    data.labelBottonSim = 'Processar';
-    data.id_empresa = this.globalService.empresa.id;
-    data.id_evento = 1;
-    data.pagina = this.controle_paginas.getPaginalAtual();
-    data.parametro = this.parametro;
-
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.id = 'consulta-download';
-    dialogConfig.width = '800px';
-    dialogConfig.data = data;
-    const modalDialog = this.DownLoadDialog.open(
-      DownloadDialogComponent,
-      dialogConfig,
-    )
-      .beforeClosed()
-      .subscribe((data: DownloadDialogData) => {});
+    this.dialog.open(RelatorioDialogComponent, dialogConfig);
   }
 
   NoValidtouchedOrDirty(campo: string): boolean {

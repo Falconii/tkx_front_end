@@ -42,6 +42,9 @@ export class ProcessaPlanilhaDialogComponent {
 
   processaPlanilha:ProcessaPlanilhaModel = new ProcessaPlanilhaModel();
 
+  /** participantes incluídos com CPF/CNPJ de dígito verificador inválido (aviso, não erro) */
+  cpfInvalidos: number = 0;
+
   constructor(
     private planilhaSrv: CabplanilhaService,
     private globalService: GlobalService,
@@ -95,6 +98,7 @@ export class ProcessaPlanilhaDialogComponent {
     this.inscricaoAcao = this.importacaoSrv.processaPlanilha(par).subscribe({
       next: (data: any) => {
         this.processaPlanilha = data.cabec;
+        this.cpfInvalidos = data.participantes_com_cpf_invalido ?? 0;
         console.log('Processamento Iniciado Com Sucesso:', this.processaPlanilha.arquivo);
         this.appSnackBar.openSuccessSnackBar(
           `Processamento Iniciado Com Sucesso.`,

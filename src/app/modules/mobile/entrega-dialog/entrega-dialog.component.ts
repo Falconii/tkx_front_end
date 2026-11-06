@@ -1,14 +1,10 @@
 import { EventoComplementarService } from './../../../services/eventoComplementar.service';
 import { GlobalService } from './../../../services/global.service';
 import { Component, Inject, ViewChild } from '@angular/core';
-import { EntregaDialogData } from './entrega-dialog-data';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
-import { EntregaModel } from '../../../models/entrega-model';
 import { Subscription } from 'rxjs';
-import { EntregaService } from '../../../services/entrega.service';
-import { ParametroEntrega01 } from '../../../parametros/parametro-entrega01';
 import { finalize } from 'rxjs';
 import { DataYYYYMMDD, messageError } from '../../../shared/classes/util';
 import { ValidatorStringLen } from '../../../shared/Validators/validator-string-len';

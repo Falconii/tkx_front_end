@@ -1,0 +1,83 @@
+<div class="toolbar-alinhada dialog-header">
+  <mat-toolbar color="primary">
+    <span class="example-spacer">
+      <mat-label>{{ labelCadastro }}</mat-label>
+    </span>
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="#FFFFFF"
+        (click)="actionFunction()"
+        [disabled]="gravando"
+        *ngIf="idAcao != getAcoes().Consulta"
+      >
+        <mat-icon>check</mat-icon>
+        {{ acao }}
+      </button>
+      <button mat-raised-button color="accent" (click)="closeModal()">
+        <mat-icon>cancel</mat-icon>
+        {{ getLabelCancel() }}
+      </button>
+    </div>
+  </mat-toolbar>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="formulario" autocomplete="off">
+    <div class="col-med-2">
+      <mat-form-field appearance="outline" class="col-70">
+        <mat-label>Código</mat-label>
+        <input
+          matInput
+          formControlName="id"
+          placeholder="Automático"
+          readonly
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Descrição</mat-label>
+        <input
+          matInput
+          formControlName="descricao"
+          maxlength="30"
+          oninput="this.value = this.value.toUpperCase()"
+          [readonly]="readOnly"
+          cdkFocusInitial
+        />
+        <mat-error *ngIf="NoValidtouchedOrDirty('descricao')"
+          >{{ getMensafield("descricao") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-med-2">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Sigla</mat-label>
+        <input
+          matInput
+          formControlName="sigla"
+          maxlength="10"
+          oninput="this.value = this.value.toUpperCase()"
+          [readonly]="readOnly"
+        />
+        <mat-error *ngIf="NoValidtouchedOrDirty('sigla')"
+          >{{ getMensafield("sigla") }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Faixa Do Nº Do Peito</mat-label>
+        <input
+          matInput
+          formControlName="contador"
+          maxlength="2"
+          [readonly]="readOnly"
+        />
+        <mat-hint *ngIf="exemploFaixa"
+          >Nºs automáticos começam em {{ exemploFaixa }}</mat-hint
+        >
+        <mat-error *ngIf="NoValidtouchedOrDirty('contador')"
+          >{{ getMensafield("contador") }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>

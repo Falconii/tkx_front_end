@@ -52,7 +52,11 @@
         </div>
          <div class="linha-info">
         <span class="titulo">Nº Peito:</span>
-        <span class="valor">{{ detalhe.nro_peito}}</span>
+        <span
+          class="valor"
+          [matTooltip]="detalhe.nro_peito > 0 ? '' : 'Sem Nº de peito válido: exclua a linha e inclua de novo (em branco = automático)'"
+          >{{ detalhe.nro_peito > 0 ? detalhe.nro_peito : '—' }}</span
+        >
         </div>
          <div class="linha-info">
         <span class="titulo">CPF:</span>
@@ -79,11 +83,11 @@
        <td>
         <div class="linha-info">
         <span class="titulo">Situação:</span>
-        <span class="valor">{{ detalhe.status | situacao_det_planilha}}</span>
+        <span class="valor" [class.aviso]="detalhe.status == 1">{{ detalhe.status | situacao_det_planilha}}</span>
       </div>
       <div class="linha-info">
         <span class="titulo">Mensagem:</span>
-        <span class="valor">{{ detalhe.mensagem_erro }}</span>
+        <span class="valor" [class.aviso]="detalhe.status == 1">{{ detalhe.mensagem_erro }}</span>
 
       </div>
     </td>

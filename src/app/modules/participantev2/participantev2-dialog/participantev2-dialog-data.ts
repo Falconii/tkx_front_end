@@ -1,4 +1,3 @@
-import { ParticipanteModel } from '../../../models/participante-model';
 import { Participantev2Model } from '../../../models/participantev2-model';
 import { CadastroAcoes } from '../../../shared/classes/cadastro-acoes';
 

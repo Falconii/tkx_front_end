@@ -154,3 +154,8 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* linha OK (situação 0) com mensagem = aviso, não erro */
+.aviso {
+  color: #b26a00;
+  font-weight: 600;
+}

@@ -1,5 +1,4 @@
 import { TipoOperacao } from './../../../shared/classes/tipo-operacao';
-import { EntregaDialogData } from './../entrega-dialog/entrega-dialog-data';
 import { FiltroEntregaKitModel } from '../../../models/filtro-entrega-kit-model';
 import { DadosService } from '../../../services/dados.service';
 import { GlobalService } from './../../../services/global.service';
@@ -7,9 +6,7 @@ import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { EntregaDialogComponent } from '../entrega-dialog/entrega-dialog.component';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { ParametroParticipante01 } from '../../../parametros/parametro-participante01';
 import { ControlePaginas } from '../../../shared/classes/controle-paginas';
-import { ParticipanteModel } from '../../../models/participante-model';
 import { AppSnackbar } from '../../../shared/classes/app-snackbar';
 import {
   GetValueJsonBoolean,

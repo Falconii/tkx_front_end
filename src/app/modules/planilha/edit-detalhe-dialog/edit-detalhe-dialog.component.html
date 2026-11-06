@@ -67,7 +67,18 @@
             </mat-form-field>
             <mat-form-field appearance="outline" class="col-max">
               <mat-label>Nº Do Peito</mat-label>
-              <input matInput formControlName="nro_peito" [readonly]="isReadOnly()" />
+              <input
+                matInput
+                formControlName="nro_peito"
+                [readonly]="isReadOnly() || idAcao == getAcoes().Edicao"
+                [placeholder]="peitoAutomatico ? 'Automático' : ''"
+              />
+              <mat-hint *ngIf="peitoAutomatico"
+                >Em branco: gerado automaticamente pela categoria</mat-hint
+              >
+              <mat-hint *ngIf="idAcao == getAcoes().Edicao"
+                >Identifica a linha: para trocar, exclua e inclua de novo</mat-hint
+              >
               <mat-error *ngIf="NoValidtouchedOrDirty('nro_peito')"
                 >{{ getMensafield("nro_peito") }}
               </mat-error>

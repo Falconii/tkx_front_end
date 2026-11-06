@@ -98,8 +98,17 @@ export class EditDetalheDialogComponent {
         this.lsSexos = this.globalService.getLsSexo();
         this.idAcao = this.data.idAcao;
         this.setAcao(this.data.idAcao);
+        // Nº do peito: em branco na INCLUSÃO = gerado automaticamente; nas demais ações é obrigatório
+        this.formulario
+          .get('nro_peito')
+          ?.setValidators([ValidadorInterger(!this.peitoAutomatico)]);
+        this.formulario.get('nro_peito')?.updateValueAndValidity();
         this.setNoParam()
         this.getCategorias();
+      }
+
+      get peitoAutomatico(): boolean {
+        return +this.idAcao === CadastroAcoes.Inclusao;
       }
 
       ngOnDestroy(): void {
@@ -135,12 +144,14 @@ export class EditDetalheDialogComponent {
     switch (+this.idAcao) {
       case CadastroAcoes.Inclusao:
         this.data.detPlanilha.user_insert = this.globalService.getUsuario().id;
+        const peitoEmBranco =
+          String(this.data.detPlanilha.nro_peito ?? '').trim() === '';
         this.inscricaoAcao= this.detPlanilhaSrv
           .detPlanilhaInsert(this.data.detPlanilha)
           .subscribe({
             next: (data: any) => {
               this.appSnackBar.openSuccessSnackBar(
-                `Participante Incluido Com Sucesso !`,
+                `Participante Incluido Com Sucesso !${peitoEmBranco ? ` Nº do peito gerado: ${data.nro_peito}` : ''}`,
                 'OK',
               );
               this.data.detPlanilha = data;

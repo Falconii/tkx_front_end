@@ -1,0 +1,102 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Tarefas / Relatórios </span>
+    <app-navegator
+      [controle]="controlePaginas"
+      (changePage)="onChangePage()"
+    ></app-navegator>
+    <button
+      mat-icon-button
+      aria-label="Retorno"
+      matTooltip="Retorno"
+      matTooltipPosition="above"
+      (click)="onHome()"
+    >
+      <mat-icon>home</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="example-icon"
+      aria-label="Atualizar"
+      (click)="getTarefas()"
+      matTooltip="Atualizar"
+      matTooltipPosition="above"
+    >
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-tarefa
+  PARAMNAME="tarefas"
+  [HIDE]="hide"
+  (changeParametro)="onChangeParametros($event)"
+  (changeHide)="onChangeHide($event)"
+/>
+<table class="Browse_Lanc">
+  <tr class="coluna-cabec">
+    <th style="width: 7%">Código</th>
+    <th style="width: 26%">Relatório</th>
+    <th style="width: 13%">Solicitado em</th>
+    <th style="width: 13%">Concluído em</th>
+    <th style="width: 12%">Situação</th>
+    <th style="width: 19%">Observação</th>
+    <th style="width: 10%">AÇÕES</th>
+  </tr>
+  <tr *ngFor="let tarefa of tarefas">
+    <td>
+      <div class="alinha_centro">
+        <mat-label class="valor">{{ tarefa.id | zeroFill }}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="valor">{{ tarefa.titulo }}</mat-label>
+        <mat-label
+          class="arquivo"
+          [matTooltip]="tarefa.name_file"
+          matTooltipPosition="above"
+          >{{ tarefa.name_file | truncate: 38 }}</mat-label
+        >
+      </div>
+    </td>
+    <td>
+      <mat-label class="valor">{{ formataData(tarefa.data_solicitacao) }}</mat-label>
+    </td>
+    <td>
+      <mat-label class="valor">{{ formataData(tarefa.data_conclusao) }}</mat-label>
+    </td>
+    <td>
+      <span [class]="classeSituacao(tarefa)">{{
+        expirada(tarefa) ? "Expirada" : (tarefa.status | situacao_tarefa)
+      }}</span>
+    </td>
+    <td>
+      <mat-label
+        class="valor"
+        [matTooltip]="observacao(tarefa)"
+        matTooltipPosition="above"
+        >{{ observacao(tarefa) | truncate: 40 }}</mat-label
+      >
+    </td>
+    <td class="acoes">
+      <button
+        mat-icon-button
+        matTooltip="Baixar planilha"
+        matTooltipPosition="above"
+        [disabled]="!disponivel(tarefa) || ocupadoId !== 0"
+        (click)="baixar(tarefa)"
+      >
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        matTooltip="Enviar por e-mail"
+        matTooltipPosition="above"
+        [disabled]="!disponivel(tarefa) || ocupadoId !== 0"
+        (click)="enviarEmail(tarefa)"
+      >
+        <mat-icon>mail</mat-icon>
+      </button>
+    </td>
+  </tr>
+</table>

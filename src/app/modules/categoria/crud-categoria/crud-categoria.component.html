@@ -1,0 +1,85 @@
+<div class="toolbar-alinhada">
+  <mat-toolbar>
+    <span class="example-spacer">Categorias </span>
+    <app-navegator
+      [controle]="controlePaginas"
+      (changePage)="onChangePage()"
+    ></app-navegator>
+    <button
+      mat-icon-button
+      aria-label="Retorno"
+      matTooltip="Retorno"
+      matTooltipPosition="above"
+      (click)="onHome()"
+    >
+      <mat-icon>home</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="example-icon"
+      aria-label="Atualizar"
+      (click)="getCategorias()"
+      matTooltip="Atualizar"
+      matTooltipPosition="above"
+    >
+      <mat-icon>rotate_right</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      aria-label="Incluir"
+      (click)="escolha(getAcoes()['Inclusao'], -1)"
+      [matTooltip]="getTexto().incluir"
+      matTooltipPosition="above"
+    >
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-toolbar>
+</div>
+<app-formulario-filtro-categoria
+  PARAMNAME="categorias"
+  [HIDE]="hide"
+  [EMAIL]="true"
+  [DOWNLOAD]="true"
+  [CONTROLE_PAGINAS]="controlePaginas"
+  (changeParametro)="onChangeParametros($event)"
+  (changeHide)="onChangeHide($event)"
+/>
+<table class="Browse_Lanc">
+  <tr class="coluna-cabec">
+    <th style="width: 10%">Código</th>
+    <th style="width: 50%">Descrição</th>
+    <th style="width: 15%">Sigla</th>
+    <th style="width: 10%">Faixa Peito</th>
+    <th style="width: 15%">AÇÕES</th>
+  </tr>
+  <tr *ngFor="let categoria of categorias; let i = index">
+    <td>
+      <div class="alinha_centro">
+        <mat-label class="valor">{{ categoria.id | zeroFill }}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label
+          class="valor"
+          [matTooltip]="categoria.descricao"
+          matTooltipPosition="above"
+          >{{ categoria.descricao | truncate: 50 }}</mat-label
+        >
+      </div>
+    </td>
+    <td>
+      <div>
+        <mat-label class="valor">{{ categoria.sigla }}</mat-label>
+      </div>
+    </td>
+    <td>
+      <div class="alinha_centro">
+        <mat-label class="valor">{{ categoria.contador }}</mat-label>
+      </div>
+    </td>
+    <td class="acoes">
+      <barra-acoes (changeOpcao)="escolha($event, i, categoria)"></barra-acoes>
+    </td>
+  </tr>
+</table>

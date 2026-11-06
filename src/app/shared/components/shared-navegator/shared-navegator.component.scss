@@ -2,12 +2,24 @@
    margin-top: 6px;
 }
 
-
+/* botões mais próximos: o Material 18 força 40px por botão e sobrepõe o 28px do styles.scss */
 .pagination-container {
-  display: flex;
-  align-items: center; // alinha verticalmente ícones e texto
-  justify-content: center; // centraliza horizontalmente
-  gap: 4px;
+  gap: 2px;
+}
+
+.pagination-container .mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 28px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
   padding: 0;
 }
 
+/* primeira e última página um pouco mais perto dos botões vizinhos */
+.pagination-container .mat-mdc-icon-button:first-child {
+  margin-right: -2px;
+}
+
+.pagination-container .mat-mdc-icon-button:last-child {
+  margin-left: -2px;
+}

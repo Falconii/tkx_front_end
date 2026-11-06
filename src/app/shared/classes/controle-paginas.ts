@@ -3,6 +3,7 @@ export class ControlePaginas {
   private paginaFinal: number;
   private paginaAtual: number;
   private totalPaginas: number;
+  private enable: boolean = true;
 
   constructor(private tamPagina: number, private totalRegistros: number) {
     this.paginaInicial = 1;
@@ -77,5 +78,14 @@ export class ControlePaginas {
     this.paginaFinal   = 1;
     this.totalPaginas  = 1;
     this.paginaAtual   = 1;
+  }
+
+  /** false trava os botões do navegador de páginas (ex.: durante uma operação em andamento) */
+  setEnable(value: boolean) {
+    this.enable = value;
+  }
+
+  getEnable(): boolean {
+    return this.enable;
   }
 }

@@ -1,0 +1,1 @@
+import{w as o}from"./chunk-UO3R4EW5.js";import{db as t,ra as i}from"./chunk-KRTYEGHH.js";var a=class r{constructor(e){this.globalService=e}transform(e){return this.globalService.getSituacoesEventoByCodigo(e)?.descricao??""}static \u0275fac=function(c){return new(c||r)(t(o,16))};static \u0275pipe=i({name:"situacao_evento",type:r,pure:!0})};export{a};

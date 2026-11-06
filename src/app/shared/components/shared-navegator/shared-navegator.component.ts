@@ -8,6 +8,7 @@ import { ControlePaginas } from '../../classes/controle-paginas';
 })
 export class SharedNavegatorComponent implements OnInit {
   @Input('controle') controlePaginas!: ControlePaginas;
+  @Input('show_registros') show_registro: boolean = true;
 
   @Output('changePage') change = new EventEmitter();
 
@@ -40,12 +41,14 @@ export class SharedNavegatorComponent implements OnInit {
   }
 
   get pageDisplay(): string {
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  if (this.controlePaginas.getTotalRegistros() == 0){
-     return 'Pesquisa Em Branco!';
-  } else {
-     return `${pad(this.controlePaginas.getPaginalAtual())}/${pad(this.controlePaginas.getTotalPaginas())} - ${this.controlePaginas.getTotalRegistros()}`;
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    if (this.controlePaginas.getTotalRegistros() == 0) {
+      return 'Pesquisa Em Branco!';
+    } else {
+      const totalRegistros: string = this.show_registro
+        ? ` - ${this.controlePaginas.getTotalRegistros()}`
+        : ``;
+      return `${pad(this.controlePaginas.getPaginalAtual())}/${pad(this.controlePaginas.getTotalPaginas())}${totalRegistros}`;
+    }
   }
-
-}
 }
