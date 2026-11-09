@@ -36,7 +36,7 @@ var AppComponent = /** @class */ (function () {
         this.eventoSrv = eventoSrv;
         this.usuarioDialog = usuarioDialog;
         this.usuarioTrocaSenha = usuarioTrocaSenha;
-        this.title = 'tkx_frontend';
+        this.title = 'tkx Experience';
         this.showMenu = true;
         this.isMobile = false;
         // 🔹 2. Objeto de controle do menu
@@ -56,7 +56,7 @@ var AppComponent = /** @class */ (function () {
                     { label: 'Empresas', route: 'empresas' },
                     { label: 'Usuários', route: 'usuarios' },
                     { label: 'Grupos de Usuários', route: 'grupos' },
-                    { label: 'Categorias', route: 'cadastro_padrao' },
+                    { label: 'Categorias', route: 'categorias' },
                     { label: 'Operadores', route: 'usuarios_eventos' },
                 ],
                 children: []
@@ -74,6 +74,7 @@ var AppComponent = /** @class */ (function () {
                         label: 'Processamento',
                         links: [
                             { label: 'Planilhas', route: 'planilhas' },
+                            { label: 'Tarefas / Relatórios', route: 'tarefas' },
                         ]
                     },
                 ]
@@ -109,7 +110,7 @@ var AppComponent = /** @class */ (function () {
             this.showMenu = false;
             return; // <-- ESSENCIAL
         }
-        this.titleService.setTitle('Conciliador');
+        this.titleService.setTitle(this.title);
         this.globalService.shomMenuEmitter.subscribe(function (show) {
             _this.showMenu = show;
         });

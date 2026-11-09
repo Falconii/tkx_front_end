@@ -33,7 +33,7 @@ type MenuKeys = 'cadastros' | 'eventos' | 'processamento' | 'sobre';
 })
 export class AppComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;
-  title = 'tkx_frontend';
+  title = 'tkx Experience';
   showMenu: boolean = true;
   isMobile: boolean = false;
 
@@ -132,7 +132,7 @@ export class AppComponent {
       this.showMenu = false;
       return; // <-- ESSENCIAL
     }
-    this.titleService.setTitle('Conciliador');
+    this.titleService.setTitle(this.title);
     this.globalService.shomMenuEmitter.subscribe((show) => {
       this.showMenu = show;
     });

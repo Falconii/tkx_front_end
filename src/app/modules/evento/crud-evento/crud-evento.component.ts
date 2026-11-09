@@ -329,4 +329,75 @@ export class CrudEventoComponent {
       }
     });
   }
-}
+
+  libarEvento(status:string):boolean {
+    if (status !== '0') {
+       return false
+    }
+    if (this.globalService.getUsuario().grupo ==  1 ||this.globalService.getUsuario().grupo == 99 )
+    {
+      return true;
+    }
+      return false;
+    }
+
+   encerrarEvento(evento: EventoModel):boolean {
+   if (evento.status !== '3') {
+       return false
+    }
+    if (this.globalService.getUsuario().grupo ==  1 || this.globalService.getUsuario().grupo ==  3 || this.globalService.getUsuario().grupo == 99 )
+    {
+      return true;
+    }
+    return false;
+    }
+
+    // [BARRA_EXCLUIR]="evento.status == '0' || evento.status == '1' "
+    excluirEvento(evento: EventoModel):boolean {
+      if (evento.status !== '0' && evento.status !== '1') {
+        return false
+      }
+      if (this.globalService.getUsuario().grupo ==  1 || this.globalService.getUsuario().grupo ==  3 || this.globalService.getUsuario().grupo == 99 )
+        {
+          return true;
+        }
+          return false;
+      }
+
+     //[BARRA_ATIVAR]="evento.status == '2' "
+     ativarEvento(evento: EventoModel):boolean {
+      if (evento.status !== '2') {
+        return false
+      }
+      if (this.globalService.getUsuario().grupo ==  1 || this.globalService.getUsuario().grupo ==  3 || this.globalService.getUsuario().grupo == 99 )
+        {
+          return true;
+        }
+          return false;
+      }
+
+     // [BARRA_STANDBY]="evento.status == '3' "
+     standbyEvento(evento: EventoModel):boolean {
+      if (evento.status !== '3') {
+        return false
+      }
+      if (this.globalService.getUsuario().grupo ==  1 || this.globalService.getUsuario().grupo ==  3 ||this.globalService.getUsuario().grupo == 99 )
+        {
+          return true;
+        }
+          return false;
+      }
+
+     //[BARRA_RESUMO_EVENTO]="true"
+     resumoEvento(evento: EventoModel):boolean {
+      if (evento.qtd_participantes == 0) {
+        return false
+      }
+      if (this.globalService.getUsuario().grupo ==  1 || this.globalService.getUsuario().grupo ==  3 ||this.globalService.getUsuario().grupo == 99 )
+        {
+          return true;
+        }
+          return false;
+      }
+
+    }

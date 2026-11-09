@@ -103,7 +103,10 @@
     </td>
 
     <td class="col-acoes">
+      <!-- alterar/excluir so com o evento Aguardando Liberação (0) ou Aguardando Importação (1) -->
       <barra-acoes
+        [ALTERAR]="participante.evento_status == '0' || participante.evento_status == '1'"
+        [EXCLUIR]="participante.evento_status == '0' || participante.evento_status == '1'"
         (changeOpcao)="escolha($event, i, participante)"
       ></barra-acoes>
     </td>

@@ -67,6 +67,8 @@ var evento_model_1 = require("../../../models/evento-model");
 var evento_dialog_component_1 = require("../evento-dialog/evento-dialog.component");
 var parametro_evento01_1 = require("../../../parametros/parametro-evento01");
 var atualiza_parametro_evento01_1 = require("../../../shared/classes/atualiza-parametro-evento01");
+var relatorio_dialog_component_1 = require("../../../shared/components/relatorio-dialog/relatorio-dialog.component");
+var relatorio_dialog_data_1 = require("../../../shared/components/relatorio-dialog/relatorio-dialog-data");
 var CrudEventoComponent = /** @class */ (function () {
     function CrudEventoComponent(globalService, eventoSrv, usuarioSrv, route, router, appSnackBar, eventoDialog, confirmDialog) {
         this.globalService = globalService;
@@ -122,8 +124,25 @@ var CrudEventoComponent = /** @class */ (function () {
         }
     };
     CrudEventoComponent.prototype.openResumoEvento = function (evento) {
-        // TODO: Resumo Do Evento (nova planilha) — a definir
-        this.appSnackBar.openSuccessSnackBar("Resumo Do Evento " + evento.descricao + ": Em Constru\u00E7\u00E3o.", 'OK');
+        // Resumo Do Evento: Excel (participantes + resumos) gerado por tarefa; entrega por download ou e-mail
+        var data = new relatorio_dialog_data_1.RelatorioDialogData();
+        data.titulo = 'RESUMO DO EVENTO';
+        data.texto = "Gerar o Excel com o resumo do evento \"" + evento.descricao + "\"? Escolha como receber o arquivo.";
+        data.sigla = 'resumoevento01';
+        data.finalizacao = 'download';
+        data.escolherFinalizacao = true; // Download ou e-mail do próprio usuário
+        data.destinatario = this.globalService.usuario.email;
+        data.mostrarEscopo = false;
+        data.parametros = {
+            id_empresa: this.globalService.getEmpresa().id,
+            id_evento: evento.id
+        };
+        var dialogConfig = new dialog_1.MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.id = 'resumo-evento';
+        dialogConfig.width = '800px';
+        dialogConfig.data = data;
+        this.eventoDialog.open(relatorio_dialog_component_1.RelatorioDialogComponent, dialogConfig);
     };
     CrudEventoComponent.prototype.onHome = function () {
         this.router.navigate(['']);
@@ -294,6 +313,64 @@ var CrudEventoComponent = /** @class */ (function () {
                 return [2 /*return*/];
             });
         }); });
+    };
+    CrudEventoComponent.prototype.libarEvento = function (status) {
+        if (status !== '0') {
+            return false;
+        }
+        if (this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 99) {
+            return true;
+        }
+        return false;
+    };
+    CrudEventoComponent.prototype.encerrarEvento = function (evento) {
+        if (evento.status !== '3') {
+            return false;
+        }
+        if (this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 3 || this.globalService.getUsuario().grupo == 99) {
+            return true;
+        }
+        return false;
+    };
+    // [BARRA_EXCLUIR]="evento.status == '0' || evento.status == '1' "
+    CrudEventoComponent.prototype.excluirEvento = function (evento) {
+        if (evento.status !== '0' && evento.status !== '1') {
+            return false;
+        }
+        if (this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 3 || this.globalService.getUsuario().grupo == 99) {
+            return true;
+        }
+        return false;
+    };
+    //[BARRA_ATIVAR]="evento.status == '2' "
+    CrudEventoComponent.prototype.ativarEvento = function (evento) {
+        if (evento.status !== '2') {
+            return false;
+        }
+        if (this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 3 || this.globalService.getUsuario().grupo == 99) {
+            return true;
+        }
+        return false;
+    };
+    // [BARRA_STANDBY]="evento.status == '3' "
+    CrudEventoComponent.prototype.standbyEvento = function (evento) {
+        if (evento.status !== '3') {
+            return false;
+        }
+        if (this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 3 || this.globalService.getUsuario().grupo == 99) {
+            return true;
+        }
+        return false;
+    };
+    //[BARRA_RESUMO_EVENTO]="true"
+    CrudEventoComponent.prototype.resumoEvento = function (evento) {
+        if (evento.qtd_participantes == 0) {
+            return false;
+        }
+        if (this.globalService.getUsuario().grupo == 1 || this.globalService.getUsuario().grupo == 3 || this.globalService.getUsuario().grupo == 99) {
+            return true;
+        }
+        return false;
     };
     __decorate([
         core_1.ViewChild(scrolling_1.CdkVirtualScrollViewport)

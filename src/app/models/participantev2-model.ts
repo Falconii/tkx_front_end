@@ -14,6 +14,7 @@ export class Participantev2Model {
   public user_insert: number = 0;
   public user_update: number = 0;
   public evento_descricao: string = '';
+  public evento_status: string = '';
   public categoria_descricao: string = '';
   public entrega_rg_retirada: string = '';
   public entrega_nome_retirada: string = '';
