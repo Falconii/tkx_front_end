@@ -13,7 +13,9 @@ export class BarraAcoesComponent implements OnInit {
   @Input('EXCLUIR') excluir: boolean = true;
   @Input('KIT') kit: boolean = false;
   @Input('PROCESSAR') processar: boolean = false;
+  @Input('PARTICIPANTES') participantes: boolean = false;
   @Input('BARRA_RESUMO_EVENTO') barra_resumo_evento: boolean = false;
+  @Input('BARRA_TROCAR_SITUACAO') barra_trocar_situacao: boolean = false;
   @Input('BARRA_VERTICAL') barra: boolean = false;
   @Input('BARRA_EXCLUIR') barra_excluir: boolean = false;
   @Input('BARRA_LIBERAR') barra_liberar: boolean = false;
@@ -22,6 +24,7 @@ export class BarraAcoesComponent implements OnInit {
   @Input('BARRA_ZERAR_SENHA') barra_zerar_senha: boolean = false;
   @Input('BARRA_ATIVO_INATIVO') barra_ativo_inativo: boolean = false;
   @Input('BARRA_STANDBY') barra_standby: boolean = false;
+  @Input('BARRA_PARTICIPANTES') barra_participantes: boolean = false;
   @Output('changeOpcao') changeOpcao = new EventEmitter<number>();
 
   constructor() {}

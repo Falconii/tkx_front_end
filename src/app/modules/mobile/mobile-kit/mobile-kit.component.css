@@ -101,3 +101,9 @@
   padding: 2px;
   background-color: #e5e5e5;
 }
+
+.sem-evento {
+  text-align: center;
+  font-weight: 600;
+  margin: 24px 16px;
+}

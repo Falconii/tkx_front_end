@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "build_railway": "ng build --base-href /",
+    "start_servidor": "node server.js",
     "build_falconi": "powershell -File build_falconi.ps1",
     "build_dominio": "npx -p @angular/cli@18 ng build --base-href https://tkx.falconi-iot.com.br && copy docs\\browser\\index.html docs\\browser\\404.html ",
     "deploy": "gh-pages -d docs/browser",
@@ -24,6 +26,9 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@zxing/browser": "^0.2.1",
+    "@zxing/library": "^0.23.0",
+    "express": "^4.22.3",
     "jwt-decode": "^4.0.0",
     "ngx-mask": "^20.0.3",
     "resend": "^6.12.2",

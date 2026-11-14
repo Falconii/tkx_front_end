@@ -38,6 +38,9 @@ export class HomeComponent {
 
   eventoPrincipal:EventoModel = new EventoModel();
 
+  /** true quando o usuário não tem nenhum evento liberado (ativo) para ver no dashboard */
+  semEvento:boolean = false;
+
   isLogado:boolean = false;
 
 
@@ -97,29 +100,35 @@ get isComum(): boolean {
 
   getEventos() {
 
-    let par = new ParametroEvento01();
-
-    par.id_empresa = this.globalService.getEmpresa().id;
-
-    par.pagina = 1;
-
-    par.tamPagina = 12
-
-    this.inscricaoEvento = this.eventoSrv
-      .getEventosParametro_01(par)
+    // O servidor decide o que o usuário vê: operador = só os eventos ativos em que está vinculado
+    // (usuarios_eventos); demais usuários = todos os eventos ativos.
+    this.inscricaoEvento = this.eventoComplementarSrv
+      .eventosDashboard()
       .subscribe({
-        next: (data: any) => {
-          this.lsEventos = data;
+        next: (data: EventoModel[]) => {
+          this.lsEventos = data ?? [];
+          if (this.lsEventos.length === 0) {
+            this.nenhumEvento();
+            return;
+          }
+          this.semEvento = false;
           this.eventoPrincipal = this.lsEventos[0];
           this.setValue();
           this.globalService.setChangeData(this.eventoPrincipal);
         },
         error: (error: any) => {
-          this.lsEventos = [];
+          this.nenhumEvento();
         },
       });
   }
 
+
+  private nenhumEvento() {
+    this.lsEventos = [];
+    this.semEvento = true;
+    this.eventoPrincipal = new EventoModel();
+    this.globalService.setChangeData(this.eventoPrincipal);
+  }
 
   onChangeParametros(){
   this.eventoPrincipal = this.lsEventos.find(x => x.id == this.formulario.value.id_evento) as EventoModel;

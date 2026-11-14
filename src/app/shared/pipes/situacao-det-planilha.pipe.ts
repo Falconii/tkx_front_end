@@ -7,9 +7,9 @@ import { GlobalService } from '../../services/global.service';
 export class SituacaoDetPlanilhaPipe implements PipeTransform {
   constructor(private globalService: GlobalService) {}
 
-  transform(value: number): string {
+  transform(value: string | number): string {
     return (
-      this.globalService.getDetalhe_situacoesBySigla(value.toString())?.descricao ?? ''
+      this.globalService.getDetalhe_situacoesBySigla(String(value ?? ''))?.descricao ?? ''
     );
   }
 }

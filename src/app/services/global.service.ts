@@ -38,6 +38,9 @@ export class GlobalService {
 
   changeData = new EventEmitter<EventoModel>();
 
+  /** evento escolhido no dashboard (home); null = nenhum evento ativo/liberado. Usado, por exemplo, na entrega de kits. */
+  eventoDashboard: EventoModel | null = null;
+
 
 
   private showSpinSubject = new BehaviorSubject<boolean>(false);
@@ -69,7 +72,7 @@ export class GlobalService {
     this.detalhe_situacoes = [
       new SimNao('0', 'Importado'),
       new SimNao('1', 'Importado Com Aviso'),
-      new SimNao("2","Processado"),
+      new SimNao("2", "Processado"),
       new SimNao('3', 'Erro Na Planilha CVS'),
       new SimNao('9', 'Erro De Informação'),
     ];
@@ -134,6 +137,7 @@ setLogadoTeste(value: boolean) {
   }
 
   setChangeData(value:EventoModel) {
+    this.eventoDashboard = value && value.id ? value : null;
     this.changeData.emit(value);
   }
 

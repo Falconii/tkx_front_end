@@ -1,0 +1,26 @@
+.evento {
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.atual {
+  margin: 0 0 16px;
+  font-size: small;
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.aviso {
+  margin: 12px 0 0;
+  font-size: small;
+  color: #b00020;
+}
+
+.info {
+  margin: 12px 0 0;
+  font-size: small;
+}

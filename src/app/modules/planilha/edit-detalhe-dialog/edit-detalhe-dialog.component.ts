@@ -140,7 +140,7 @@ export class EditDetalheDialogComponent {
     this.data.detPlanilha.nro_peito = this.formulario.value.nro_peito;
     this.data.detPlanilha.cnpj_cpf = this.formulario.value.cnpj_cpf;
     this.data.detPlanilha.data_nasc = this.formulario.value.data_nasc;
-    this.data.detPlanilha.status = 0;
+    this.data.detPlanilha.status = '0';
     this.data.detPlanilha.mensagem_erro = "";
     switch (+this.idAcao) {
       case CadastroAcoes.Inclusao:

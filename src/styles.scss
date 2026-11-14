@@ -1,6 +1,12 @@
 html,
 body {
   height: 100%;
+  /* celular: arrastar a tela para baixo no topo não recarrega o app */
+  overscroll-behavior-y: contain;
+}
+
+mat-sidenav-content {
+  overscroll-behavior-y: contain;
 }
 
 body {

@@ -88,9 +88,11 @@
     </td>
     <td class="acoes">
       <barra-acoes
+        [CONSULTAR]="false"
         [ALTERAR]="false"
         [EXCLUIR]="planilha.status == '1'"
         [PROCESSAR]="planilha.status == '1'"
+        [PARTICIPANTES]="true"
         (changeOpcao)="escolha($event, i, planilha)"
       >
       </barra-acoes>

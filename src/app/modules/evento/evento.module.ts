@@ -8,11 +8,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { MaterialModule } from '../../../material/material.module';
 import { SharedModule } from '../../shared/shared.module';
+import { TrocaSituacaoDialogComponent } from './troca-situacao-dialog/troca-situacao-dialog.component';
 import { LiberaEventoComponent } from './libera-evento/libera-evento.component';
 import { A11yModule } from "@angular/cdk/a11y";
 
 @NgModule({
-  declarations: [EventoDialogComponent, CrudEventoComponent, LiberaEventoComponent],
+  declarations: [EventoDialogComponent, CrudEventoComponent, LiberaEventoComponent, TrocaSituacaoDialogComponent],
   imports: [
     CommonModule,
     EventoRoutingModule,

@@ -85,6 +85,47 @@ export class CrudUsuarioEventoComponent {
       this.inscricaoEventoAcao?.unsubscribe();
     }
 
+    /** conta os registros do filtro (monta as páginas) e depois lista a página 1 */
+    contarUsuariosEventos() {
+      const par = AtualizaParametroUsuarioEvento01(
+        new ParametroUsuario_Evento01(),
+        this.parametro.getParametro(),
+      );
+      par.id_empresa = this.globalService.getEmpresa().id;
+      par.contador = 'S';
+      par.pagina = 0;
+      this.inscricaoUsuarioEvento?.unsubscribe();
+      this.inscricaoUsuarioEvento = this.UsuarioEventoSrv
+        .getUsuarios_EventosParametro_01(par)
+        .subscribe({
+          next: (data: any) => {
+            const total = Number(data?.total ?? 0);
+            this.controlePaginas = new ControlePaginas(this.tamPagina, total == 0 ? 1 : total);
+            this.getUsuariosEventos();
+          },
+          error: () => {
+            this.controlePaginas = new ControlePaginas(this.tamPagina, 1);
+            this.getUsuariosEventos();
+          },
+        });
+    }
+
+    /** arrastar para cima no fim da lista */
+    onProximaPagina() {
+      if (this.controlePaginas.getPaginalAtual() >= this.controlePaginas.getTotalPaginas()) return;
+      // página não cheia = não há mais registros
+      if (this.lsUsuariosEventos.length < this.controlePaginas.getTamPagina()) return;
+      this.controlePaginas.nextPage();
+      this.getUsuariosEventos();
+    }
+
+    /** arrastar para baixo no topo da lista */
+    onPaginaAnterior() {
+      if (this.controlePaginas.getPaginalAtual() <= 1) return;
+      this.controlePaginas.forwardPage();
+      this.getUsuariosEventos();
+    }
+
     getUsuariosEventos() {
 
       let par: ParametroUsuario_Evento01 = new ParametroUsuario_Evento01();
@@ -95,8 +136,12 @@ export class CrudUsuarioEventoComponent {
 
       par = AtualizaParametroUsuarioEvento01(par,this.parametro.getParametro());
 
+      par.pagina = this.controlePaginas.getPaginalAtual();
+      par.tamPagina = this.controlePaginas.getTamPagina();
+
       console.log("Paramentro: Consulta",par);
 
+      this.inscricaoUsuarioEvento?.unsubscribe();
       this.inscricaoUsuarioEvento = this.UsuarioEventoSrv
         .getUsuarios_EventosParametro_01(par)
         .subscribe({
@@ -177,7 +222,7 @@ export class CrudUsuarioEventoComponent {
     onChangeParametro(param:ParametroModel ) {
       this.parametro = param;
       console.log("Parametros",param)
-      this.getUsuariosEventos();
+      this.contarUsuariosEventos();
     }
 
     escolha(opcao: CadastroAcoes,indice:number, usuario?: Usuario_EventoModel) {

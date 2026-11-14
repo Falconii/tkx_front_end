@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Ler QR Code</h1>
+<div mat-dialog-content class="conteudo">
+  <video #video class="video" playsinline muted></video>
+  <p class="mensagem" [class.erro]="erro">{{ mensagem }}</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="fechar()">
+    <mat-icon>cancel</mat-icon>
+    Cancelar
+  </button>
+</div>

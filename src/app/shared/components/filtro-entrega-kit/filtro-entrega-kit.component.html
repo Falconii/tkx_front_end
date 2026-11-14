@@ -40,6 +40,9 @@
         <mat-form-field appearance="outline" class="uppercase-input col-max">
             <mat-label>Pesquisa {{ getTextoTipoPesquisa() }}</mat-label>
             <input matInput formControlName="pesquisa" />
+            <button matPrefix mat-icon-button type="button" aria-label="Ler QR Code" matTooltip="Ler QR Code" (click)="lerQrCode()">
+              <mat-icon>qr_code_scanner</mat-icon>
+            </button>
             <button *ngIf="hasValue('pesquisa')" matSuffix mat-icon-button aria-label="Clear" (click)="clearValue('pesquisa')">
         <mat-icon>close</mat-icon>
       </button>

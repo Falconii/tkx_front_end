@@ -50,13 +50,8 @@ export function AtualizaParametroDetplanilha01(par: ParametroDetplanilha01, conf
         }
 
 
-       key = parseInt(Object(config).status, 10);
-
-        if (isNaN(key)) {
-          par.status = -1;
-        } else {
-          par.status = key;
-        }
+       // status da linha e char(1): vazio = sem filtro
+        par.status = String(Object(config).status ?? '').trim();
 
         if (Object(config).orderby?.trim() !== '') {
           par.orderby = Object(config).orderby;

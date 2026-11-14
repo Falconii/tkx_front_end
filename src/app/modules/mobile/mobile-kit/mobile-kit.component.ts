@@ -32,6 +32,7 @@ import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
 import { Entregav2Service } from '../../../services/entregav2.service';
 import { Entregav2Model } from '../../../models/entregav2-model';
 import { EntregaparticipanteModel } from '../../../models/entregaparticipante-model';
+import { EventoComplementarService } from '../../../services/eventoComplementar.service';
 import { Entregasv2ComplementarService } from '../../../services/entregasv2Complementar.service';
 
 @Component({
@@ -56,6 +57,8 @@ export class MobileKitComponent {
 
   isMobile: boolean = false;
 
+  carregandoEvento: boolean = false;
+
   entregav2:Entregav2Model = new Entregav2Model();
 
   controlePaginas: ControlePaginas = new ControlePaginas(0, 0);
@@ -73,7 +76,8 @@ export class MobileKitComponent {
     private breakpoint: BreakpointObserver,
     private confirmDialog: ConfirmDialogService,
     private entregaComplementarSrv:Entregasv2ComplementarService,
-    private entregaSrv:Entregav2Service
+    private entregaSrv:Entregav2Service,
+    private eventoComplementarSrv: EventoComplementarService,
   ) {
      this.controlePaginas = new ControlePaginas(this.tamPagina, 0);
   }
@@ -82,12 +86,36 @@ export class MobileKitComponent {
     this.breakpoint.observe([Breakpoints.Handset]).subscribe((result) => {
           this.isMobile = result.matches;
         });
-    const data = this.route.snapshot.data['eventoAtivo'];
-    this.evento = data.length > 0 ? data[0] : new EventoModel();
-    if (this.evento.id == 0 && !this.isMobile) {
-      this.onHome();
+    this.carregarEvento();
+  }
+
+  /**
+   * O evento da entrega de kits é o escolhido no dashboard. Se o dashboard ainda não foi
+   * carregado (ex.: tela aberta direto), busca os eventos liberados e usa o 1º, o mesmo
+   * padrão do dashboard. Sem evento ativo: só mostra a mensagem "Nenhum Evento Ativo".
+   */
+  private carregarEvento() {
+    const escolhido = this.globalService.eventoDashboard;
+    if (escolhido) {
+      this.usarEvento(escolhido);
+      return;
     }
-    this.getParticipantes(TipoOperacao.Contador);
+    this.carregandoEvento = true;
+    this.inscricaoEventoAtivo = this.eventoComplementarSrv
+      .eventosDashboard()
+      .pipe(finalize(() => (this.carregandoEvento = false)))
+      .subscribe({
+        next: (lista: EventoModel[]) => this.usarEvento(lista?.[0]),
+        error: () => this.usarEvento(undefined),
+      });
+  }
+
+  private usarEvento(evento?: EventoModel) {
+    this.evento = evento ?? new EventoModel();
+    this.participantes = [];
+    if (this.evento.id !== 0) {
+      this.getParticipantes(TipoOperacao.Contador);
+    }
   }
 
   ngOnDestroy(): void {
@@ -158,6 +186,8 @@ export class MobileKitComponent {
     }
     console.log('Parâmetros Enviados', par);
 
+    // só a consulta mais recente vale: uma resposta antiga não pode sobrescrever o total de páginas
+    this.inscricaoParticipantes?.unsubscribe();
     this.inscricaoParticipantes = this.participanteSrv
       .getParticipantesv2Parametro_01(par)
       .subscribe({
@@ -237,6 +267,22 @@ export class MobileKitComponent {
   onChangeParametro(filtro: FiltroEntregaKitModel) {
     this.parametroPesquisa = filtro;
     this.getParticipantes(TipoOperacao.Contador);
+  }
+
+  /** arrastar para cima no fim da lista */
+  onProximaPagina() {
+    if (this.controlePaginas.getPaginalAtual() >= this.controlePaginas.getTotalPaginas()) return;
+    // página não cheia = não há mais registros (ex.: pesquisa de um participante só)
+    if (this.participantes.length < this.controlePaginas.getTamPagina()) return;
+    this.controlePaginas.nextPage();
+    this.getParticipantes();
+  }
+
+  /** arrastar para baixo no topo da lista */
+  onPaginaAnterior() {
+    if (this.controlePaginas.getPaginalAtual() <= 1) return;
+    this.controlePaginas.forwardPage();
+    this.getParticipantes();
   }
 
   onChangePage() {

@@ -16,6 +16,8 @@ import { hasNonNumeric } from '../../classes/util';
 import { TipoPesquisa } from '../../classes/tipo-pesquisa';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ControlePaginas } from '../../classes/controle-paginas';
+import { MatDialog } from '@angular/material/dialog';
+import { QrcodeDialogComponent } from '../qrcode-dialog/qrcode-dialog.component';
 
 @Component({
   selector: 'app-filtro-entrega-kit',
@@ -45,6 +47,7 @@ export class FiltroEntregaKitComponent implements OnInit {
     private formBuilder: FormBuilder,
     private globalService: GlobalService,
     private breakpoint: BreakpointObserver,
+    private dialog: MatDialog,
   ) {
     this.parametros = formBuilder.group({
       kit: [{ value: '' }],
@@ -239,6 +242,19 @@ export class FiltroEntregaKitComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  /** abre a câmera, lê o QR Code e coloca o texto lido no campo de pesquisa (a busca roda sozinha) */
+  lerQrCode() {
+    const ref = this.dialog.open(QrcodeDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      disableClose: true,
+    });
+    ref.afterClosed().subscribe((texto?: string) => {
+      if (!texto) return;
+      this.parametros.patchValue({ pesquisa: texto.toUpperCase() });
+    });
   }
 
   onKit(event: MatCheckboxChange) {

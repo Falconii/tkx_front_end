@@ -33,6 +33,8 @@ var GlobalService = /** @class */ (function () {
         this.onSubmit = new core_1.EventEmitter();
         this.changePassWordEmitter = new core_1.EventEmitter();
         this.changeData = new core_1.EventEmitter();
+        /** evento escolhido no dashboard (home); null = nenhum evento ativo/liberado. Usado, por exemplo, na entrega de kits. */
+        this.eventoDashboard = null;
         this.showSpinSubject = new BehaviorSubject_1.BehaviorSubject(false);
         // Observable público para os componentes assinarem
         this.showSpin$ = this.showSpinSubject.asObservable();
@@ -55,6 +57,7 @@ var GlobalService = /** @class */ (function () {
         ];
         this.detalhe_situacoes = [
             new sim_nao_1.SimNao('0', 'Importado'),
+            new sim_nao_1.SimNao('1', 'Importado Com Aviso'),
             new sim_nao_1.SimNao("2", "Processado"),
             new sim_nao_1.SimNao('3', 'Erro Na Planilha CVS'),
             new sim_nao_1.SimNao('9', 'Erro De Informação'),
@@ -109,6 +112,7 @@ var GlobalService = /** @class */ (function () {
         }
     };
     GlobalService.prototype.setChangeData = function (value) {
+        this.eventoDashboard = value && value.id ? value : null;
         this.changeData.emit(value);
     };
     GlobalService.prototype.setSpin = function (value) {

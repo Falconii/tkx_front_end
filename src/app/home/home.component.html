@@ -14,7 +14,8 @@
         </button>
       </mat-toolbar>
     </div>
-    <form [formGroup]="formulario" autocomplete="off">
+    <p class="sem-evento" *ngIf="isLogado && semEvento">Nenhum Evento Liberado</p>
+    <form [formGroup]="formulario" autocomplete="off" *ngIf="!semEvento">
         <mat-form-field appearance="outline" class="allline">
           <mat-label>Evento</mat-label>
           <mat-select formControlName="id_evento" (selectionChange)="onChangeParametros()">

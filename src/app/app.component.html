@@ -111,6 +111,9 @@
           <div class="menu-item" routerLink="usuarios_eventos" (click)="onNavigate()">
             <span>Operadores</span>
           </div>
+          <div class="menu-item" *ngIf="!isOperador" (click)="onResumoEvento()">
+            <span>Resumo Do Evento</span>
+          </div>
         </ng-container>
 
       </div>

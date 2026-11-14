@@ -1,6 +1,16 @@
 <h1 mat-dialog-title>{{data.titulo}}</h1>
 <div mat-dialog-content>
   <form [formGroup]="formulario" autocomplete="off">
+    <div class="col-med-1" *ngIf="data.escolherEvento">
+      <mat-form-field appearance="outline" class="col-max">
+        <mat-label>Evento</mat-label>
+        <mat-select formControlName="id_evento" [disabled]="estado !== 'form'">
+          <mat-option *ngFor="let evento of eventos" [value]="evento.id">
+            {{evento.descricao}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <div class="col-med-1" *ngIf="data.escolherFinalizacao">
       <mat-form-field appearance="outline" class="col-max">
         <mat-label>Entrega</mat-label>
@@ -40,7 +50,7 @@
       <mat-icon>cancel</mat-icon>
       {{textoFechar}}
     </button>
-    <button mat-raised-button color="primary" (click)="onProcessar()" [disabled]="estado !== 'form'">
+    <button mat-raised-button color="primary" (click)="onProcessar()" [disabled]="estado !== 'form' || (data.escolherEvento && !formulario.value.id_evento)">
       <mat-icon>check</mat-icon>
       {{data.labelBottonSim}}
     </button>

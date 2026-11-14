@@ -17,6 +17,7 @@ var BarraAcoesComponent = /** @class */ (function () {
         this.excluir = true;
         this.kit = false;
         this.processar = false;
+        this.participantes = false;
         this.barra_resumo_evento = false;
         this.barra = false;
         this.barra_excluir = false;
@@ -26,6 +27,7 @@ var BarraAcoesComponent = /** @class */ (function () {
         this.barra_zerar_senha = false;
         this.barra_ativo_inativo = false;
         this.barra_standby = false;
+        this.barra_participantes = false;
         this.changeOpcao = new core_1.EventEmitter();
     }
     BarraAcoesComponent.prototype.ngOnInit = function () { };
@@ -54,6 +56,9 @@ var BarraAcoesComponent = /** @class */ (function () {
         core_1.Input('PROCESSAR')
     ], BarraAcoesComponent.prototype, "processar");
     __decorate([
+        core_1.Input('PARTICIPANTES')
+    ], BarraAcoesComponent.prototype, "participantes");
+    __decorate([
         core_1.Input('BARRA_RESUMO_EVENTO')
     ], BarraAcoesComponent.prototype, "barra_resumo_evento");
     __decorate([
@@ -80,6 +85,9 @@ var BarraAcoesComponent = /** @class */ (function () {
     __decorate([
         core_1.Input('BARRA_STANDBY')
     ], BarraAcoesComponent.prototype, "barra_standby");
+    __decorate([
+        core_1.Input('BARRA_PARTICIPANTES')
+    ], BarraAcoesComponent.prototype, "barra_participantes");
     __decorate([
         core_1.Output('changeOpcao')
     ], BarraAcoesComponent.prototype, "changeOpcao");

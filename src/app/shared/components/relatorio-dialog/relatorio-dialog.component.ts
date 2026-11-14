@@ -9,6 +9,10 @@ import { salvarArquivo } from '../../classes/salvar-arquivo';
 import { TarefaModel, TarefaStatus } from '../../../models/tarefa-model';
 import { TarefaService } from '../../../services/tarefa.service';
 import { FinalizacaoRelatorio, RelatorioDialogData } from './relatorio-dialog-data';
+import { EventoService } from '../../../services/evento.service';
+import { GlobalService } from '../../../services/global.service';
+import { EventoModel } from '../../../models/evento-model';
+import { ParametroEvento01 } from '../../../parametros/parametro-evento01';
 
 /** Acompanhamento curto: o diálogo espera pouco; depois disso o usuário segue a tarefa pela tela de tarefas. */
 const POLLING_INICIO_MS = 800; // o backend começa a tarefa na hora, então a 1ª consulta já pode ter resultado
@@ -23,6 +27,8 @@ type Estado = 'form' | 'processando' | 'finalizando' | 'demorando' | 'erro';
   styleUrl: './relatorio-dialog.component.css',
 })
 export class RelatorioDialogComponent implements OnInit, OnDestroy {
+  inscricaoEventos!: Subscription;
+  eventos: EventoModel[] = [];
   inscricaoTarefa!: Subscription;
   inscricaoPolling!: Subscription;
   inscricaoFinal!: Subscription;
@@ -44,20 +50,34 @@ export class RelatorioDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<RelatorioDialogComponent>,
     private tarefaSrv: TarefaService,
     private appSnackBar: AppSnackbar,
+    private eventoSrv: EventoService,
+    private globalService: GlobalService,
     @Inject(MAT_DIALOG_DATA) public data: RelatorioDialogData,
   ) {
     this.formulario = formBuilder.group({
       destinatario: [{ value: '', disabled: true }],
       escopo: [''],
       finalizacao: ['download'],
+      id_evento: [null],
     });
   }
 
   ngOnInit(): void {
+    if (this.data.escolherEvento) this.carregarEventos();
     this.formulario.patchValue({
       destinatario: this.data.destinatario,
       escopo: this.data.escopo,
       finalizacao: this.data.finalizacao,
+    });
+  }
+
+  private carregarEventos() {
+    const par = new ParametroEvento01();
+    par.id_empresa = this.globalService.getEmpresa().id;
+    par.orderby = '000001'; // ordem alfabética pela descrição
+    this.inscricaoEventos = this.eventoSrv.getEventosParametro_01(par).subscribe({
+      next: (lista: EventoModel[]) => (this.eventos = lista),
+      error: (error: any) => this.falhar(`Não foi possível carregar os eventos. ${messageError(error)}`),
     });
   }
 
@@ -70,6 +90,7 @@ export class RelatorioDialogComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // fechar o diálogo só para de acompanhar: a tarefa continua no servidor
+    this.inscricaoEventos?.unsubscribe();
     this.inscricaoTarefa?.unsubscribe();
     this.inscricaoPolling?.unsubscribe();
     this.inscricaoFinal?.unsubscribe();
@@ -92,8 +113,10 @@ export class RelatorioDialogComponent implements OnInit, OnDestroy {
     if (this.estado !== 'form') return;
 
     const escopo = this.formulario.value.escopo;
+    if (this.data.escolherEvento && !this.formulario.value.id_evento) return;
     const parametros = {
       ...this.data.parametros,
+      ...(this.data.escolherEvento ? { id_evento: this.formulario.value.id_evento } : {}),
       pagina: escopo === 'T' ? 0 : this.data.pagina, // 0 = ignora a paginação
       tamPagina: this.data.tamPagina,
       contador: 'N',

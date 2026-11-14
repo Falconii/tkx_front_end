@@ -6,7 +6,7 @@ export class ParametroDetplanilha01{
 		public cnpj_cpf:string = '' ;
 		public inscricao:number = -1 ;
 		public nome:string = '' ;
-		public status:number = -1 ;
+		public status:string = '' ; // '' = todos; '0','1','2','3','9'
 		public pagina:number = 0 ;
 		public tamPagina:number = 50 ;
 		public contador:string = 'N' ;

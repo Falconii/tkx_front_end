@@ -25,4 +25,6 @@ export class RelatorioDialogData {
   public escolherFinalizacao: boolean = false;
   /** texto de confirmação exibido acima dos botões (opcional) */
   public texto: string = '';
+  /** true = o diálogo mostra um combo de eventos e envia o escolhido em parametros.id_evento (ex.: menu mobile) */
+  public escolherEvento: boolean = false;
 }

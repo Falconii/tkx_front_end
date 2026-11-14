@@ -147,7 +147,7 @@ export class CrudPlanilhaComponent {
         this.openUloadLoadDialog();
       }
     } else {
-      if (opcao == CadastroAcoes.Consulta) {
+      if (opcao == CadastroAcoes.Participantes) {
          this.openCrudDetalheDialog(opcao, indice, planilha);
       }
       if (opcao == CadastroAcoes.Exclusao) {

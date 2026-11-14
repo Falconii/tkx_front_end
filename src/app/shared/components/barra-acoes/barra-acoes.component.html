@@ -11,6 +11,18 @@
     <mat-icon class="icon-size">remove_red_eye</mat-icon>
   </button>
 
+   <button
+    mat-icon-button
+    aria-label="Example icon-button with share icon "
+    class="botoes"
+    (click)="onChangeOpcao(getAcoes().Participantes)"
+    [matTooltip]="getTexto().participantes"
+    *ngIf="participantes"
+    matTooltipPosition="above"
+  >
+    <mat-icon class="icon-size">people</mat-icon>
+  </button>
+
   <button
     mat-icon-button
     aria-label="Example icon-button with share icon "
@@ -74,7 +86,14 @@
         <mat-icon>delete</mat-icon>
         <span>{{ getTexto().excluir }}</span>
       </button>
-
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Participantes)"
+        *ngIf="barra_participantes"
+      >
+        <mat-icon>people</mat-icon>
+        <span>{{ getTexto().participantes }}</span>
+      </button>
       <button
         mat-menu-item
         (click)="onChangeOpcao(getAcoes().Liberar)"
@@ -117,6 +136,15 @@
       >
         <mat-icon>summarize</mat-icon>
         <span>{{ getTexto().resumo_evento }}</span>
+      </button>
+
+      <button
+        mat-menu-item
+        (click)="onChangeOpcao(getAcoes().Trocar_Situacao)"
+        *ngIf="barra_trocar_situacao"
+      >
+        <mat-icon>swap_horiz</mat-icon>
+        <span>{{ getTexto().trocar_situacao_evento }}</span>
       </button>
 
 

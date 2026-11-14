@@ -112,7 +112,7 @@ var CrudPlanilhaComponent = /** @class */ (function () {
             }
         }
         else {
-            if (opcao == cadastro_acoes_1.CadastroAcoes.Consulta) {
+            if (opcao == cadastro_acoes_1.CadastroAcoes.Participantes) {
                 this.openCrudDetalheDialog(opcao, indice, planilha);
             }
             if (opcao == cadastro_acoes_1.CadastroAcoes.Exclusao) {

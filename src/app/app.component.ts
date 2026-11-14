@@ -23,6 +23,8 @@ import { ParametroEvento01 } from './parametros/parametro-evento01';
 import { EventoService } from './services/evento.service';
 import { EventoModel } from './models/evento-model';
 import { UsuarioService } from './services/usuario.service';
+import { RelatorioDialogComponent } from './shared/components/relatorio-dialog/relatorio-dialog.component';
+import { RelatorioDialogData } from './shared/components/relatorio-dialog/relatorio-dialog-data';
 
 type MenuKeys = 'cadastros' | 'eventos' | 'processamento' | 'sobre';
 
@@ -403,6 +405,35 @@ export class AppComponent {
       CadastroAcoes.Edicao,
       this.globalService.getUsuario(),
     );
+  }
+
+  /** usuário do grupo OPERADOR (4) não tem acesso ao Resumo Do Evento */
+  get isOperador(): boolean {
+    return this.globalService.getUsuario().grupo === 4;
+  }
+
+  onResumoEvento() {
+    if (this.isOperador) return;
+    this.onNavigate(); // fecha o menu lateral no mobile
+
+    const data = new RelatorioDialogData();
+    data.titulo = 'RESUMO DO EVENTO';
+    data.texto = 'Escolha o evento e como receber o Excel com o resumo.';
+    data.sigla = 'resumoevento01';
+    data.finalizacao = 'download';
+    data.escolherFinalizacao = true;
+    data.escolherEvento = true;
+    data.destinatario = this.globalService.getUsuario().email;
+    data.mostrarEscopo = false;
+    data.parametros = { id_empresa: this.globalService.getEmpresa().id };
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.id = 'resumo-evento';
+    dialogConfig.width = '800px';
+    dialogConfig.maxWidth = '95vw'; // celular: nunca maior que a tela
+    dialogConfig.data = data;
+    this.usuarioDialog.open(RelatorioDialogComponent, dialogConfig);
   }
 
   onPerfil() {

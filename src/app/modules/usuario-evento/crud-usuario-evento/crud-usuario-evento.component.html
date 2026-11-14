@@ -2,6 +2,12 @@
   <mat-toolbar>
     <span class="example-spacer">Operadores - {{lsUsuariosEventos.length | zeroFill}}</span>
 
+    <app-navegator
+      *ngIf="!isMobile"
+      [controle]="controlePaginas"
+      (changePage)="getUsuariosEventos()"
+    ></app-navegator>
+
     <button
       mat-icon-button
       aria-label="Example icon-button with share icon "
@@ -37,13 +43,14 @@
 </div>
 <app-formulario-filtro-usuario-evento
   PARAMNAME ="usuarios_eventos"
+  [CONTROLE_PAGINAS]="controlePaginas"
   [EVENTOS]="lsEventos"
   [HIDE]="false"
   (changeParametro)="onChangeParametro($event)"
   *ngIf="lsEventos.length > 0"
 ></app-formulario-filtro-usuario-evento>
 
-<div class="lista-participantes">
+<div class="lista-participantes" appSwipePagina (proxima)="onProximaPagina()" (anterior)="onPaginaAnterior()">
   <mat-card
     class="card-participante"
     *ngFor="let usuario of lsUsuariosEventos; let i = index"

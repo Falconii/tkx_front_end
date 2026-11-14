@@ -49,7 +49,8 @@
   (changePage)="getParticipantes()"
   *ngIf="evento.id !== 0"
 ></app-filtro-entrega-kit>
-<div class="lista-participantes">
+<p class="sem-evento" *ngIf="evento.id === 0 && !carregandoEvento">Nenhum Evento Ativo</p>
+<div class="lista-participantes" appSwipePagina (proxima)="onProximaPagina()" (anterior)="onPaginaAnterior()">
   <mat-card
     class="card-participante"
     *ngFor="let dado of participantes; let i = index"

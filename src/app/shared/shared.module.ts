@@ -15,6 +15,8 @@ import { ZeroFillPipe } from './pipes/zero-full.pipe';
 import { DownloadDialogComponent } from './components/download-dialog/download-dialog.component';
 import { EmailDialogComponent } from './components/email-dialog/email-dialog.component';
 import { RelatorioDialogComponent } from './components/relatorio-dialog/relatorio-dialog.component';
+import { SwipePaginaDirective } from './directives/swipe-pagina.directive';
+import { QrcodeDialogComponent } from './components/qrcode-dialog/qrcode-dialog.component';
 import { FormularioFiltroEmpresaComponent } from './components/formulario-filtro-empresa/formulario-filtro-empresa.component';
 import { FormularioFiltroGrupousuarioComponent } from './components/formulario-filtro-grupousuario/formulario-filtro-grupousuario.component';
 import { SharedNavegatorComponent } from './components/shared-navegator/shared-navegator.component';
@@ -49,6 +51,8 @@ import { DashboardMobileComponent } from './components/dashboard-mobile/dashboar
     EmailDialogComponent,
     DownloadDialogComponent,
     RelatorioDialogComponent,
+    QrcodeDialogComponent,
+    SwipePaginaDirective,
     SimNaoPipe,
     ZeroFillPipe,
     TruncatePipe,
@@ -84,6 +88,7 @@ import { DashboardMobileComponent } from './components/dashboard-mobile/dashboar
     ReactiveFormsModule,
   ],
   exports: [
+    SwipePaginaDirective,
     FiltroEntregaKitComponent,
     BarraAcoesComponent,
     CnpjCpfPipe,

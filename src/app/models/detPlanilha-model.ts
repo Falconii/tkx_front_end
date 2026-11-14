@@ -11,7 +11,7 @@ export class DetplanilhaModel{
 		public nro_peito:number =   0   ;
 		public id_categoria:number =   0   ;
 		public id_inscrito:number =   0   ;
-		public status:number =   0   ;
+		public status:string =   '0'   ; // char(1): '0' Importado | '1' Com Aviso | '2' Processado | '3' Erro CSV | '9' Erro
 		public mensagem_erro:string =   ""   ;
 		public user_insert:number =   0   ;
 		public user_update:number =   0   ;

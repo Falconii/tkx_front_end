@@ -25,6 +25,9 @@ import { EmpresaModel } from '../../../models/empresa-model';
 import { RelatorioDialogComponent } from '../../../shared/components/relatorio-dialog/relatorio-dialog.component';
 import { RelatorioDialogData } from '../../../shared/components/relatorio-dialog/relatorio-dialog-data';
 import { ConfirmDialogService } from '../../../services/ConfirmDialog.service';
+import { EventoComplementarService } from '../../../services/eventoComplementar.service';
+import { TrocaSituacaoDialogComponent } from '../troca-situacao-dialog/troca-situacao-dialog.component';
+import { TrocaSituacaoDialogData } from '../troca-situacao-dialog/troca-situacao-dialog-data';
 
 @Component({
   selector: 'app-crud-evento',
@@ -61,6 +64,7 @@ export class CrudEventoComponent {
     private appSnackBar: AppSnackbar,
     private eventoDialog: MatDialog,
     private confirmDialog: ConfirmDialogService,
+    private eventoComplementarSrv: EventoComplementarService,
   ) {}
 
   ngOnInit(): void {}
@@ -96,6 +100,10 @@ export class CrudEventoComponent {
         case this.getAcoes().Resumo_Evento:
           this.openResumoEvento(evento);
           break;
+
+        case this.getAcoes().Trocar_Situacao:
+          this.openTrocaSituacao(evento);
+          break;
         default:
           this.openEventooDialog(opcao, i, evento);
           break;
@@ -124,6 +132,7 @@ export class CrudEventoComponent {
     dialogConfig.disableClose = true;
     dialogConfig.id = 'resumo-evento';
     dialogConfig.width = '800px';
+    dialogConfig.maxWidth = '95vw';
     dialogConfig.data = data;
     this.eventoDialog.open(RelatorioDialogComponent, dialogConfig);
   }
@@ -387,6 +396,43 @@ export class CrudEventoComponent {
         }
           return false;
       }
+
+     /** Trocar Situação Evento: somente usuário MASTER (1) ou TI (99); vale para qualquer situação, inclusive reabrir um evento encerrado */
+     trocarSituacaoEvento(evento: EventoModel): boolean {
+      const grupo = this.globalService.getUsuario().grupo;
+      return grupo == 1 || grupo == 99;
+     }
+
+     openTrocaSituacao(evento: EventoModel) {
+      const data = new TrocaSituacaoDialogData();
+      data.evento = evento;
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.id = 'troca-situacao';
+      dialogConfig.width = '480px';
+      dialogConfig.maxWidth = '95vw';
+      dialogConfig.data = data;
+      this.eventoDialog
+        .open(TrocaSituacaoDialogComponent, dialogConfig)
+        .afterClosed()
+        .subscribe((novaSituacao?: string) => {
+          if (!novaSituacao) return;
+          this.inscricaoSituacao = this.eventoComplementarSrv
+            .updateStatusEvento(evento.id, novaSituacao)
+            .subscribe({
+              next: () => {
+                evento.status = novaSituacao;
+                this.appSnackBar.openSuccessSnackBar('Situação Do Evento Alterada !', 'OK');
+              },
+              error: (error: any) => {
+                this.appSnackBar.openFailureSnackBar(
+                  `Erro Na Troca De Situação ${error.error?.message ?? error.message}`,
+                  'OK',
+                );
+              },
+            });
+        });
+     }
 
      //[BARRA_RESUMO_EVENTO]="true"
      resumoEvento(evento: EventoModel):boolean {

@@ -23,5 +23,7 @@ export enum CadastroAcoes {
   Zerar_Senha = 31,
   Standby= 32,
   Resumo_Evento = 33,
+  Trocar_Situacao = 34,
+  Participantes = 35,
   None = 99,
 }

@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Trocar Situação Do Evento</h1>
+<div mat-dialog-content>
+  <p class="evento">{{ data.evento.descricao }}</p>
+  <p class="atual">Situação atual: <strong>{{ situacaoAtual }}</strong></p>
+
+  <mat-radio-group class="opcoes" [(ngModel)]="escolhida" aria-label="Nova situação">
+    <mat-radio-button *ngFor="let opcao of opcoes" [value]="opcao.sigla">
+      {{ opcao.descricao }}
+    </mat-radio-button>
+  </mat-radio-group>
+
+  <p class="aviso" *ngIf="encerrando">
+    Atenção: enquanto estiver Encerrado, o evento não pode ser alterado nem receber novos participantes. Master/TI podem reabri-lo depois.
+  </p>
+  <p class="info" *ngIf="reabrindo">
+    O evento encerrado será reaberto.
+  </p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="cancelar()">
+    <mat-icon>cancel</mat-icon>
+    Cancelar
+  </button>
+  <button mat-raised-button color="primary" (click)="processar()" [disabled]="!escolhida">
+    <mat-icon>check</mat-icon>
+    Processar
+  </button>
+</div>

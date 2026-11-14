@@ -68,6 +68,7 @@ export class LiberaEventoComponent {
             },
             error: (error: any) => {
               console.log(error);
+              this.appSnackBar.openFailureSnackBar(error?.error?.message ?? 'Não foi possível liberar o evento.', 'OK');
             },
           });
         }

@@ -94,6 +94,8 @@ export class MensagensBotoes {
   static ativar_inativar = 'Ativar/Inativar';
   static standby = 'StandBy';
   static resumo_evento = 'Resumo Do Evento';
+  static trocar_situacao_evento = 'Trocar Situação Evento';
+  static participantes = 'Participantes';
 }
 
 export function adicionaZero(numero: number) {
