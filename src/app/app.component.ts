@@ -272,10 +272,14 @@ export class AppComponent {
 
     dialogConfig.disableClose = true;
     dialogConfig.id = 'crud-usuario';
-    dialogConfig.width = '90vw';
-    dialogConfig.height = '90vh';
+    // celular: tela inteira (100dvh = area realmente visivel, sem a barra de enderecos); o max-width padrao do
+    // Material (80vw) tambem deixava o dialog estreito, por isso e redefinido
+    dialogConfig.width = this.isMobile ? '100vw' : '90vw';
+    dialogConfig.maxWidth = this.isMobile ? '100vw' : '90vw';
+    dialogConfig.height = this.isMobile ? '100dvh' : '90vh';
+    dialogConfig.maxHeight = this.isMobile ? '100dvh' : '90vh';
     dialogConfig.disableClose = true;
-    dialogConfig.panelClass = 'dialog-font-small';
+    dialogConfig.panelClass = this.isMobile ? ['dialog-font-small', 'dialog-tela-cheia'] : 'dialog-font-small';
     dialogConfig.data = data;
     const modalDialog = this.usuarioDialog
       .open(UsuarioDialogComponent, dialogConfig)

@@ -69,14 +69,17 @@
 
             <!-- SUBMENU -->
             <div *ngIf="open[item.key]">
-              <a
-                *ngFor="let link of item.links"
-                class="submenu-link"
-                [routerLink]="link.route"
-                (click)="onNavigate()"
-              >
-                {{ link.label }}
-              </a>
+              <ng-container *ngFor="let link of item.links">
+                <!-- "Operadores" (usuarios_eventos) nao aparece para o grupo OPERADOR -->
+                <a
+                  *ngIf="!(link.route === 'usuarios_eventos' && isOperador)"
+                  class="submenu-link"
+                  [routerLink]="link.route"
+                  (click)="onNavigate()"
+                >
+                  {{ link.label }}
+                </a>
+              </ng-container>
 
               <!-- SUB-SUBMENU -->
               <ng-container *ngFor="let sub of item.children">
@@ -108,7 +111,7 @@
           <div class="menu-item" routerLink="mobile" (click)="onNavigate()">
             <span>Entrega de Kits</span>
           </div>
-          <div class="menu-item" routerLink="usuarios_eventos" (click)="onNavigate()">
+          <div class="menu-item" *ngIf="!isOperador" routerLink="usuarios_eventos" (click)="onNavigate()">
             <span>Operadores</span>
           </div>
           <div class="menu-item" *ngIf="!isOperador" (click)="onResumoEvento()">

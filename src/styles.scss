@@ -528,3 +528,8 @@ button[disabled] {
   line-height: 1;
   /* deixa mais compacto */
 }
+
+/* dialog em tela cheia no celular (ex.: perfil do usuario) */
+.dialog-tela-cheia .mat-mdc-dialog-surface {
+  border-radius: 0 !important;
+}

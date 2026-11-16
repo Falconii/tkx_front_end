@@ -4,6 +4,9 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    /* celular: 100vh inclui a area da barra de enderecos do navegador e escondia o fim da tela;
+       100dvh acompanha a area realmente visivel */
+    height: 100dvh;
 }
 
 
@@ -128,6 +131,8 @@ mat-sidenav-content {
 
 .container {
     padding: 20px;
+    /* folga no fim da rolagem: o ultimo quadro nao fica colado na borda/barra de navegacao do celular */
+    padding-bottom: calc(48px + env(safe-area-inset-bottom));
 }
 
 
